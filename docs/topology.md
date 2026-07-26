@@ -9,7 +9,7 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 |---|---|---|
 | `getreplay.gg` `/srv/*` | Go backend `localhost:3006` | |
 | `getreplay.gg` `/api/*` | PHP-FPM (Laravel) `unix//run/php/php8.4-fpm.sock`, root `/var/www/fun-php/repo/src/public` | `/api` prefix stripped (`handle_path`) |
-| `getreplay.gg` (everything else) | **Next.js frontend** `[::1]:3000` or `:3001` | blue-green; active port in imported snippet, IPv6 localhost only |
+| `getreplay.gg` (everything else) | **Next.js frontend** `[::1]:3000` | IPv6 localhost only |
 | `www.getreplay.gg` | — | 308 redirect → `getreplay.gg` |
 | `app.getreplay.gg` | PHP-FPM (Laravel/Orchid admin), same root | `X-Frame-Options: SAMEORIGIN` |
 | `storage.getreplay.gg` | static file_server | replays + Laravel public storage, CORS `*` |
@@ -24,7 +24,7 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 
 | Service | Port / socket | Runtime | User | Unit / entrypoint |
 |---|---|---|---|---|
-| Frontend (zone-map-ui) | `[::1]:3000` blue / `[::1]:3001` green | **Node 20** (`/opt/node-20`) | solo | `nextjs-blue.service` / `nextjs-green.service` |
+| Frontend (zone-map-ui) | `[::1]:3000` | **Node 20** (`/opt/node-20`) | solo | `nextjs.service` |
 | Go backend | `localhost:3006` (per Caddy `/srv/*`) | Go | www-data | `go-app.service` → `/var/www/getreplay-go/start.sh` |
 | Demo uploader | — (worker) | Go | www-data | `demo-uploader.service` → `/var/www/getreplay-go/demo-uploader.sh` |
 | Node backend | (internal) | **system Node 18** | solo | `node-app.service` → `/home/solo/getreplay-node`, `/usr/bin/npm start`, EnvFile `.env` |
@@ -32,7 +32,7 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 | Caddy | 80/443 | — | — | `caddy.service` |
 
 > ⚠️ **Two Node runtimes coexist.** The frontend runs **Node 20** isolated at `/opt/node-20`
-> (patched `sharp` needs ≥20.9), referenced only by the `nextjs-blue/green` units. The
+> (patched `sharp` needs ≥20.9), referenced only by `nextjs.service`. The
 > `node-app.service` backend still runs on **system Node 18** (`/usr/bin/npm`). Installing
 > Node 20 in `/opt` leaves system node untouched, so node-app is unaffected — do not replace
 > system node. See [`../frontend/DEPLOY.md`](../frontend/DEPLOY.md).
@@ -44,7 +44,7 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 
 | What | Path |
 |---|---|
-| Frontend release root | `/home/solo/getreplay-front/{repo,releases,blue,green,shared}` |
+| Frontend | `/home/solo/getreplay-front` (git checkout = systemd WorkingDirectory) |
 | PHP / Laravel | `/var/www/fun-php/repo/src/...` |
 | Replay storage | `/var/www/getreplay-storage/` (`replays/` + `*.replay2`) |
 | Laravel public storage | `/var/www/fun-php/repo/src/storage/app/public` |

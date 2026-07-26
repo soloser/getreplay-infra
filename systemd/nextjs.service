@@ -7,8 +7,11 @@ Type=simple
 User=solo
 WorkingDirectory=/home/solo/getreplay-front
 
-# Важно: слушать только localhost, иначе снова будет RCE и атаки
-ExecStart=/usr/bin/npm run start -- -p 3000 -H ::1
+# Важно: слушать только localhost, иначе снова будет RCE и атаки.
+# Node 20 (изолированный /opt/node-20). PATH обязателен: npm запускается через
+# `#!/usr/bin/env node`, и без него подхватился бы системный Node 18 → sharp 0.35 упал бы.
+Environment=PATH=/opt/node-20/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/opt/node-20/bin/npm run start -- -p 3000 -H ::1
 
 Environment=NODE_ENV=production
 Environment=NEXT_PRIVATE_ORIGIN=http://[::1]:3000
