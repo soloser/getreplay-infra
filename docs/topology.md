@@ -22,17 +22,23 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 
 ## Services & ports
 
-| Service | Port / socket | Runtime | Unit |
-|---|---|---|---|
-| Frontend (zone-map-ui) | TCP `[::1]:3000` (blue) / `[::1]:3001` (green) | **Node 20** (`/opt/node-20`) | `nextjs-blue.service` / `nextjs-green.service` |
-| Go backend | TCP `localhost:3006` | Go | (add unit here when captured) |
-| PHP API + admin | `unix//run/php/php8.4-fpm.sock` | PHP 8.4-FPM | php8.4-fpm.service |
-| Caddy | 80/443 | — | caddy.service |
+| Service | Port / socket | Runtime | User | Unit / entrypoint |
+|---|---|---|---|---|
+| Frontend (zone-map-ui) | `[::1]:3000` blue / `[::1]:3001` green | **Node 20** (`/opt/node-20`) | solo | `nextjs-blue.service` / `nextjs-green.service` |
+| Go backend | `localhost:3006` (per Caddy `/srv/*`) | Go | www-data | `go-app.service` → `/var/www/getreplay-go/start.sh` |
+| Demo uploader | — (worker) | Go | www-data | `demo-uploader.service` → `/var/www/getreplay-go/demo-uploader.sh` |
+| Node backend | (internal) | **system Node 18** | solo | `node-app.service` → `/home/solo/getreplay-node`, `/usr/bin/npm start`, EnvFile `.env` |
+| PHP API + admin | `unix//run/php/php8.4-fpm.sock` | PHP 8.4-FPM | www-data | `php8.4-fpm.service` (distro) |
+| Caddy | 80/443 | — | — | `caddy.service` |
 
-> ⚠️ There are **two Node runtimes** relevant here: the frontend must run **Node 20**
-> (patched `sharp` needs ≥20.9), while other node tooling on the box may differ. Install
-> Node 20 isolated (e.g. `/opt/node-20`) and reference it only from `nextjs.service` —
-> see [`../frontend/DEPLOY.md`](../frontend/DEPLOY.md).
+> ⚠️ **Two Node runtimes coexist.** The frontend runs **Node 20** isolated at `/opt/node-20`
+> (patched `sharp` needs ≥20.9), referenced only by the `nextjs-blue/green` units. The
+> `node-app.service` backend still runs on **system Node 18** (`/usr/bin/npm`). Installing
+> Node 20 in `/opt` leaves system node untouched, so node-app is unaffected — do not replace
+> system node. See [`../frontend/DEPLOY.md`](../frontend/DEPLOY.md).
+>
+> The Go units call helper scripts (`start.sh`, `demo-uploader.sh`) that hold the actual run
+> command/flags/port — capture those too (they live in `/var/www/getreplay-go/`).
 
 ## Filesystem paths
 
