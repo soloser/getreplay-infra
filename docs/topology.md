@@ -25,8 +25,9 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 | Service | Port / socket | Runtime | User | Unit / entrypoint |
 |---|---|---|---|---|
 | Frontend (zone-map-ui) | `[::1]:3000` | **Node 20** (`/opt/node-20`) | solo | `nextjs.service` |
-| Go backend | `localhost:3006` (per Caddy `/srv/*`) | Go | www-data | `go-app.service` → `/var/www/getreplay-go/start.sh` |
-| Demo uploader | — (worker) | Go | www-data | `demo-uploader.service` → `/var/www/getreplay-go/demo-uploader.sh` |
+| Go backend (match-updater) | `0.0.0.0:3006` (Caddy `/srv/*`) | Go | www-data | `go-app.service` → `start.sh` |
+| Demo uploader | `0.0.0.0:3005` (uploads from PHP) | Go | www-data | `demo-uploader.service` → `demo-uploader.sh` |
+| Highlight extractor | — (one-shot runner) | Go | www-data | **cron** `/etc/cron.d/getreplay-highlight-extractor` (hourly :20) → `highlight-extractor-cron.sh` |
 | Node backend | (internal) | **system Node 18** | solo | `node-app.service` → `/home/solo/getreplay-node`, `/usr/bin/npm start`, EnvFile `.env` |
 | PHP API + admin | `unix//run/php/php8.4-fpm.sock` | PHP 8.4-FPM | www-data | `php8.4-fpm.service` (distro) |
 | Caddy | 80/443 | — | — | `caddy.service` |

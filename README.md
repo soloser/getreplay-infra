@@ -15,7 +15,8 @@ infra/
   caddy/Caddyfile        # prod Caddy config (TLS, routing) — source of truth
   systemd/               # service units (nextjs, go-app, demo-uploader, node-app)
   frontend/              # zone-map-ui deploy: deploy.sh (one command) + DEPLOY.md
-  go/                    # Go launch scripts (start.sh, demo-uploader.sh) + env template
+  go/                    # Go deploy: deploy.sh <app> (builds on server) + launchers +
+                         #   shared getreplay-go.env + highlight-extractor cron + README
   php/                   # captured php-fpm / cli configs
   docs/topology.md       # domains, services, ports, filesystem paths
 ```
@@ -39,8 +40,9 @@ infra/
 ## Roadmap
 
 - [x] Frontend one-command deploy (`frontend/deploy.sh`, single service, auto Node 20).
-- [ ] Capture the rest of prod config: Laravel queue/scheduler units (or supervisor),
-      relevant crons, the Go `start.sh`/`demo-uploader.sh` entrypoints. See "what to copy".
+- [x] Go services one-command deploy (`go/deploy.sh <app>`, builds on server) +
+      highlight-extractor cron + shared `getreplay-go.env`.
+- [ ] Capture the rest of prod config: Laravel queue/scheduler units (or supervisor) + crons.
 - [ ] Zero-downtime frontend (blue-green: two ports + graceful `caddy reload`) — deferred.
 - [ ] CI: build artifact + remote deploy.
 - [ ] Consider `output: 'standalone'` for the frontend to drop `npm ci` on prod.
@@ -50,12 +52,11 @@ infra/
 Config that lives outside the app repos and should be versioned here (⚠️ **never** commit
 secrets — `.env`, TLS keys, DB passwords):
 
-- **systemd** — done: nextjs, go-app, demo-uploader, node-app. Still worth capturing any
-  Laravel queue/scheduler unit + highlight-extractor timer. Enumerate:
+- **systemd** — done: nextjs, go-app, demo-uploader, node-app. Enumerate more with
   `systemctl list-unit-files --state=enabled`.
 - **PHP** — done (`php/`): fpm `php.ini`, `pool.d/*.conf`, `conf.d/*`, cli `php.ini`.
-- **Queue workers** — if via supervisor: `/etc/supervisor/conf.d/*.conf`.
-- **Cron** — `crontab -l` per relevant user + `/etc/cron.d/*` (e.g. Laravel `schedule:run`).
-- **Go entrypoints** — `/var/www/getreplay-go/{start.sh,demo-uploader.sh}` are captured in
-  `go/` (secrets externalized to a gitignored `getreplay-go.env`).
+- **Go** — done (`go/`): `deploy.sh`, launchers, shared env template, highlight-extractor cron.
+- **Queue workers** — if via supervisor: `/etc/supervisor/conf.d/*.conf` (still to capture).
+- **Cron** — highlight-extractor done (`go/cron/`). Still check `crontab -l` per user +
+  `/etc/cron.d/*` for anything else (e.g. Laravel `schedule:run`).
 - **Caddy** — `caddy/Caddyfile` (done).

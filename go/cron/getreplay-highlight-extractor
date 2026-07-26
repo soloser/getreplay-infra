@@ -1,0 +1,4 @@
+# getreplay highlight-extractor — hourly at :20. Idempotent; overlap is harmless.
+# Installed/updated by: infra/go/deploy.sh highlight-extractor
+# Runs as www-data (needs read on the replay dir + MySQL); logs to /var/log.
+20 * * * * www-data /var/www/getreplay-go/highlight-extractor-cron.sh >> /var/log/highlight-extractor.log 2>&1
