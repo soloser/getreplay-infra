@@ -17,5 +17,8 @@ export STATCHANNEL_PRINT_STATS=false
 export DOWNLOADER_NUM_WORKERS=4
 export PARSER_NUM_WORKERS=6
 export PARSER_REPLAY_SAMPLING_RATE=16
+# REQUIRED by match-updater (CheckRange ≥1) — reference match for the debug nade-stats
+# endpoint (HandleDemoNadeStats). Omitting it makes match-updater fail validation on start.
+export DEMO_MATCH_ID=112426
 
 exec "$SCRIPT_DIR/match-updater"
