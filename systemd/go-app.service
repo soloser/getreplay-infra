@@ -1,0 +1,16 @@
+[Unit]
+Description=Go Application Service
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/getreplay-go/
+ExecStart=/var/www/getreplay-go/start.sh
+Restart=always
+RestartSec=5
+StandardOutput=append:/var/log/go-app.log
+StandardError=append:/var/log/go-app-error.log
+
+[Install]
+WantedBy=multi-user.target

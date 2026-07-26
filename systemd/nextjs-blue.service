@@ -1,0 +1,41 @@
+# Next.js frontend — BLUE (port 3000). One half of the blue-green pair.
+# Install: sudo cp systemd/nextjs-blue.service /etc/systemd/system/ && sudo systemctl daemon-reload
+# See frontend/DEPLOY.md for the one-time migration from the old single-service setup.
+
+[Unit]
+Description=Next.js App (blue, :3000)
+After=network.target
+
+[Service]
+Type=simple
+User=solo
+# Points at the blue release via symlink; deploy.sh repoints it atomically.
+WorkingDirectory=/home/solo/getreplay-front/blue
+
+# Node 20 (isolated at /opt/node-20 — NOT system node 18, which can't run sharp 0.35).
+# Listen only on IPv6 localhost (Caddy proxies to [::1]:3000); do not expose publicly.
+ExecStart=/opt/node-20/bin/npm run start -- -p 3000 -H ::1
+
+Environment=NODE_ENV=production
+Environment=NEXT_PRIVATE_ORIGIN=http://[::1]:3000
+
+# Логи в /var/log
+StandardOutput=append:/var/log/nextjs-blue.log
+StandardError=append:/var/log/nextjs-blue.log
+
+# Автоперезапуск
+Restart=always
+RestartSec=3
+
+# Безопасные ограничения
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=false
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

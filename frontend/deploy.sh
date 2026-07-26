@@ -1,108 +1,148 @@
 #!/usr/bin/env bash
 #
-# Atomic, near-zero-downtime deploy for zone-map-ui (Next.js under systemd).
+# Blue-green, zero-downtime deploy for zone-map-ui (Next.js under systemd + Caddy).
 #
-# Key properties:
-#   - Build happens in a fresh release dir, NOT in the live directory.
-#     A failing `npm ci` / `npm run build` never touches the running site.
-#   - The live site is swapped by flipping one symlink (atomic).
-#   - After restart a health check runs; if it fails, the previous release
-#     is restored automatically.
+# Two long-running services — blue (:3000) and green (:3001). Each deploy builds into
+# a fresh release dir, points the IDLE color at it, restarts that color, health-checks
+# it directly, and only then flips Caddy to it via a graceful reload. The previously
+# active color keeps running, so:
+#   - a bad build / failed health check never reaches users (Caddy still on the old port);
+#   - the old version's hashed assets stay served → Microsoft Clarity replays from just
+#     before the deploy keep their styles.
 #
-# This script lives in the infra repo but operates on the app checkout on the
-# server ($APP_ROOT). Layout there (create once — see DEPLOY.md):
-#   $APP_ROOT/
+# Server layout (create once — see DEPLOY.md):
+#   /home/solo/getreplay-front/
 #     repo/                     git checkout of zone-map-ui (source only)
-#     releases/<timestamp>/     one full build per deploy
-#     current -> releases/...   symlink the systemd unit points at
-#     shared/.env.production    env file, symlinked into every release
+#     releases/<timestamp>/     one build per deploy
+#     blue  -> releases/<...>   WorkingDirectory of nextjs-blue.service
+#     green -> releases/<...>   WorkingDirectory of nextjs-green.service
+#     shared/
+#       .env.production         symlinked into each release (NEXT_PUBLIC_* baked at build)
+#       next-cache/             shared .next/cache (build + image cache) — keeps disk bounded
+#       static-pool/            (optional) accumulated /_next/static across releases
+#       active-port             records which port Caddy currently serves
 #
-# Usage:  ./deploy.sh          (config via env vars below)
-
+# Usage:  ./deploy.sh
 set -euo pipefail
 
 # ---- config (override via env) --------------------------------------------
-APP_ROOT="${APP_ROOT:-/opt/zone-map-ui}"
+APP_ROOT="${APP_ROOT:-/home/solo/getreplay-front}"
 BRANCH="${BRANCH:-main}"
-SERVICE="${SERVICE:-nextjs.service}"
-# Caddy proxies the site to [::1]:3000, so health-check the same IPv6 backend.
-HEALTH_URL="${HEALTH_URL:-http://[::1]:3000/}"
-KEEP="${KEEP:-5}"                                     # releases to retain
+NODE_BIN="${NODE_BIN:-/opt/node-20/bin}"                 # dir with node/npm 20
+CADDY_SNIPPET="${CADDY_SNIPPET:-/etc/caddy/frontend-upstream.caddy}"
+KEEP="${KEEP:-5}"                                        # release dirs to retain
+STATIC_POOL="${STATIC_POOL:-0}"                          # 1 = maintain the Caddy static pool
+STATIC_POOL_KEEP_DAYS="${STATIC_POOL_KEEP_DAYS:-30}"
 # ---------------------------------------------------------------------------
 
+export PATH="$NODE_BIN:$PATH"
 REPO="$APP_ROOT/repo"
 RELEASES="$APP_ROOT/releases"
-CURRENT="$APP_ROOT/current"
-SHARED_ENV="$APP_ROOT/shared/.env.production"
+SHARED="$APP_ROOT/shared"
+STATE="$SHARED/active-port"
+POOL="$SHARED/static-pool"
 TS="$(date +%Y-%m-%d_%H%M%S)"
 REL="$RELEASES/$TS"
 
 log() { printf '\033[1;34m[deploy %s]\033[0m %s\n' "$(date +%H:%M:%S)" "$*"; }
+die() { printf '\033[1;31m[deploy]\033[0m %s\n' "$*" >&2; exit 1; }
 
-# Remember the live target so we can roll back to it.
-PREV="$(readlink -f "$CURRENT" 2>/dev/null || true)"
+# ---- pick the idle color/port ---------------------------------------------
+active_port="$(cat "$STATE" 2>/dev/null || echo 3000)"
+if [ "$active_port" = "3000" ]; then
+  idle_color="green"; idle_port="3001"; idle_unit="nextjs-green.service"
+else
+  idle_color="blue";  idle_port="3000"; idle_unit="nextjs-blue.service"
+fi
+log "active=:$active_port → deploying to idle $idle_color (:$idle_port)"
 
-# If we fail BEFORE the swap, drop the half-built release; the live site is
-# still the old one and was never touched.
-cleanup_failed() {
-  if [ -d "$REL" ] && [ "$(readlink -f "$CURRENT" 2>/dev/null || true)" != "$REL" ]; then
-    rm -rf "$REL"
-    log "removed half-built release $TS (live site untouched)"
-  fi
-}
-trap cleanup_failed ERR
+# ---- phase 1: fetch + build (a failure here NEVER touches live traffic) ----
+# While building, remove the half-built release on any error; nothing else changed yet.
+trap 'rc=$?; [ -d "$REL" ] && rm -rf "$REL"; log "build failed — live site untouched"; exit $rc' ERR
 
 log "fetch origin/$BRANCH"
 git -C "$REPO" fetch --prune origin
 git -C "$REPO" reset --hard "origin/$BRANCH"
 
 log "stage release $TS"
-mkdir -p "$REL"
+mkdir -p "$REL" "$SHARED/next-cache"
 cp -a "$REPO/." "$REL/"
-# NEXT_PUBLIC_* are inlined at build time, so the env must exist BEFORE build.
-ln -sfn "$SHARED_ENV" "$REL/.env.production"
+rm -rf "$REL/.git" "$REL/node_modules"
+ln -sfn "$SHARED/.env.production" "$REL/.env.production"
+# Share .next/cache (webpack cache + on-disk image cache) across releases so per-release
+# .next stays small and images aren't re-optimized every deploy.
+mkdir -p "$REL/.next"
+ln -sfn "$SHARED/next-cache" "$REL/.next/cache"
 
-log "npm ci + build (live site still on old release)"
+log "npm ci + build with Node $("$NODE_BIN/node" -v)"
 cd "$REL"
 npm ci
 npm run build
 
-log "swap current -> $TS (atomic)"
-ln -sfn "$REL" "$CURRENT"
+trap - ERR   # build succeeded — from here we manage rollback explicitly
 
-log "restart $SERVICE"
-sudo systemctl restart "$SERVICE"
+# ---- phase 2: bring up the idle color on the new release -------------------
+prev_idle="$(readlink -f "$APP_ROOT/$idle_color" 2>/dev/null || true)"
+ln -sfn "$REL" "$APP_ROOT/$idle_color"
 
-# ---- health check with auto-rollback --------------------------------------
-log "health check $HEALTH_URL"
-ok=0
-code=""
+if [ "$STATIC_POOL" = "1" ]; then
+  log "populate static pool"
+  mkdir -p "$POOL"
+  cp -a "$REL/.next/static/." "$POOL/" 2>/dev/null || true
+fi
+
+log "restart $idle_unit"
+sudo systemctl restart "$idle_unit"
+
+# ---- health-check the idle port directly -----------------------------------
+log "health check http://[::1]:$idle_port/"
+ok=0; code=""
 for _ in $(seq 1 15); do
-  code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 3 "$HEALTH_URL" || true)"
-  case "$code" in
-    200|301|302|307|308) ok=1; break ;;
-  esac
+  code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 3 "http://[::1]:$idle_port/" || true)"
+  case "$code" in 200|301|302|307|308) ok=1; break ;; esac
   sleep 1
 done
 
 if [ "$ok" != "1" ]; then
-  log "HEALTH CHECK FAILED (last code: ${code:-none}) — rolling back"
-  if [ -n "$PREV" ] && [ -d "$PREV" ]; then
-    ln -sfn "$PREV" "$CURRENT"
-    sudo systemctl restart "$SERVICE"
-    log "rolled back to $(basename "$PREV")"
-  else
-    log "no previous release to roll back to — leaving as-is for inspection"
+  log "HEALTH CHECK FAILED (last code: ${code:-none}) — Caddy still on :$active_port, reverting idle"
+  if [ -n "$prev_idle" ] && [ -d "$prev_idle" ]; then
+    ln -sfn "$prev_idle" "$APP_ROOT/$idle_color"
+    sudo systemctl restart "$idle_unit" || true
   fi
-  exit 1
+  rm -rf "$REL"
+  die "deploy aborted; live site unaffected"
 fi
-log "healthy — live on $TS"
+log "idle $idle_color healthy on :$idle_port"
 
-# ---- prune old releases (keep newest $KEEP, never the live one) ------------
-live="$(readlink -f "$CURRENT")"
+# ---- phase 3: flip Caddy to the idle port (graceful) -----------------------
+log "point Caddy at :$idle_port"
+tmp="$(mktemp)"
+cat > "$tmp" <<EOF
+# Auto-generated by deploy.sh at $TS. Active frontend upstream.
+reverse_proxy [::1]:$idle_port {
+    header_up X-Forwarded-Host {host}
+}
+EOF
+sudo cp "$tmp" "$CADDY_SNIPPET"; rm -f "$tmp"
+sudo caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile \
+  || die "caddy validate failed — NOT reloading; new build is live on :$idle_port but Caddy still on :$active_port"
+sudo systemctl reload caddy
+echo "$idle_port" > "$STATE"
+log "traffic now on $idle_color (:$idle_port); old :$active_port still running (serves prior assets)"
+
+# ---- prune ----------------------------------------------------------------
+# Keep newest $KEEP release dirs; never delete one a color symlink points at.
+blue_t="$(readlink -f "$APP_ROOT/blue" 2>/dev/null || true)"
+green_t="$(readlink -f "$APP_ROOT/green" 2>/dev/null || true)"
 ls -dt "$RELEASES"/*/ 2>/dev/null | tail -n +"$((KEEP + 1))" | while read -r old; do
-  [ "$(readlink -f "$old")" = "$live" ] && continue
+  oldr="$(readlink -f "$old")"
+  [ "$oldr" = "$blue_t" ] && continue
+  [ "$oldr" = "$green_t" ] && continue
   rm -rf "$old"
 done
+if [ "$STATIC_POOL" = "1" ] && [ -d "$POOL" ]; then
+  find "$POOL" -type f -mtime +"$STATIC_POOL_KEEP_DAYS" -delete 2>/dev/null || true
+  find "$POOL" -type d -empty -delete 2>/dev/null || true
+fi
 
-log "done"
+log "done — live on $idle_color (:$idle_port)"

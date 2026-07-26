@@ -1,0 +1,8 @@
+# Active frontend upstream for the blue-green pair.
+# deploy.sh rewrites this file (blue=3000 / green=3001) and runs `systemctl reload caddy`
+# (graceful — Caddy drains in-flight requests), so the switch drops zero connections.
+#
+# Deployed to: /etc/caddy/frontend-upstream.caddy  (imported by the getreplay.gg block)
+reverse_proxy [::1]:3000 {
+    header_up X-Forwarded-Host {host}
+}

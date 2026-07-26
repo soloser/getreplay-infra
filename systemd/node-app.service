@@ -1,0 +1,19 @@
+[Unit]
+Description=Node.js Backend Service
+After=network.target
+
+[Service]
+Type=simple
+User=solo
+WorkingDirectory=/home/solo/getreplay-node
+EnvironmentFile=/home/solo/getreplay-node/.env
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+RestartSec=30s
+StartLimitInterval=600
+StartLimitBurst=3
+StandardOutput=append:/var/log/node-app.log
+StandardError=append:/var/log/node-app-error.log
+
+[Install]
+WantedBy=multi-user.target

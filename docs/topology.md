@@ -9,7 +9,7 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 |---|---|---|
 | `getreplay.gg` `/srv/*` | Go backend `localhost:3006` | |
 | `getreplay.gg` `/api/*` | PHP-FPM (Laravel) `unix//run/php/php8.4-fpm.sock`, root `/var/www/fun-php/repo/src/public` | `/api` prefix stripped (`handle_path`) |
-| `getreplay.gg` (everything else) | **Next.js frontend** `[::1]:3000` | `nextjs.service`; IPv6 localhost |
+| `getreplay.gg` (everything else) | **Next.js frontend** `[::1]:3000` or `:3001` | blue-green; active port in imported snippet, IPv6 localhost only |
 | `www.getreplay.gg` | — | 308 redirect → `getreplay.gg` |
 | `app.getreplay.gg` | PHP-FPM (Laravel/Orchid admin), same root | `X-Frame-Options: SAMEORIGIN` |
 | `storage.getreplay.gg` | static file_server | replays + Laravel public storage, CORS `*` |
@@ -24,7 +24,7 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 
 | Service | Port / socket | Runtime | Unit |
 |---|---|---|---|
-| Frontend (zone-map-ui) | TCP `[::1]:3000` | **Node 20** | `nextjs.service` → [`../systemd/nextjs.service`](../systemd/nextjs.service) |
+| Frontend (zone-map-ui) | TCP `[::1]:3000` (blue) / `[::1]:3001` (green) | **Node 20** (`/opt/node-20`) | `nextjs-blue.service` / `nextjs-green.service` |
 | Go backend | TCP `localhost:3006` | Go | (add unit here when captured) |
 | PHP API + admin | `unix//run/php/php8.4-fpm.sock` | PHP 8.4-FPM | php8.4-fpm.service |
 | Caddy | 80/443 | — | caddy.service |
@@ -38,7 +38,7 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 
 | What | Path |
 |---|---|
-| Frontend release root (target) | `/opt/zone-map-ui/{repo,releases,current,shared}` |
+| Frontend release root | `/home/solo/getreplay-front/{repo,releases,blue,green,shared}` |
 | PHP / Laravel | `/var/www/fun-php/repo/src/...` |
 | Replay storage | `/var/www/getreplay-storage/` (`replays/` + `*.replay2`) |
 | Laravel public storage | `/var/www/fun-php/repo/src/storage/app/public` |

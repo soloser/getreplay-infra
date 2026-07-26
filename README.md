@@ -12,9 +12,11 @@ and gitignored by the parent.
 
 ```
 infra/
-  caddy/Caddyfile        # prod Caddy config (TLS, routing) — source of truth
-  systemd/               # service units (nextjs.service, …)
-  frontend/              # zone-map-ui deploy: deploy.sh + DEPLOY.md runbook
+  caddy/
+    Caddyfile             # prod Caddy config (TLS, routing) — source of truth
+    frontend-upstream.caddy  # active blue/green upstream (swapped by deploy.sh)
+  systemd/                # service units (nextjs-blue/green, old nextjs.service ref)
+  frontend/              # zone-map-ui blue-green deploy: deploy.sh + DEPLOY.md runbook
   docs/topology.md       # domains, services, ports, filesystem paths
 ```
 
@@ -36,7 +38,25 @@ infra/
 
 ## Roadmap
 
-- [ ] Capture Go backend + php-fpm systemd units here too.
-- [ ] Blue-green frontend (two ports + Caddy reload) for true zero-downtime.
+- [x] Blue-green frontend (blue :3000 / green :3001 + Caddy graceful reload).
+- [ ] Capture the rest of prod config: Go backend unit, php-fpm pool + php.ini,
+      Laravel queue/scheduler units (or supervisor), relevant crons. See "what to copy" below.
 - [ ] CI: build artifact + remote deploy (see the CI section in `frontend/DEPLOY.md`).
 - [ ] Consider `output: 'standalone'` for the frontend to drop `npm ci` on prod.
+
+## What to copy from prod into this repo
+
+Config that lives outside the app repos and should be versioned here (⚠️ **never** commit
+secrets — `.env`, TLS keys, DB passwords):
+
+- **systemd** — every custom unit/timer in `/etc/systemd/system/*.{service,timer}`
+  (frontend done; still need: Go backend, Laravel queue/scheduler, any cron-timers,
+  demo-uploader, highlight-extractor). Enumerate: `systemctl list-unit-files --state=enabled`.
+- **PHP** — `/etc/php/8.4/fpm/php.ini`, `/etc/php/8.4/fpm/pool.d/*.conf` (defines the
+  `/run/php/php8.4-fpm.sock` socket, user, pm settings), custom drop-ins in
+  `/etc/php/8.4/fpm/conf.d/`, and `/etc/php/8.4/cli/php.ini` if artisan relies on it.
+- **Queue workers** — if via supervisor: `/etc/supervisor/conf.d/*.conf`.
+- **Cron** — `crontab -l` per relevant user + `/etc/cron.d/*` (e.g. Laravel `schedule:run`).
+- **Caddy** — `caddy/Caddyfile` (done) + `frontend-upstream.caddy`.
+
+Suggested layout as you add them: `systemd/`, `php/{fpm,cli}/`, `cron/`, `supervisor/`.

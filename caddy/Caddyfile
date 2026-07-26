@@ -31,12 +31,25 @@ getreplay.gg {
         file_server
     }
 
-    # --- SPA frontend (zone-map-ui, Next.js on :3000 over IPv6) ---
+    # --- Static assets from a multi-release pool (OPTIONAL — see frontend/DEPLOY.md).
+    #     Next chunk filenames are content-hashed, so several releases' assets coexist
+    #     with no collisions. Serving them from Caddy keeps OLD chunks reachable across
+    #     deploys → Microsoft Clarity replays recorded before a deploy don't lose styles.
+    #     Enable ONLY after deploy.sh has populated the pool (run it once with STATIC_POOL=1),
+    #     otherwise every /_next/static request 404s. Prunes by age in deploy.sh.
+    # handle_path /_next/static/* {
+    #     root * /home/solo/getreplay-front/shared/static-pool
+    #     encode zstd gzip
+    #     header Cache-Control "public, max-age=31536000, immutable"
+    #     file_server
+    # }
+
+    # --- SPA frontend (zone-map-ui, Next.js over IPv6, blue :3000 / green :3001) ---
+    #     The active blue/green port lives in the imported snippet, which deploy.sh
+    #     rewrites then `systemctl reload caddy` (graceful) to flip traffic.
     handle {
         encode zstd gzip
-        reverse_proxy [::1]:3000 {
-            header_up X-Forwarded-Host {host}
-        }
+        import /etc/caddy/frontend-upstream.caddy
     }
 
     # --- Security headers ---

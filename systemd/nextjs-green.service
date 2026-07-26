@@ -1,0 +1,41 @@
+# Next.js frontend — GREEN (port 3001). One half of the blue-green pair.
+# Install: sudo cp systemd/nextjs-green.service /etc/systemd/system/ && sudo systemctl daemon-reload
+# See frontend/DEPLOY.md for the one-time migration from the old single-service setup.
+
+[Unit]
+Description=Next.js App (green, :3001)
+After=network.target
+
+[Service]
+Type=simple
+User=solo
+# Points at the green release via symlink; deploy.sh repoints it atomically.
+WorkingDirectory=/home/solo/getreplay-front/green
+
+# Node 20 (isolated at /opt/node-20 — NOT system node 18, which can't run sharp 0.35).
+# Listen only on IPv6 localhost (Caddy proxies to [::1]:3001); do not expose publicly.
+ExecStart=/opt/node-20/bin/npm run start -- -p 3001 -H ::1
+
+Environment=NODE_ENV=production
+Environment=NEXT_PRIVATE_ORIGIN=http://[::1]:3001
+
+# Логи в /var/log
+StandardOutput=append:/var/log/nextjs-green.log
+StandardError=append:/var/log/nextjs-green.log
+
+# Автоперезапуск
+Restart=always
+RestartSec=3
+
+# Безопасные ограничения
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=false
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

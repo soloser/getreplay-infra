@@ -1,0 +1,16 @@
+[Unit]
+Description=Go Application Service
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/getreplay-go/
+ExecStart=/var/www/getreplay-go/demo-uploader.sh
+Restart=always
+RestartSec=5
+StandardOutput=append:/var/log/demo-uploader.log
+StandardError=append:/var/log/demo-uploader-error.log
+
+[Install]
+WantedBy=multi-user.target
