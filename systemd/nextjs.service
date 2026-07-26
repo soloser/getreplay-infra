@@ -1,0 +1,42 @@
+# systemd unit for zone-map-ui (Next.js production server).
+# Install:  sudo cp systemd/nextjs.service /etc/systemd/system/nextjs.service
+#           (edit the paths/user below first), then:
+#           sudo systemctl daemon-reload && sudo systemctl enable --now nextjs.service
+#
+# The critical change vs. a flat-directory setup: WorkingDirectory points at the
+# `current` symlink, which the deploy script flips atomically. On `restart`,
+# systemd re-resolves the symlink and boots the new release.
+#
+# Caddy proxies the main site to [::1]:3000, so Next must listen on IPv6 localhost.
+# `next start -H ::` binds all interfaces incl. ::1; keep PORT=3000 in sync with Caddy.
+
+[Unit]
+Description=zone-map-ui (Next.js)
+After=network.target
+
+[Service]
+Type=simple
+User=deploy
+Group=deploy
+
+WorkingDirectory=/opt/zone-map-ui/current
+
+# Node 20 kept OFF the system PATH so it does not affect other node tooling on
+# this box. Point these at your isolated Node 20 install (see frontend/DEPLOY.md).
+Environment=PATH=/opt/node-20/bin:/usr/local/bin:/usr/bin:/bin
+Environment=NODE_ENV=production
+Environment=PORT=3000
+EnvironmentFile=-/opt/zone-map-ui/shared/.env.production
+
+# `-H ::` so the listener is reachable at [::1]:3000 (what Caddy proxies to).
+ExecStart=/opt/node-20/bin/npx next start -H :: -p 3000
+
+# Graceful shutdown so in-flight requests can finish during restart.
+KillSignal=SIGINT
+TimeoutStopSec=20
+
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

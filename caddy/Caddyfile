@@ -1,0 +1,130 @@
+# getreplay.gg — production Caddyfile (source of truth).
+#
+# Captured from prod 2026-07-26. Keep this file in sync with the server; deploy with:
+#   sudo cp caddy/Caddyfile /etc/caddy/Caddyfile
+#   sudo caddy validate --config /etc/caddy/Caddyfile
+#   sudo systemctl reload caddy      # graceful, drains in-flight connections
+#
+# Topology overview: see ../docs/topology.md
+
+# Redirect www -> naked domain
+www.getreplay.gg {
+    redir https://getreplay.gg{uri} 308
+}
+
+# Main site
+getreplay.gg {
+    tls blackangelnk@gmail.com
+
+    @replay_embed path /admin/replay-embed /admin/replay-embed/*
+    @not_replay_embed not path /admin/replay-embed /admin/replay-embed/*
+
+    # --- Go backend ---
+    handle /srv/* {
+        reverse_proxy localhost:3006
+    }
+
+    # --- PHP / Laravel API ---
+    handle_path /api/* {
+        root * /var/www/fun-php/repo/src/public
+        php_fastcgi unix//run/php/php8.4-fpm.sock
+        file_server
+    }
+
+    # --- SPA frontend (zone-map-ui, Next.js on :3000 over IPv6) ---
+    handle {
+        encode zstd gzip
+        reverse_proxy [::1]:3000 {
+            header_up X-Forwarded-Host {host}
+        }
+    }
+
+    # --- Security headers ---
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "no-referrer-when-downgrade"
+        # Content-Security-Policy "default-src 'self' 'unsafe-inline' data:; img-src 'self' data: https:; connect-src 'self' https: ws:;"
+    }
+
+    header @not_replay_embed {
+        X-Frame-Options "DENY"
+    }
+
+    # Replay embed pages are meant to be iframed by app.getreplay.gg
+    header @replay_embed {
+        -X-Frame-Options
+        Content-Security-Policy "frame-ancestors https://app.getreplay.gg"
+    }
+}
+
+# Laravel / Orchid admin
+app.getreplay.gg {
+    tls blackangelnk@gmail.com
+    encode zstd gzip
+
+    root * /var/www/fun-php/repo/src/public
+    php_fastcgi unix//run/php/php8.4-fpm.sock
+    file_server
+
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "no-referrer-when-downgrade"
+        # Для админки часто лучше не DENY, если Orchid где-то использует iframe/встраивание — но обычно можно оставить
+        X-Frame-Options "SAMEORIGIN"
+    }
+}
+
+# Storage subdomain (replays + Laravel public storage)
+storage.getreplay.gg {
+    encode zstd gzip
+    tls blackangelnk@gmail.com
+
+    @cors_preflight method OPTIONS
+    handle @cors_preflight {
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+        header Access-Control-Allow-Headers "Range, Content-Type"
+        header Access-Control-Expose-Headers "Accept-Ranges, Content-Range, Content-Length, Content-Type"
+        respond "" 204
+    }
+
+    # Uncompressed .replay2 blobs
+    @replay2 path /replays/*.replay2
+    handle @replay2 {
+        root * /var/www/getreplay-storage
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+        header Access-Control-Allow-Headers "Range, Content-Type"
+        header Access-Control-Expose-Headers "Accept-Ranges, Content-Range, Content-Length, Content-Type"
+        header Content-Type application/octet-stream
+        header -Content-Encoding
+        file_server
+    }
+
+    # gzip-encoded replays
+    handle_path /replays/* {
+        root * /var/www/getreplay-storage/replays
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+        header Access-Control-Allow-Headers "Range, Content-Type"
+        header Access-Control-Expose-Headers "Accept-Ranges, Content-Range, Content-Length, Content-Type"
+        header Content-Encoding gzip
+        header Content-Type application/octet-stream
+        file_server
+    }
+
+    # Laravel public storage (images, etc.)
+    handle {
+        root * /var/www/fun-php/repo/src/storage/app/public
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+        header Access-Control-Allow-Headers "Range, Content-Type"
+        header Access-Control-Expose-Headers "Accept-Ranges, Content-Range, Content-Length, Content-Type"
+        header Cache-Control "public, max-age=31536000, immutable"
+        header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        header X-Content-Type-Options "nosniff"
+        file_server
+    }
+}
