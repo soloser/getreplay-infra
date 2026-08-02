@@ -68,7 +68,7 @@ trap on_exit EXIT
 [ -f "$APP_ROOT/.env" ] || fail "Laravel environment file not found: $APP_ROOT/.env"
 [ -x "$PHP_BIN" ] || fail "PHP binary is not executable: $PHP_BIN"
 id "$APP_USER" >/dev/null 2>&1 || fail "Laravel runtime user does not exist: $APP_USER"
-command -v "$COMPOSER_BIN" >/dev/null 2>&1 || fail "Composer not found: $COMPOSER_BIN"
+COMPOSER_PATH="$(command -v "$COMPOSER_BIN")" || fail "Composer not found: $COMPOSER_BIN"
 command -v "$REDIS_CLI" >/dev/null 2>&1 || fail "redis-cli not found: $REDIS_CLI"
 command -v flock >/dev/null 2>&1 || fail "flock is required (package util-linux)"
 command -v systemctl >/dev/null 2>&1 || fail "systemctl is required"
@@ -80,6 +80,15 @@ if [ -n "$(git -C "$REPO_ROOT" status --porcelain --untracked-files=no)" ]; then
 fi
 
 sudo -v
+
+for writable_dir in \
+  "$APP_ROOT/storage/framework" \
+  "$APP_ROOT/storage/logs" \
+  "$APP_ROOT/bootstrap/cache"; do
+  [ -d "$writable_dir" ] || fail "Laravel writable directory is missing: $writable_dir"
+  sudo -u "$APP_USER" -- test -w "$writable_dir" || \
+    fail "Laravel runtime user $APP_USER cannot write to: $writable_dir"
+done
 
 if ! "$PHP_BIN" -m | awk '{ print tolower($0) }' | grep -qx redis; then
   fail "phpredis is not loaded. Install php8.4-redis and restart php8.4-fpm"
@@ -98,9 +107,14 @@ git -C "$REPO_ROOT" fetch --prune origin
 git -C "$REPO_ROOT" merge-base --is-ancestor HEAD "origin/$BRANCH" || \
   fail "PHP checkout contains commits not present in origin/$BRANCH"
 
-log "Enabling Laravel maintenance mode"
-run_artisan down --retry=60
-maintenance_enabled=1
+if [ -f "$APP_ROOT/storage/framework/down" ]; then
+  log "Laravel maintenance mode is already enabled"
+  maintenance_enabled=1
+else
+  log "Enabling Laravel maintenance mode"
+  run_artisan down --retry=60
+  maintenance_enabled=1
+fi
 
 log "Fast-forwarding $REPO_ROOT to origin/$BRANCH"
 git -C "$REPO_ROOT" merge --ff-only "origin/$BRANCH"
@@ -108,10 +122,19 @@ git -C "$REPO_ROOT" merge --ff-only "origin/$BRANCH"
 log "Installing production Composer dependencies"
 (
   cd "$APP_ROOT"
-  COMPOSER_ALLOW_SUPERUSER=1 "$COMPOSER_BIN" install \
+  COMPOSER_ALLOW_SUPERUSER=1 "$COMPOSER_PATH" install \
     --no-dev \
+    --no-scripts \
     --prefer-dist \
     --optimize-autoloader \
+    --no-interaction
+)
+
+log "Refreshing Laravel package discovery cache"
+(
+  cd "$APP_ROOT"
+  sudo -u "$APP_USER" -- "$COMPOSER_PATH" run-script post-autoload-dump \
+    --no-dev \
     --no-interaction
 )
 

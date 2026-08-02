@@ -83,13 +83,15 @@ git -C /home/solo/infra pull --ff-only
 The script:
 
 1. verifies PHP, Composer, `flock`, the `redis` PHP extension, the local Redis
-   connection, and PHP-FPM;
+   connection, PHP-FPM, and Laravel runtime-directory permissions;
 2. fetches the target branch and ensures the host cron daemon is enabled before
    maintenance mode;
-3. enables maintenance mode, then fast-forwards the PHP checkout to
-   `origin/main` (and stops on local tracked changes or a divergent branch
-   instead of overwriting them);
-4. runs production `composer install` and rebuilds Laravel's config cache;
+3. enables maintenance mode (or reuses it after an interrupted deployment),
+   then fast-forwards the PHP checkout to `origin/main` (and stops on local
+   tracked changes or a divergent branch instead of overwriting them);
+4. installs production Composer dependencies without running application hooks
+   as the deployment user, then runs Laravel package discovery and rebuilds the
+   configuration cache as `www-data`;
 5. installs changed cron wrappers and `/etc/cron.d` definitions;
 6. gracefully reloads `php8.4-fpm` and disables maintenance mode.
 
