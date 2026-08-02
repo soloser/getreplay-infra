@@ -6,6 +6,7 @@ REPO_ROOT="${REPO_ROOT:-/var/www/fun-php/repo}"
 APP_ROOT="${APP_ROOT:-${REPO_ROOT}/src}"
 BRANCH="${BRANCH:-main}"
 PHP_BIN="${PHP_BIN:-/usr/bin/php}"
+APP_USER="${APP_USER:-www-data}"
 COMPOSER_BIN="${COMPOSER_BIN:-composer}"
 REDIS_CLI="${REDIS_CLI:-redis-cli}"
 REDIS_DEPLOY_HOST="${REDIS_DEPLOY_HOST:-127.0.0.1}"
@@ -30,7 +31,7 @@ fail() {
 run_artisan() {
   (
     cd "$APP_ROOT"
-    "$PHP_BIN" artisan "$@"
+    sudo -u "$APP_USER" -- "$PHP_BIN" artisan "$@"
   )
 }
 
@@ -55,8 +56,8 @@ on_exit() {
   local status=$?
 
   if [ "$status" -ne 0 ] && [ "$maintenance_enabled" -eq 1 ]; then
-    printf '[php-deploy] Deployment failed; Laravel remains in maintenance mode. Fix the error and run: cd %s && %s artisan up\n' \
-      "$APP_ROOT" "$PHP_BIN" >&2
+    printf '[php-deploy] Deployment failed; Laravel remains in maintenance mode. Fix the error and run: cd %s && sudo -u %s -- %s artisan up\n' \
+      "$APP_ROOT" "$APP_USER" "$PHP_BIN" >&2
   fi
 }
 
@@ -66,6 +67,7 @@ trap on_exit EXIT
 [ -f "$APP_ROOT/artisan" ] || fail "Laravel artisan not found: $APP_ROOT/artisan"
 [ -f "$APP_ROOT/.env" ] || fail "Laravel environment file not found: $APP_ROOT/.env"
 [ -x "$PHP_BIN" ] || fail "PHP binary is not executable: $PHP_BIN"
+id "$APP_USER" >/dev/null 2>&1 || fail "Laravel runtime user does not exist: $APP_USER"
 command -v "$COMPOSER_BIN" >/dev/null 2>&1 || fail "Composer not found: $COMPOSER_BIN"
 command -v "$REDIS_CLI" >/dev/null 2>&1 || fail "redis-cli not found: $REDIS_CLI"
 command -v flock >/dev/null 2>&1 || fail "flock is required (package util-linux)"

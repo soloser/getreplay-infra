@@ -68,7 +68,8 @@ HIGHLIGHT_FEED_CANDIDATES_PER_TYPE=5000
 
 The deployment user must be able to update `/var/www/fun-php/repo`; Laravel's
 `storage` and `bootstrap/cache` must remain writable by the PHP/cron user
-`www-data`. Composer must be installed and available in `PATH`.
+`www-data`. The deployment script runs Artisan as that user. Composer must be
+installed and available in `PATH`.
 
 ## Deploy
 
@@ -96,6 +97,7 @@ Defaults can be overridden when the production layout differs:
 
 ```bash
 REPO_ROOT=/srv/getreplay/php \
+APP_USER=www-data \
 PHP_FPM_SERVICE=php8.4-fpm.service \
 /home/solo/infra/php/deploy.sh
 ```
@@ -110,7 +112,7 @@ or explicitly recover with:
 
 ```bash
 cd /var/www/fun-php/repo/src
-php artisan up
+sudo -u www-data -- php artisan up
 ```
 
 ## Scheduled highlight feed
