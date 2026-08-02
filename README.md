@@ -17,7 +17,7 @@ infra/
   frontend/              # zone-map-ui deploy: deploy.sh (one command) + DEPLOY.md
   go/                    # Go deploy: deploy.sh <app> (builds on server) + launchers +
                          #   shared getreplay-go.env + highlight-extractor cron + README
-  php/                   # captured php-fpm / cli configs
+  php/                   # native Laravel deploy + cron jobs + captured PHP config
   docs/topology.md       # domains, services, ports, filesystem paths
 ```
 
@@ -25,6 +25,7 @@ infra/
 
 - **What runs where:** [`docs/topology.md`](docs/topology.md)
 - **Deploy the frontend:** [`frontend/DEPLOY.md`](frontend/DEPLOY.md)
+- **Deploy PHP and the highlight feed:** [`php/README.md`](php/README.md)
 - **Caddy config:** [`caddy/Caddyfile`](caddy/Caddyfile) — after edits:
   `sudo cp caddy/Caddyfile /etc/caddy/Caddyfile && sudo caddy validate --config /etc/caddy/Caddyfile && sudo systemctl reload caddy`
 
@@ -42,7 +43,8 @@ infra/
 - [x] Frontend one-command deploy (`frontend/deploy.sh`, single service, auto Node 20).
 - [x] Go services one-command deploy (`go/deploy.sh <app>`, builds on server) +
       highlight-extractor cron + shared `getreplay-go.env`.
-- [ ] Capture the rest of prod config: Laravel queue/scheduler units (or supervisor) + crons.
+- [x] PHP one-command deploy (`php/deploy.sh`) + daily highlight-feed cron.
+- [ ] Capture Laravel queue/scheduler units (or supervisor) and remaining crons.
 - [ ] Zero-downtime frontend (blue-green: two ports + graceful `caddy reload`) — deferred.
 - [ ] CI: build artifact + remote deploy.
 - [ ] Consider `output: 'standalone'` for the frontend to drop `npm ci` on prod.
@@ -54,9 +56,11 @@ secrets — `.env`, TLS keys, DB passwords):
 
 - **systemd** — done: nextjs, go-app, demo-uploader, node-app. Enumerate more with
   `systemctl list-unit-files --state=enabled`.
-- **PHP** — done (`php/`): fpm `php.ini`, `pool.d/*.conf`, `conf.d/*`, cli `php.ini`.
+- **PHP** — done (`php/`): deploy script, highlight-feed cron, fpm `php.ini`,
+  `pool.d/*.conf`, `conf.d/*`, cli `php.ini`.
 - **Go** — done (`go/`): `deploy.sh`, launchers, shared env template, highlight-extractor cron.
 - **Queue workers** — if via supervisor: `/etc/supervisor/conf.d/*.conf` (still to capture).
-- **Cron** — highlight-extractor done (`go/cron/`). Still check `crontab -l` per user +
+- **Cron** — highlight extractor (`go/cron/`) and highlight feed (`php/cron/`) done.
+  Still check `crontab -l` per user +
   `/etc/cron.d/*` for anything else (e.g. Laravel `schedule:run`).
 - **Caddy** — `caddy/Caddyfile` (done).

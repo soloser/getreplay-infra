@@ -1,0 +1,6 @@
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+MAILTO=""
+
+# Extract fresh highlights first, then atomically publish a new Redis feed version.
+40 3 * * * www-data /var/www/fun-php/bin/highlight-feed-cron.sh >> /var/log/highlight-feed.log 2>&1
