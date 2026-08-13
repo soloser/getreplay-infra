@@ -4,11 +4,13 @@
 #   ./deploy.sh match-updater
 #   ./deploy.sh demo-uploader
 #   ./deploy.sh highlight-extractor
+#   ./deploy.sh replay-converter
 #
 # Replaces the old flow (local `GOOS=linux GOARCH=amd64 go build` + scp + systemctl
 # restart). Builds from the git checkout at $SRC, drops the binary in $BIN_DIR, keeps
-# the launcher .sh in sync, then restarts the service — or, for highlight-extractor
-# (a cron runner, no service), installs its cron wrapper + /etc/cron.d entry.
+# the launcher .sh in sync, then restarts the service — or, for the runners that have
+# no service, installs their wrappers (highlight-extractor also gets a /etc/cron.d
+# entry; replay-converter is run by hand).
 set -euo pipefail
 
 APP="${1:-}"
@@ -29,7 +31,8 @@ case "$APP" in
   match-updater)       SERVICE="go-app.service";        LAUNCHER="start.sh" ;;
   demo-uploader)       SERVICE="demo-uploader.service"; LAUNCHER="demo-uploader.sh" ;;
   highlight-extractor) SERVICE="";                      LAUNCHER="" ;;
-  *) die "usage: $0 <match-updater|demo-uploader|highlight-extractor>" ;;
+  replay-converter)    SERVICE="";                      LAUNCHER="" ;;
+  *) die "usage: $0 <match-updater|demo-uploader|highlight-extractor|replay-converter>" ;;
 esac
 
 command -v "$GO_BIN" >/dev/null 2>&1 || die "Go not found ($GO_BIN) — install Go >= 1.24 (see README.md)"
@@ -50,17 +53,30 @@ mv -f "$tmp" "$BIN_DIR/$APP"          # atomic swap; safe on Linux even while th
 trap - EXIT
 log "installed $BIN_DIR/$APP"
 
-if [ -n "$SERVICE" ]; then
-  install -m 0755 "$INFRA_GO/$LAUNCHER" "$BIN_DIR/$LAUNCHER"   # keep the launcher in sync
-  log "restart $SERVICE"
-  sudo systemctl restart "$SERVICE"
-  log "done — $APP live ($SERVICE)"
-else
-  # highlight-extractor: cron runner. Install its wrapper + /etc/cron.d entry (idempotent).
-  install -m 0755 "$INFRA_GO/highlight-extractor-cron.sh" "$BIN_DIR/highlight-extractor-cron.sh"
-  sudo install -m 0644 "$INFRA_GO/cron/getreplay-highlight-extractor" /etc/cron.d/getreplay-highlight-extractor
-  sudo touch "$LOG_DIR/highlight-extractor.log"
-  sudo chown www-data:www-data "$LOG_DIR/highlight-extractor.log" 2>/dev/null || true
-  log "done — highlight-extractor built; cron installed (hourly at :20)"
-  log "one-off backfill: sudo -u www-data env LOOKBACK_DAYS=3650 $BIN_DIR/highlight-extractor-cron.sh"
-fi
+case "$APP" in
+  match-updater|demo-uploader)
+    install -m 0755 "$INFRA_GO/$LAUNCHER" "$BIN_DIR/$LAUNCHER"   # keep the launcher in sync
+    log "restart $SERVICE"
+    sudo systemctl restart "$SERVICE"
+    log "done — $APP live ($SERVICE)"
+    ;;
+
+  highlight-extractor)
+    # cron runner. Install its wrapper + /etc/cron.d entry (idempotent).
+    install -m 0755 "$INFRA_GO/highlight-extractor-cron.sh" "$BIN_DIR/highlight-extractor-cron.sh"
+    sudo install -m 0644 "$INFRA_GO/cron/getreplay-highlight-extractor" /etc/cron.d/getreplay-highlight-extractor
+    sudo touch "$LOG_DIR/highlight-extractor.log"
+    sudo chown www-data:www-data "$LOG_DIR/highlight-extractor.log" 2>/dev/null || true
+    log "done — highlight-extractor built; cron installed (hourly at :20)"
+    log "one-off backfill: sudo -u www-data env LOOKBACK_DAYS=3650 $BIN_DIR/highlight-extractor-cron.sh"
+    ;;
+
+  replay-converter)
+    # Разовый runner, запускается руками: ни сервиса, ни крона. Ставим обе обёртки.
+    install -m 0755 "$INFRA_GO/replay-converter-match.sh" "$BIN_DIR/replay-converter-match.sh"
+    install -m 0755 "$INFRA_GO/replay-converter-range.sh" "$BIN_DIR/replay-converter-range.sh"
+    log "done — replay-converter built; обёртки в $BIN_DIR"
+    log "один матч:  sudo -u www-data env DRY_RUN=false $BIN_DIR/replay-converter-match.sh <id>"
+    log "по датам:   sudo -u www-data $BIN_DIR/replay-converter-range.sh 2025-01-01 2025-01-31"
+    ;;
+esac

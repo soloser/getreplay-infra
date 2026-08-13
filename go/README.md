@@ -7,6 +7,7 @@ Three Go binaries from `github.com/soloser/getreplay-go`, all living in `/var/ww
 | `match-updater` | long-running | `go-app.service` → `start.sh` | `:3006` (Caddy `/srv/*`) |
 | `demo-uploader` | long-running | `demo-uploader.service` → `demo-uploader.sh` | `:3005` (uploads from PHP) |
 | `highlight-extractor` | one-shot runner | **cron** hourly → `highlight-extractor-cron.sh` | — |
+| `replay-converter` | one-shot runner | **by hand** → `replay-converter-{match,range}.sh` | — |
 
 **Build happens on the server** (no more local cross-compile + scp). All runtime params live
 in one file — [`getreplay-go.env`](getreplay-go.env.example) — sourced by every launcher; each
@@ -18,6 +19,7 @@ launcher only adds its per-service ports/worker-counts.
 /home/solo/infra/go/deploy.sh match-updater
 /home/solo/infra/go/deploy.sh demo-uploader
 /home/solo/infra/go/deploy.sh highlight-extractor
+/home/solo/infra/go/deploy.sh replay-converter
 ```
 
 Each: `git reset --hard origin/main` in the source checkout → `go build` (CGO off, static) →
@@ -66,6 +68,50 @@ sudo -u www-data env LOOKBACK_DAYS=3650 /var/www/getreplay-go/highlight-extracto
 
 Other one-off knobs (env, read by the binary): `REEXTRACT=true` (delete + regenerate for the
 window, after tuning detectors), `MATCH_ID=<id>` (single match).
+
+## replay-converter: перегонка архива в формат v2
+
+Разовая операция: переписывает старые реплеи (`.replay.gz` и `.replay2` версии 1) в формат v2 —
+покадровые данные квантованными дельтами, **−66%** на файл. Переставляет `matches.replay_name` /
+`replay_meta` и удаляет старый файл. Уже перегнанные пропускает. Порядок операций подобран так,
+чтобы матч оставался рабочим при падении на любом шаге: новый файл → БД → удаление старого.
+
+Формат выкатывается в три шага (подробности в
+[replay-format.md §8.1](https://github.com/soloser/zone-map-ui/blob/main/docs/replay-format.md)):
+сначала фронт (он читает обе версии), потом `demo-uploader`, и только потом архив. Перегонка
+не срочная — старые файлы продолжают работать сколько угодно.
+
+**`DRY_RUN=true` по умолчанию** у обеих обёрток: операция необратима. Сухой прогон считает выигрыш
+точно — пишет временную копию и сразу её убирает, БД и исходник не трогает.
+
+```bash
+cd /var/www/getreplay-go
+
+# один матч
+sudo -u www-data ./replay-converter-match.sh 12345                    # прикинуть
+sudo -u www-data env DRY_RUN=false ./replay-converter-match.sh 12345  # перегнать
+
+# по датам: YYYY-MM-DD, обе границы включительно
+sudo -u www-data ./replay-converter-range.sh 2025-01-01 2025-01-31
+sudo -u www-data env DRY_RUN=false ./replay-converter-range.sh 2025-01-01 2025-01-31
+```
+
+Диапазон спрашивает подтверждение перед стартом (`YES=true` пропускает — для скриптов). Идти
+лучше кусками по месяцу-два: падение проще разобрать, сводка читаемее.
+
+Обёртка по датам переводит окно в диапазон id (сам конвертер отбирает по id — это один индексный
+диапазон вместо скана по `finished_at`) и печатает оба числа: сколько матчей в окне дат и сколько
+попадает в диапазон id. Второе может быть больше — id нумеруются по времени добавления, и матч,
+распарсенный сильно позже, выбивается из порядка. Лишний матч не проблема: он всё равно подлежит
+перегонке, просто раньше срока.
+
+В конце выводится сводка: `saved_total`, `saved_per_file`, `saved_percent`, `size_before` /
+`size_after` и счётчики `converted` / `already_new` / `missing` / `failed` / `orphaned_files`.
+`orphaned_files` — редкий случай: БД уже смотрит на новый файл, а старый удалить не вышло; данные
+целы, просто занято место.
+
+Обёртке по датам нужен клиент `mysql` на машине (`apt install mariadb-client`) — она берёт
+креды из того же `ML_MYSQL_DSN` и передаёт пароль через `MYSQL_PWD`, а не аргументом.
 
 ## Notes
 
