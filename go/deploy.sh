@@ -78,6 +78,6 @@ case "$APP" in
     install -m 0755 "$INFRA_GO/replay-converter-range.sh" "$BIN_DIR/replay-converter-range.sh"
     log "done — replay-converter built; обёртки в $BIN_DIR"
     log "один матч:  sudo -u www-data env DRY_RUN=false $BIN_DIR/replay-converter-match.sh <id>"
-    log "по датам:   sudo -u www-data $BIN_DIR/replay-converter-range.sh 2025-01-01 2025-01-31"
+    log "диапазон:   sudo -u www-data $BIN_DIR/replay-converter-range.sh <min-id> <max-id>"
     ;;
 esac
