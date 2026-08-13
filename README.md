@@ -18,6 +18,7 @@ infra/
   go/                    # Go deploy: deploy.sh <app> (builds on server) + launchers +
                          #   shared getreplay-go.env + highlight-extractor cron + README
   php/                   # native Laravel deploy + cron jobs + captured PHP config
+  migrations/            # one-command MySQL and ClickHouse production migrations
   docs/topology.md       # domains, services, ports, filesystem paths
 ```
 
@@ -26,6 +27,7 @@ infra/
 - **What runs where:** [`docs/topology.md`](docs/topology.md)
 - **Deploy the frontend:** [`frontend/DEPLOY.md`](frontend/DEPLOY.md)
 - **Deploy PHP and the highlight feed:** [`php/README.md`](php/README.md)
+- **Run database migrations:** [`migrations/README.md`](migrations/README.md)
 - **Caddy config:** [`caddy/Caddyfile`](caddy/Caddyfile) — after edits:
   `sudo cp caddy/Caddyfile /etc/caddy/Caddyfile && sudo caddy validate --config /etc/caddy/Caddyfile && sudo systemctl reload caddy`
 
