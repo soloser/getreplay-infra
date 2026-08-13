@@ -72,7 +72,8 @@ case "$APP" in
     ;;
 
   replay-converter)
-    # Разовый runner, запускается руками: ни сервиса, ни крона. Ставим обе обёртки.
+    # Разовый runner, запускается руками: ни сервиса, ни крона. Ставим обёртки.
+    install -m 0755 "$INFRA_GO/replay-converter-common.sh" "$BIN_DIR/replay-converter-common.sh"
     install -m 0755 "$INFRA_GO/replay-converter-match.sh" "$BIN_DIR/replay-converter-match.sh"
     install -m 0755 "$INFRA_GO/replay-converter-range.sh" "$BIN_DIR/replay-converter-range.sh"
     log "done — replay-converter built; обёртки в $BIN_DIR"

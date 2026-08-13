@@ -23,9 +23,7 @@ if ! [[ "$MATCH_ID_ARG" =~ ^[0-9]+$ ]] || [ "$MATCH_ID_ARG" -eq 0 ]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ENV_FILE="$SCRIPT_DIR/getreplay-go.env"
-[ -f "$ENV_FILE" ] || { echo "FATAL: missing $ENV_FILE (see getreplay-go.env.example)" >&2; exit 1; }
-set -a; . "$ENV_FILE"; set +a
+. "$SCRIPT_DIR/replay-converter-common.sh"
 
 export MATCH_ID="$MATCH_ID_ARG"
 export DRY_RUN="${DRY_RUN:-true}"
@@ -34,4 +32,4 @@ if [ "$DRY_RUN" = "true" ]; then
   echo "Сухой прогон для матча $MATCH_ID. Перегнать: DRY_RUN=false $0 $MATCH_ID"
 fi
 
-exec "$SCRIPT_DIR/replay-converter"
+exec "$BIN"

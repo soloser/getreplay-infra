@@ -42,9 +42,7 @@ if [[ "$DATE_FROM" > "$DATE_TO" ]]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ENV_FILE="$SCRIPT_DIR/getreplay-go.env"
-[ -f "$ENV_FILE" ] || { echo "FATAL: missing $ENV_FILE (see getreplay-go.env.example)" >&2; exit 1; }
-set -a; . "$ENV_FILE"; set +a
+. "$SCRIPT_DIR/replay-converter-common.sh"
 
 command -v mysql >/dev/null 2>&1 || { echo "FATAL: нужен клиент mysql (apt install mariadb-client)" >&2; exit 1; }
 
@@ -110,4 +108,4 @@ if [ "$DRY_RUN" = "true" ]; then
   echo "Сухой прогон. Перегнать: DRY_RUN=false $0 $DATE_FROM $DATE_TO"
 fi
 
-exec "$SCRIPT_DIR/replay-converter"
+exec "$BIN"
