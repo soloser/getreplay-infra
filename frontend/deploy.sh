@@ -20,6 +20,7 @@ set -euo pipefail
 # ---- config (override via env) --------------------------------------------
 APP_ROOT="${APP_ROOT:-/home/solo/getreplay-front}"   # the git checkout = systemd WorkingDirectory
 BRANCH="${BRANCH:-main}"
+REVISION="${REVISION:-}"
 SERVICE="${SERVICE:-nextjs.service}"
 NODE_BIN="${NODE_BIN:-/opt/node-20/bin}"             # isolated Node install
 HEALTH_URL="${HEALTH_URL:-http://[::1]:3000/}"       # matches `next start -H ::1`
@@ -33,6 +34,14 @@ export PATH="$NODE_BIN:$PATH"
 command -v node >/dev/null 2>&1 || die "node not found in $NODE_BIN — install it or set NODE_BIN"
 cd "$APP_ROOT" || die "missing $APP_ROOT"
 
+if [ -n "$REVISION" ] && ! [[ "$REVISION" =~ ^[0-9a-f]{40}$ ]]; then
+  die "REVISION must be a full lowercase 40-character commit SHA"
+fi
+
+if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
+  die "frontend checkout has local tracked changes; commit or remove them before deploying"
+fi
+
 # --- guard: running Node major must match .nvmrc ---
 if [ -f .nvmrc ]; then
   want="$(tr -dc '0-9.' < .nvmrc)"; want_major="${want%%.*}"
@@ -44,7 +53,14 @@ log "using $(node -v) from $NODE_BIN"
 
 log "fetch origin/$BRANCH"
 git fetch --prune origin
-git reset --hard "origin/$BRANCH"   # untracked files (.env.production, node_modules, .next) are kept
+TARGET="origin/$BRANCH"
+if [ -n "$REVISION" ]; then
+  git cat-file -e "$REVISION^{commit}" 2>/dev/null || die "commit is not available after fetch: $REVISION"
+  git merge-base --is-ancestor "$REVISION" "origin/$BRANCH" \
+    || die "commit is not contained in origin/$BRANCH: $REVISION"
+  TARGET="$REVISION"
+fi
+git reset --hard "$TARGET"   # untracked files (.env.production, node_modules, .next) are kept
 
 log "stop $SERVICE (build window begins)"
 sudo systemctl stop "$SERVICE"

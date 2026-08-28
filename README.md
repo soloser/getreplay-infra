@@ -19,6 +19,7 @@ infra/
                          #   shared getreplay-go.env + highlight-extractor cron + README
   php/                   # native Laravel deploy + cron jobs + captured PHP config
   migrations/            # one-command MySQL and ClickHouse production migrations
+  release/               # forced-command, release-only deployment gateway
   docs/topology.md       # domains, services, ports, filesystem paths
 ```
 
@@ -28,6 +29,7 @@ infra/
 - **Deploy the frontend:** [`frontend/DEPLOY.md`](frontend/DEPLOY.md)
 - **Deploy PHP and the highlight feed:** [`php/README.md`](php/README.md)
 - **Run database migrations:** [`migrations/README.md`](migrations/README.md)
+- **Agent release access:** [`release/README.md`](release/README.md)
 - **Caddy config:** [`caddy/Caddyfile`](caddy/Caddyfile) — after edits:
   `sudo cp caddy/Caddyfile /etc/caddy/Caddyfile && sudo caddy validate --config /etc/caddy/Caddyfile && sudo systemctl reload caddy`
 

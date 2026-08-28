@@ -5,6 +5,7 @@ set -euo pipefail
 REPO_ROOT="${REPO_ROOT:-/var/www/fun-php/repo}"
 APP_ROOT="${APP_ROOT:-${REPO_ROOT}/src}"
 BRANCH="${BRANCH:-main}"
+REVISION="${REVISION:-}"
 PHP_BIN="${PHP_BIN:-/usr/bin/php}"
 APP_USER="${APP_USER:-www-data}"
 COMPOSER_BIN="${COMPOSER_BIN:-composer}"
@@ -75,6 +76,10 @@ command -v systemctl >/dev/null 2>&1 || fail "systemctl is required"
 [ -f "$INFRA_PHP_DIR/highlight-feed-cron.sh" ] || fail "Cron wrapper source is missing"
 [ -f "$INFRA_PHP_DIR/cron/getreplay-highlight-feed" ] || fail "Cron definition source is missing"
 
+if [ -n "$REVISION" ] && ! [[ "$REVISION" =~ ^[0-9a-f]{40}$ ]]; then
+  fail "REVISION must be a full lowercase 40-character commit SHA"
+fi
+
 if [ -n "$(git -C "$REPO_ROOT" status --porcelain --untracked-files=no)" ]; then
   fail "PHP checkout has local tracked changes; commit or remove them before deploying"
 fi
@@ -104,8 +109,17 @@ sudo systemctl enable --now cron >/dev/null
 
 log "Fetching origin/$BRANCH"
 git -C "$REPO_ROOT" fetch --prune origin
-git -C "$REPO_ROOT" merge-base --is-ancestor HEAD "origin/$BRANCH" || \
-  fail "PHP checkout contains commits not present in origin/$BRANCH"
+TARGET="origin/$BRANCH"
+if [ -n "$REVISION" ]; then
+  git -C "$REPO_ROOT" cat-file -e "$REVISION^{commit}" 2>/dev/null \
+    || fail "Commit is not available after fetch: $REVISION"
+  git -C "$REPO_ROOT" merge-base --is-ancestor "$REVISION" "origin/$BRANCH" \
+    || fail "Commit is not contained in origin/$BRANCH: $REVISION"
+  TARGET="$REVISION"
+else
+  git -C "$REPO_ROOT" merge-base --is-ancestor HEAD "origin/$BRANCH" || \
+    fail "PHP checkout contains commits not present in origin/$BRANCH"
+fi
 
 if [ -f "$APP_ROOT/storage/framework/down" ]; then
   log "Laravel maintenance mode is already enabled"
@@ -116,8 +130,13 @@ else
   maintenance_enabled=1
 fi
 
-log "Fast-forwarding $REPO_ROOT to origin/$BRANCH"
-git -C "$REPO_ROOT" merge --ff-only "origin/$BRANCH"
+if [ -n "$REVISION" ]; then
+  log "Checking out exact revision $TARGET"
+  git -C "$REPO_ROOT" reset --hard "$TARGET"
+else
+  log "Fast-forwarding $REPO_ROOT to $TARGET"
+  git -C "$REPO_ROOT" merge --ff-only "$TARGET"
+fi
 
 log "Installing production Composer dependencies"
 (

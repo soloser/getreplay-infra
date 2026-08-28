@@ -20,6 +20,7 @@ APP="${1:-}"
 SRC="${SRC:-/home/solo/getreplay-go}"           # git clone of github.com/soloser/getreplay-go
 BIN_DIR="${BIN_DIR:-/var/www/getreplay-go}"      # binaries + launcher .sh + getreplay-go.env
 BRANCH="${BRANCH:-main}"
+REVISION="${REVISION:-}"
 GO_BIN="${GO_BIN:-go}"
 LOG_DIR="${LOG_DIR:-/var/log}"
 # ---------------------------------------------------------------------------
@@ -41,9 +42,24 @@ command -v "$GO_BIN" >/dev/null 2>&1 || die "Go not found ($GO_BIN) — install 
 [ -d "$SRC/.git" ] || die "no go checkout at $SRC — run: git clone git@github.com:soloser/getreplay-go.git $SRC"
 [ -d "$BIN_DIR" ]  || die "missing $BIN_DIR"
 
+if [ -n "$REVISION" ] && ! [[ "$REVISION" =~ ^[0-9a-f]{40}$ ]]; then
+  die "REVISION must be a full lowercase 40-character commit SHA"
+fi
+
+if [ -n "$(git -C "$SRC" status --porcelain --untracked-files=no)" ]; then
+  die "Go checkout has local tracked changes; commit or remove them before deploying"
+fi
+
 log "update source ($BRANCH)"
 git -C "$SRC" fetch --prune origin
-git -C "$SRC" reset --hard "origin/$BRANCH"
+TARGET="origin/$BRANCH"
+if [ -n "$REVISION" ]; then
+  git -C "$SRC" cat-file -e "$REVISION^{commit}" 2>/dev/null || die "commit is not available after fetch: $REVISION"
+  git -C "$SRC" merge-base --is-ancestor "$REVISION" "origin/$BRANCH" \
+    || die "commit is not contained in origin/$BRANCH: $REVISION"
+  TARGET="$REVISION"
+fi
+git -C "$SRC" reset --hard "$TARGET"
 log "at $(git -C "$SRC" rev-parse --short HEAD)"
 
 log "build $APP (CGO off — a static binary, like the old cross-build)"
