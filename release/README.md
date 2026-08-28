@@ -11,12 +11,44 @@ run them.
 
 ## Server installation
 
-Keep this repository at `/home/solo/infra`, then add a dedicated public key to
-`/home/solo/.ssh/authorized_keys` with a forced command. Replace the placeholder with
-the reviewed public key; never commit the key itself here.
+Keep this repository at `/home/solo/infra`. Create a separate locked account; it has a
+normal shell only because `sshd` needs one to start a forced command, but it gets no
+password and no unrestricted authorized key:
+
+```bash
+sudo useradd --create-home --shell /bin/bash getreplay-release
+sudo passwd --lock getreplay-release
+sudo chown root:root /home/getreplay-release
+sudo chmod 0755 /home/getreplay-release
+
+sudo install -d -o root -g root -m 0755 /usr/local/libexec/getreplay-release
+sudo install -o root -g root -m 0755 \
+  /home/solo/infra/release/forced_command.py \
+  /home/solo/infra/release/getreplay_release.py \
+  /usr/local/libexec/getreplay-release/
+```
+
+Allow that account to run exactly the validated release program as the existing
+`solo` deploy user. Create `/etc/sudoers.d/getreplay-release` with this one rule and
+validate it with `visudo -cf /etc/sudoers.d/getreplay-release`:
+
+```sudoers
+getreplay-release ALL=(solo) NOPASSWD: /usr/bin/python3 /home/solo/infra/release/getreplay_release.py *
+```
+
+Create a root-owned SSH directory and `authorized_keys`. Prefix the dedicated public
+key with the forced command below; replace only `<PUBLIC-KEY>` and never copy the
+private key to the server or repository.
+
+```bash
+sudo install -d -o root -g root -m 0755 /home/getreplay-release/.ssh
+sudoedit /home/getreplay-release/.ssh/authorized_keys
+sudo chown root:root /home/getreplay-release/.ssh/authorized_keys
+sudo chmod 0600 /home/getreplay-release/.ssh/authorized_keys
+```
 
 ```text
-restrict,command="/usr/bin/python3 /home/solo/infra/release/forced_command.py" <PUBLIC-KEY>
+restrict,command="/usr/bin/python3 /usr/local/libexec/getreplay-release/forced_command.py" <PUBLIC-KEY>
 ```
 
 `restrict` disables PTY allocation, forwarding, agent forwarding and X11 forwarding.
@@ -32,9 +64,21 @@ getreplay-release rollback <component> <40-char-commit>
 Allowed components are `frontend`, `php`, `go-match-updater`, `go-demo-uploader`,
 `go-highlight-extractor`, `go-replay-converter`, and `go-stats-extractor`.
 
-The existing deploy user still needs its narrowly scoped `sudo` rights for service
-restart/reload and the files already installed by the component scripts. Do not give
-the release identity a general interactive login or database credentials.
+The forced command validates every token before delegating to the existing `solo`
+deploy user. The release account itself gets no repository write access, database
+credentials, service sudo rules, or general interactive login. The existing deploy
+user keeps the service permissions already needed by the component scripts.
+
+Verify the boundary before configuring the agent client:
+
+```bash
+ssh -i /path/to/release-only-key getreplay-release@SERVER \
+  'getreplay-release status frontend'
+ssh -i /path/to/release-only-key getreplay-release@SERVER 'id'
+```
+
+The first command must return JSON status; the second must be rejected by the forced
+command. Also verify that SSH without a command does not open a shell.
 
 ## Local checks
 

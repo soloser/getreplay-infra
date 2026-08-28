@@ -46,6 +46,14 @@ class ReleaseValidationTest(unittest.TestCase):
                 with self.assertRaises(getreplay_release.ReleaseError):
                     forced_command.parse_original_command(command)
 
+    def test_forced_command_delegates_only_validated_arguments_to_the_deploy_user(self) -> None:
+        revision = "3" * 40
+
+        argv = forced_command.delegated_argv(["deploy", "frontend", revision])
+
+        self.assertEqual(list(forced_command.DELEGATED_RUNNER), argv[:-3])
+        self.assertEqual(["deploy", "frontend", revision], argv[-3:])
+
     def test_deploy_command_is_an_argument_vector_with_a_minimal_environment(self) -> None:
         command, environment = getreplay_release.command_for("go-match-updater", "2" * 40)
 
