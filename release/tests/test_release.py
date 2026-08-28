@@ -378,5 +378,21 @@ class MigrationDeployTest(unittest.TestCase):
             self.assertIn(f"Using prepared migrations revision {revision}", completed.stdout)
 
 
+class DeploymentCheckoutOwnerTest(unittest.TestCase):
+    def test_deploy_scripts_run_git_as_the_build_user(self) -> None:
+        scripts = {
+            "go": RELEASE_DIR.parent / "go" / "deploy.sh",
+            "php": RELEASE_DIR.parent / "php" / "deploy.sh",
+            "frontend": RELEASE_DIR.parent / "frontend" / "deploy.sh",
+        }
+
+        for name, path in scripts.items():
+            with self.subTest(script=name):
+                source = path.read_text(encoding="utf-8")
+                self.assertIn("run_build git", source)
+                self.assertNotIn("$(git ", source)
+                self.assertNotRegex(source, r"(?m)^\s+git (?:-C |fetch|reset|merge)")
+
+
 if __name__ == "__main__":
     unittest.main()

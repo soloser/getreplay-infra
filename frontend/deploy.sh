@@ -58,7 +58,7 @@ if [ -n "$REVISION" ] && ! [[ "$REVISION" =~ ^[0-9a-f]{40}$ ]]; then
   die "REVISION must be a full lowercase 40-character commit SHA"
 fi
 
-if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
+if [ -n "$(run_build git status --porcelain --untracked-files=no)" ]; then
   die "frontend checkout has local tracked changes; commit or remove them before deploying"
 fi
 
@@ -73,19 +73,19 @@ log "using $(node -v) from $NODE_BIN"
 
 if [ "$SOURCE_PREPARED" = "true" ]; then
   [ -n "$REVISION" ] || die "SOURCE_PREPARED=true requires REVISION"
-  [ "$(git rev-parse HEAD)" = "$REVISION" ] || die "prepared frontend revision does not match $REVISION"
+  [ "$(run_build git rev-parse HEAD)" = "$REVISION" ] || die "prepared frontend revision does not match $REVISION"
   log "using prepared revision $REVISION"
 else
   log "fetch origin/$BRANCH"
-  git fetch --prune origin
+  run_build git fetch --prune origin
   TARGET="origin/$BRANCH"
   if [ -n "$REVISION" ]; then
-    git cat-file -e "$REVISION^{commit}" 2>/dev/null || die "commit is not available after fetch: $REVISION"
-    git merge-base --is-ancestor "$REVISION" "origin/$BRANCH" \
+    run_build git cat-file -e "$REVISION^{commit}" 2>/dev/null || die "commit is not available after fetch: $REVISION"
+    run_build git merge-base --is-ancestor "$REVISION" "origin/$BRANCH" \
       || die "commit is not contained in origin/$BRANCH: $REVISION"
     TARGET="$REVISION"
   fi
-  git reset --hard "$TARGET"   # untracked files (.env.production, node_modules, .next) are kept
+  run_build git reset --hard "$TARGET"   # untracked files (.env.production, node_modules, .next) are kept
 fi
 
 log "stop $SERVICE (build window begins)"
@@ -111,4 +111,4 @@ for _ in $(seq 1 15); do
 done
 [ "$ok" = "1" ] || die "service not healthy (last code: ${code:-none}) — check: journalctl -u $SERVICE -n 50 ; tail /var/log/nextjs.log"
 
-log "done — $(git rev-parse --short HEAD) live"
+log "done — $(run_build git rev-parse --short HEAD) live"

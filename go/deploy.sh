@@ -56,27 +56,27 @@ if [ -n "$REVISION" ] && ! [[ "$REVISION" =~ ^[0-9a-f]{40}$ ]]; then
   die "REVISION must be a full lowercase 40-character commit SHA"
 fi
 
-if [ -n "$(git -C "$SRC" status --porcelain --untracked-files=no)" ]; then
+if [ -n "$(run_build git -C "$SRC" status --porcelain --untracked-files=no)" ]; then
   die "Go checkout has local tracked changes; commit or remove them before deploying"
 fi
 
 if [ "$SOURCE_PREPARED" = "true" ]; then
   [ -n "$REVISION" ] || die "SOURCE_PREPARED=true requires REVISION"
-  [ "$(git -C "$SRC" rev-parse HEAD)" = "$REVISION" ] || die "prepared Go revision does not match $REVISION"
+  [ "$(run_build git -C "$SRC" rev-parse HEAD)" = "$REVISION" ] || die "prepared Go revision does not match $REVISION"
   log "using prepared revision $REVISION"
 else
   log "update source ($BRANCH)"
-  git -C "$SRC" fetch --prune origin
+  run_build git -C "$SRC" fetch --prune origin
   TARGET="origin/$BRANCH"
   if [ -n "$REVISION" ]; then
-    git -C "$SRC" cat-file -e "$REVISION^{commit}" 2>/dev/null || die "commit is not available after fetch: $REVISION"
-    git -C "$SRC" merge-base --is-ancestor "$REVISION" "origin/$BRANCH" \
+    run_build git -C "$SRC" cat-file -e "$REVISION^{commit}" 2>/dev/null || die "commit is not available after fetch: $REVISION"
+    run_build git -C "$SRC" merge-base --is-ancestor "$REVISION" "origin/$BRANCH" \
       || die "commit is not contained in origin/$BRANCH: $REVISION"
     TARGET="$REVISION"
   fi
-  git -C "$SRC" reset --hard "$TARGET"
+  run_build git -C "$SRC" reset --hard "$TARGET"
 fi
-log "at $(git -C "$SRC" rev-parse --short HEAD)"
+log "at $(run_build git -C "$SRC" rev-parse --short HEAD)"
 
 log "build $APP (CGO off — a static binary, like the old cross-build)"
 tmp="$BIN_DIR/.$APP.new.$$"
