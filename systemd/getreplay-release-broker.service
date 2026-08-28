@@ -15,16 +15,14 @@ StateDirectoryMode=0700
 ExecStart=/usr/bin/python3 /usr/local/libexec/getreplay-release/broker.py serve
 Restart=on-failure
 RestartSec=2s
+NoNewPrivileges=yes
 PrivateTmp=yes
-ProtectHome=read-only
+ProtectHome=yes
 ProtectSystem=strict
 ReadWritePaths=/run/getreplay-release /var/lib/getreplay-release
-ReadWritePaths=-/home/solo/getreplay-front -/home/solo/getreplay-go
-ReadWritePaths=-/home/solo/fun-migrations -/home/solo/.npm -/home/solo/.cache -/home/solo/go
-ReadWritePaths=-/var/www/fun-php -/var/www/getreplay-go
-ReadWritePaths=-/etc/cron.d -/var/log
 RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
 LockPersonality=yes
+MemoryDenyWriteExecute=yes
 
 [Install]
 WantedBy=multi-user.target

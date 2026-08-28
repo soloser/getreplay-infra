@@ -46,6 +46,7 @@ class BrokerConfig:
     adapter_root: Path = DEFAULT_ADAPTER_ROOT
     trusted_uid: int = 0
     adapter_timeout: int = 1800
+    systemd_run: Path | None = Path("/usr/bin/systemd-run")
 
 
 def _read_trusted_json(path: Path, trusted_uid: int) -> Mapping[str, Any]:
@@ -247,6 +248,59 @@ def _snapshot_manifest(config: BrokerConfig, release_plan: Mapping[str, Any]) ->
     return destination
 
 
+def _adapter_command(
+    config: BrokerConfig,
+    adapter: str,
+    execution_manifest: Path,
+    release_id: str,
+) -> list[str]:
+    adapter_command = [
+        adapter,
+        "--manifest",
+        str(execution_manifest),
+        "--release-id",
+        release_id,
+    ]
+    if config.systemd_run is None:
+        return adapter_command
+    unit = f"getreplay-release-executor-{secrets.token_hex(8)}"
+    writable_paths = " ".join(
+        (
+            "-/home/solo/getreplay-front",
+            "-/home/solo/getreplay-go",
+            "-/home/solo/fun-migrations",
+            "-/home/solo/.npm",
+            "-/home/solo/.cache",
+            "-/home/solo/go",
+            "-/var/www/fun-php",
+            "-/var/www/getreplay-go",
+            "-/etc/cron.d",
+            "-/var/log",
+        )
+    )
+    return [
+        str(config.systemd_run),
+        "--quiet",
+        "--wait",
+        "--pipe",
+        "--collect",
+        "--service-type=exec",
+        f"--unit={unit}",
+        "--property=User=root",
+        "--property=Group=root",
+        "--property=UMask=0077",
+        "--property=PrivateTmp=yes",
+        "--property=ProtectHome=read-only",
+        "--property=ProtectSystem=strict",
+        f"--property=ReadWritePaths={writable_paths}",
+        "--property=RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6",
+        "--property=LockPersonality=yes",
+        f"--property=RuntimeMaxSec={config.adapter_timeout}",
+        "--",
+        *adapter_command,
+    ]
+
+
 def execute(config: BrokerConfig, request: release_protocol.Request) -> dict[str, Any]:
     release_plan = plan(config, request)
     if request.preview:
@@ -256,23 +310,25 @@ def execute(config: BrokerConfig, request: release_protocol.Request) -> dict[str
     with lock_path.open("a", encoding="utf-8") as lock_file:
         fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
         execution_manifest = _snapshot_manifest(config, release_plan)
-        command = [
+        command = _adapter_command(
+            config,
             str(release_plan["adapter"]),
-            "--manifest",
-            str(execution_manifest),
-            "--release-id",
+            execution_manifest,
             str(release_plan["release_id"]),
-        ]
+        )
         with tempfile.TemporaryFile() as stdout, tempfile.TemporaryFile() as stderr:
-            completed = subprocess.run(
-                command,
-                check=False,
-                cwd="/",
-                env={"HOME": "/", "PATH": "/usr/bin:/bin"},
-                stdout=stdout,
-                stderr=stderr,
-                timeout=config.adapter_timeout,
-            )
+            try:
+                completed = subprocess.run(
+                    command,
+                    check=False,
+                    cwd="/",
+                    env={"HOME": "/", "PATH": "/usr/bin:/bin"},
+                    stdout=stdout,
+                    stderr=stderr,
+                    timeout=config.adapter_timeout,
+                )
+            except OSError as exc:
+                raise BrokerError("release executor is unavailable") from exc
             adapter_stdout = _tail(stdout)
             adapter_stderr = _tail(stderr)
         result = {

@@ -81,6 +81,7 @@ class BrokerTest(unittest.TestCase):
             state_root=self.state,
             adapter_root=self.adapters,
             trusted_uid=os.getuid(),
+            systemd_run=None,
         )
 
     def tearDown(self) -> None:
@@ -266,15 +267,30 @@ class PromotionPlanTest(unittest.TestCase):
             promote_release.deployment_order(manifest),
         )
 
-    def test_broker_sandbox_allows_unprivileged_builds_and_node(self) -> None:
+    def test_persistent_broker_keeps_strict_process_sandbox(self) -> None:
         unit = (RELEASE_DIR.parent / "systemd" / "getreplay-release-broker.service").read_text(
             encoding="utf-8"
         )
 
-        self.assertNotIn("NoNewPrivileges=yes", unit)
-        self.assertNotIn("MemoryDenyWriteExecute=yes", unit)
+        self.assertIn("NoNewPrivileges=yes", unit)
+        self.assertIn("MemoryDenyWriteExecute=yes", unit)
         self.assertIn("ProtectSystem=strict", unit)
-        self.assertIn("ProtectHome=read-only", unit)
+        self.assertIn("ProtectHome=yes", unit)
+
+    def test_executor_is_short_lived_and_path_restricted(self) -> None:
+        command = broker._adapter_command(
+            broker.BrokerConfig(),
+            "/usr/local/libexec/getreplay-release/adapters/promote-release",
+            Path("/var/lib/getreplay-release/state/executions/candidate.json"),
+            "candidate",
+        )
+
+        self.assertEqual("/usr/bin/systemd-run", command[0])
+        self.assertIn("--wait", command)
+        self.assertIn("--collect", command)
+        self.assertIn("--property=ProtectSystem=strict", command)
+        self.assertNotIn("--property=NoNewPrivileges=no", command)
+        self.assertEqual("candidate", command[-1])
 
 
 if __name__ == "__main__":

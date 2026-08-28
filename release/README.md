@@ -26,10 +26,14 @@ fallback. The broker validates every field, installs staged manifests as root-ow
 mode `0600` files, maps promotion to one root-owned adapter, serializes releases,
 snapshots the manifest, and writes structured audit events to the systemd journal.
 
-The adapter fetches only full commits contained in each repository's `origin/main`,
-verifies a deterministic `git archive` SHA-256 digest, and calls root-owned
-deployment entrypoints. Git fetches and application builds run as the existing
-`solo` deployment user; only the fixed adapter controls service operations and the
+The persistent broker keeps `NoNewPrivileges`, `MemoryDenyWriteExecute`, and a
+hidden home directory. For promotion it asks systemd to create one short-lived,
+uniquely named executor with a fixed root-owned adapter and a narrow writable-path
+list; the executor is collected immediately when it finishes. The adapter fetches
+only full commits contained in each repository's `origin/main`, verifies a
+deterministic `git archive` SHA-256 digest, and calls root-owned deployment
+entrypoints. Git fetches and application builds run as the existing `solo`
+deployment user; only the fixed adapter controls service operations and the
 application of allowlisted migrations.
 
 This is intentionally systemd + GitHub Actions, not Kubernetes. The product runs on
