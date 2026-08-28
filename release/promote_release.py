@@ -11,6 +11,7 @@ from pathlib import Path
 import stat
 import subprocess
 import sys
+import re
 from typing import Any, Mapping, Sequence
 
 
@@ -58,6 +59,10 @@ class PromotionError(RuntimeError):
     """A release cannot be promoted safely."""
 
 
+def _redact(text: str) -> str:
+    return re.sub(r"([a-z][a-z0-9+.-]*://)[^/@\s]+@", r"\1***@", text, flags=re.IGNORECASE)
+
+
 def _run(
     command: Sequence[str],
     *,
@@ -82,18 +87,28 @@ def _run(
     else:
         process_env = effective_env
     try:
-        return subprocess.run(
+        completed = subprocess.run(
             argv,
             check=True,
             cwd=str(cwd) if cwd is not None else "/",
             env=process_env,
             text=True,
-            stdout=subprocess.PIPE if capture else None,
-            stderr=subprocess.PIPE if capture else None,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         )
+        if not capture:
+            if completed.stdout:
+                sys.stdout.write(completed.stdout)
+            if completed.stderr:
+                sys.stderr.write(completed.stderr)
+        return completed
     except subprocess.CalledProcessError as exc:
+        if exc.stdout:
+            sys.stdout.write(exc.stdout)
+        if exc.stderr:
+            sys.stderr.write(_redact(exc.stderr))
         detail = (exc.stderr or exc.stdout or "").strip()
-        suffix = f": {detail[-2000:]}" if detail else ""
+        suffix = f": {_redact(detail[-2000:])}" if detail else ""
         raise PromotionError(f"command failed ({Path(command[0]).name}){suffix}") from exc
 
 

@@ -31,6 +31,16 @@ HEALTH_URL="${HEALTH_URL:-http://[::1]:3000/}"       # matches `next start -H ::
 log() { printf '\033[1;34m[deploy %s]\033[0m %s\n' "$(date +%H:%M:%S)" "$*"; }
 die() { printf '\033[1;31m[deploy]\033[0m %s\n' "$*" >&2; exit 1; }
 
+service_stopped=0
+on_exit() {
+  local status=$?
+  if [ "$status" -ne 0 ] && [ "$service_stopped" -eq 1 ]; then
+    log "deployment failed; attempting to start $SERVICE"
+    sudo systemctl start "$SERVICE" || true
+  fi
+}
+trap on_exit EXIT
+
 run_build() {
   if [ -n "$BUILD_USER" ]; then
     sudo -u "$BUILD_USER" -- env HOME="/home/$BUILD_USER" PATH="$PATH" "$@"
@@ -80,6 +90,7 @@ fi
 
 log "stop $SERVICE (build window begins)"
 sudo systemctl stop "$SERVICE"
+service_stopped=1
 
 log "npm ci"
 run_build npm ci
@@ -88,6 +99,7 @@ run_build npm run build
 
 log "start $SERVICE"
 sudo systemctl start "$SERVICE"
+service_stopped=0
 
 # --- health check ---
 log "health check $HEALTH_URL"

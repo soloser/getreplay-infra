@@ -67,8 +67,10 @@ on_exit() {
   local status=$?
 
   if [ "$status" -ne 0 ] && [ "$maintenance_enabled" -eq 1 ]; then
-    printf '[php-deploy] Deployment failed; Laravel remains in maintenance mode. Fix the error and run: cd %s && sudo -u %s -- %s artisan up\n' \
-      "$APP_ROOT" "$APP_USER" "$PHP_BIN" >&2
+    printf '[php-deploy] Deployment failed; disabling maintenance mode before exit\n' >&2
+    run_artisan up || \
+      printf '[php-deploy] ERROR: automatic artisan up failed; remove %s/storage/framework/down manually\n' \
+        "$APP_ROOT" >&2
   fi
 }
 

@@ -150,6 +150,36 @@ class BrokerTest(unittest.TestCase):
         self.assertTrue(snapshot.is_file())
         self.assertEqual("release-1", json.loads(snapshot.read_text(encoding="utf-8"))["release_id"])
 
+    def test_failed_adapter_records_root_only_diagnostics(self) -> None:
+        self.write_manifest()
+        adapter = self.adapters / "promote-release"
+        adapter.write_text(
+            '#!/bin/sh\necho \'{"status":"error","error":"checkout is dirty"}\'\nexit 2\n',
+            encoding="utf-8",
+        )
+        adapter.chmod(0o700)
+
+        with self.assertRaisesRegex(broker.BrokerError, "checkout is dirty"):
+            broker.execute(
+                self.config,
+                release_protocol.Request("promote", None, "release-1"),
+            )
+
+        failure = self.state / "last-failure.json"
+        self.assertTrue(failure.is_file())
+        self.assertEqual(0, stat.S_IMODE(failure.stat().st_mode) & 0o077)
+        self.assertEqual("checkout is dirty", json.loads(failure.read_text())["adapter_error"])
+        self.assertEqual("checkout is dirty", broker.status(self.config)["last_failure"]["adapter_error"])
+
+    def test_adapter_error_extraction_ignores_non_json_output(self) -> None:
+        self.assertEqual(
+            "safe failure",
+            broker._extract_adapter_error(
+                'npm output\n{"status":"error","error":"safe failure"}\n',
+                "systemd noise",
+            ),
+        )
+
     def test_group_writable_manifest_and_adapter_are_rejected(self) -> None:
         manifest = self.write_manifest()
         manifest.chmod(0o620)
@@ -288,6 +318,7 @@ class PromotionPlanTest(unittest.TestCase):
         self.assertEqual("/usr/bin/systemd-run", command[0])
         self.assertIn("--wait", command)
         self.assertIn("--collect", command)
+        self.assertIn("--property=UMask=0022", command)
         self.assertIn("--property=ProtectSystem=strict", command)
         self.assertNotIn("--property=NoNewPrivileges=no", command)
         self.assertEqual("candidate", command[-1])
