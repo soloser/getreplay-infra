@@ -92,7 +92,7 @@ if [ -n "$REVISION" ] && ! [[ "$REVISION" =~ ^[0-9a-f]{40}$ ]]; then
   fail "REVISION must be a full lowercase 40-character commit SHA"
 fi
 
-if [ -n "$(git -C "$REPO_ROOT" status --porcelain --untracked-files=no)" ]; then
+if [ -n "$(run_build git -C "$REPO_ROOT" status --porcelain --untracked-files=no)" ]; then
   fail "PHP checkout has local tracked changes; commit or remove them before deploying"
 fi
 
@@ -121,22 +121,22 @@ sudo systemctl is-active --quiet cron || fail "cron is not active"
 
 if [ "$SOURCE_PREPARED" = "true" ]; then
   [ -n "$REVISION" ] || fail "SOURCE_PREPARED=true requires REVISION"
-  [ "$(git -C "$REPO_ROOT" rev-parse HEAD)" = "$REVISION" ] || \
+  [ "$(run_build git -C "$REPO_ROOT" rev-parse HEAD)" = "$REVISION" ] || \
     fail "Prepared PHP revision does not match $REVISION"
   TARGET="$REVISION"
   log "Using prepared revision $REVISION"
 else
   log "Fetching origin/$BRANCH"
-  git -C "$REPO_ROOT" fetch --prune origin
+  run_build git -C "$REPO_ROOT" fetch --prune origin
   TARGET="origin/$BRANCH"
   if [ -n "$REVISION" ]; then
-    git -C "$REPO_ROOT" cat-file -e "$REVISION^{commit}" 2>/dev/null \
+    run_build git -C "$REPO_ROOT" cat-file -e "$REVISION^{commit}" 2>/dev/null \
       || fail "Commit is not available after fetch: $REVISION"
-    git -C "$REPO_ROOT" merge-base --is-ancestor "$REVISION" "origin/$BRANCH" \
+    run_build git -C "$REPO_ROOT" merge-base --is-ancestor "$REVISION" "origin/$BRANCH" \
       || fail "Commit is not contained in origin/$BRANCH: $REVISION"
     TARGET="$REVISION"
   else
-    git -C "$REPO_ROOT" merge-base --is-ancestor HEAD "origin/$BRANCH" || \
+    run_build git -C "$REPO_ROOT" merge-base --is-ancestor HEAD "origin/$BRANCH" || \
       fail "PHP checkout contains commits not present in origin/$BRANCH"
   fi
 fi
@@ -154,10 +154,10 @@ if [ "$SOURCE_PREPARED" = "true" ]; then
   :
 elif [ -n "$REVISION" ]; then
   log "Checking out exact revision $TARGET"
-  git -C "$REPO_ROOT" reset --hard "$TARGET"
+  run_build git -C "$REPO_ROOT" reset --hard "$TARGET"
 else
   log "Fast-forwarding $REPO_ROOT to $TARGET"
-  git -C "$REPO_ROOT" merge --ff-only "$TARGET"
+  run_build git -C "$REPO_ROOT" merge --ff-only "$TARGET"
 fi
 
 log "Installing production Composer dependencies"
