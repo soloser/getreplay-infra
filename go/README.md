@@ -1,6 +1,6 @@
 # Go services deploy
 
-Three Go binaries from `github.com/soloser/getreplay-go`, all living in `/var/www/getreplay-go/`:
+Five Go binaries from `github.com/soloser/getreplay-go`, all living in `/var/www/getreplay-go/`:
 
 | App | How it runs | Unit / trigger | Port |
 |---|---|---|---|
@@ -8,6 +8,7 @@ Three Go binaries from `github.com/soloser/getreplay-go`, all living in `/var/ww
 | `demo-uploader` | long-running | `demo-uploader.service` → `demo-uploader.sh` | `:3005` (uploads from PHP) |
 | `highlight-extractor` | one-shot runner | **cron** hourly → `highlight-extractor-cron.sh` | — |
 | `replay-converter` | one-shot runner | **by hand** → `replay-converter-{match,range}.sh` | — |
+| `stats-extractor` | one-shot runner | **by hand** → `stats-extractor-{match,range}.sh` | — |
 
 **Build happens on the server** (no more local cross-compile + scp). All runtime params live
 in one file — [`getreplay-go.env`](getreplay-go.env.example) — sourced by every launcher; each
@@ -20,6 +21,7 @@ launcher only adds its per-service ports/worker-counts.
 /home/solo/infra/go/deploy.sh demo-uploader
 /home/solo/infra/go/deploy.sh highlight-extractor
 /home/solo/infra/go/deploy.sh replay-converter
+/home/solo/infra/go/deploy.sh stats-extractor
 ```
 
 Each: `git reset --hard origin/main` in the source checkout → `go build` (CGO off, static) →
@@ -104,6 +106,45 @@ sudo -u www-data env DRY_RUN=false ./replay-converter-range.sh 1 1000
 `size_after` и счётчики `converted` / `already_new` / `missing` / `failed` / `orphaned_files`.
 `orphaned_files` — редкий случай: БД уже смотрит на новый файл, а старый удалить не вышло; данные
 целы, просто занято место.
+
+## stats-extractor: добор статистики по раундам из старых реплеев
+
+Считает поверх уже записанных реплеев построундовую статистику и пишет её в ClickHouse:
+
+| Расчёт | Таблица | Строка |
+|---|---|---|
+| `retake` | `cs2.retakes` | раунд с установленной бомбой |
+| `clutch` | `cs2.clutches` | сторона раунда, у которой остался один живой (в 1v1 — обе) |
+
+Слева в строке признаки ситуации на её старте (численность, HP, оружие, утилита, дистанции), справа
+исход. Новые матчи считает сам парсер сразу после разбора демки, поэтому команда нужна только для
+матчей, распарсенных до появления расчёта.
+
+Прогон **безопасно перезапускать**, причём пропуск пофактный: матч с посчитанными ретейками, но без
+клатчей, досчитается по клатчам и не тронет ретейки. Реплей при этом читается один раз на матч и
+отдаётся всем расчётам.
+
+- `ONLY=retake` / `ONLY=clutch` (через запятую) — гонять только выбранные расчёты, по умолчанию все;
+- `DRY_RUN=true` — посчитать и показать объём, ничего не записывая;
+- `FORCE=true` — пересчитать даже посчитанное. Дублей не будет: таблицы на `ReplacingMergeTree` и
+  схлопывают строки по своему ключу, оставляя последнюю по `extracted_at`.
+
+```bash
+cd /var/www/getreplay-go
+
+# один матч
+sudo -u www-data ./stats-extractor-match.sh 12345
+sudo -u www-data env DRY_RUN=true ./stats-extractor-match.sh 12345   # только показать
+
+# диапазон id, обе границы включительно
+sudo -u www-data ./stats-extractor-range.sh 1 1000
+sudo -u www-data env ONLY=clutch ./stats-extractor-range.sh 1 1000   # добрать только клатчи
+```
+
+В сводке `counts` (по матчам): `scanned`, `processed`, `already_done`, `skipped` (нет реплея),
+`missing` (файла нет на диске — для заархивированных матчей это норма), `failed`. Сумма исходов
+должна сходиться со `scanned`. Плюс отдельная строка на каждый расчёт: `processed`, `already_done`,
+`empty` (считать было нечего), `failed`, `rows`.
 
 ## Notes
 

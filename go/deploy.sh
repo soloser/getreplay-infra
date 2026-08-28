@@ -5,6 +5,7 @@
 #   ./deploy.sh demo-uploader
 #   ./deploy.sh highlight-extractor
 #   ./deploy.sh replay-converter
+#   ./deploy.sh stats-extractor
 #
 # Replaces the old flow (local `GOOS=linux GOARCH=amd64 go build` + scp + systemctl
 # restart). Builds from the git checkout at $SRC, drops the binary in $BIN_DIR, keeps
@@ -32,7 +33,8 @@ case "$APP" in
   demo-uploader)       SERVICE="demo-uploader.service"; LAUNCHER="demo-uploader.sh" ;;
   highlight-extractor) SERVICE="";                      LAUNCHER="" ;;
   replay-converter)    SERVICE="";                      LAUNCHER="" ;;
-  *) die "usage: $0 <match-updater|demo-uploader|highlight-extractor|replay-converter>" ;;
+  stats-extractor)     SERVICE="";                      LAUNCHER="" ;;
+  *) die "usage: $0 <match-updater|demo-uploader|highlight-extractor|replay-converter|stats-extractor>" ;;
 esac
 
 command -v "$GO_BIN" >/dev/null 2>&1 || die "Go not found ($GO_BIN) — install Go >= 1.24 (see README.md)"
@@ -79,5 +81,16 @@ case "$APP" in
     log "done — replay-converter built; обёртки в $BIN_DIR"
     log "один матч:  sudo -u www-data env DRY_RUN=false $BIN_DIR/replay-converter-match.sh <id>"
     log "диапазон:   sudo -u www-data $BIN_DIR/replay-converter-range.sh <min-id> <max-id>"
+    ;;
+
+  stats-extractor)
+    # Разовый runner для добора статистики (ретейки, клатчи) из старых реплеев:
+    # новые матчи считает сам парсер. Запускается руками, обёртки рядом с бинарём.
+    install -m 0755 "$INFRA_GO/stats-extractor-common.sh" "$BIN_DIR/stats-extractor-common.sh"
+    install -m 0755 "$INFRA_GO/stats-extractor-match.sh" "$BIN_DIR/stats-extractor-match.sh"
+    install -m 0755 "$INFRA_GO/stats-extractor-range.sh" "$BIN_DIR/stats-extractor-range.sh"
+    log "done — stats-extractor built; обёртки в $BIN_DIR"
+    log "один матч:  sudo -u www-data $BIN_DIR/stats-extractor-match.sh <id>"
+    log "диапазон:   sudo -u www-data $BIN_DIR/stats-extractor-range.sh <min-id> <max-id>"
     ;;
 esac
