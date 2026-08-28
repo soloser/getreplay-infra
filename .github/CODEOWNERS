@@ -1,0 +1,5 @@
+# Production release entry points require an owner-reviewed pull request.
+/.github/CODEOWNERS @soloser
+/.github/workflows/deploy-production.yml @soloser
+/release/ @soloser
+/systemd/getreplay-release-broker.service @soloser

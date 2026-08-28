@@ -1,0 +1,85 @@
+name: Deploy production
+run-name: Deploy current production candidate
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: getreplay-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Promote candidate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: production
+    permissions: {}
+    env:
+      RELEASE_HOST: ${{ vars.PRODUCTION_RELEASE_HOST }}
+      RELEASE_PORT: ${{ vars.PRODUCTION_RELEASE_PORT }}
+      RELEASE_USER: ${{ vars.PRODUCTION_RELEASE_USER }}
+      RELEASE_ID: candidate
+      RELEASE_KEY: ${{ secrets.PRODUCTION_RELEASE_SSH_KEY }}
+      RELEASE_KNOWN_HOSTS: ${{ secrets.PRODUCTION_RELEASE_KNOWN_HOSTS }}
+    steps:
+      - name: Validate fixed deployment target
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$RELEASE_HOST" =~ ^[A-Za-z0-9.-]+$ ]]
+          [[ "$RELEASE_USER" =~ ^[a-z_][a-z0-9_-]*$ ]]
+          [[ "$RELEASE_PORT" =~ ^[0-9]{1,5}$ ]]
+          (( RELEASE_PORT >= 1 && RELEASE_PORT <= 65535 ))
+          [[ -n "$RELEASE_KEY" ]]
+          [[ -n "$RELEASE_KNOWN_HOSTS" ]]
+
+      - name: Install ephemeral SSH credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d -m 0700 "$RUNNER_TEMP/getreplay-release-ssh"
+          printf '%s\n' "$RELEASE_KEY" > "$RUNNER_TEMP/getreplay-release-ssh/id"
+          printf '%s\n' "$RELEASE_KNOWN_HOSTS" > "$RUNNER_TEMP/getreplay-release-ssh/known_hosts"
+          chmod 0600 "$RUNNER_TEMP/getreplay-release-ssh/id"
+          chmod 0644 "$RUNNER_TEMP/getreplay-release-ssh/known_hosts"
+
+      - name: Preview immutable release
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh \
+            -F /dev/null \
+            -T \
+            -o BatchMode=yes \
+            -o ClearAllForwardings=yes \
+            -o ConnectTimeout=15 \
+            -o IdentitiesOnly=yes \
+            -o RequestTTY=no \
+            -o StrictHostKeyChecking=yes \
+            -o "UserKnownHostsFile=$RUNNER_TEMP/getreplay-release-ssh/known_hosts" \
+            -i "$RUNNER_TEMP/getreplay-release-ssh/id" \
+            -p "$RELEASE_PORT" \
+            "$RELEASE_USER@$RELEASE_HOST" \
+            "getreplay-release preview promote $RELEASE_ID"
+
+      - name: Deploy production
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh \
+            -F /dev/null \
+            -T \
+            -o BatchMode=yes \
+            -o ClearAllForwardings=yes \
+            -o ConnectTimeout=15 \
+            -o IdentitiesOnly=yes \
+            -o RequestTTY=no \
+            -o StrictHostKeyChecking=yes \
+            -o "UserKnownHostsFile=$RUNNER_TEMP/getreplay-release-ssh/known_hosts" \
+            -i "$RUNNER_TEMP/getreplay-release-ssh/id" \
+            -p "$RELEASE_PORT" \
+            "$RELEASE_USER@$RELEASE_HOST" \
+            "getreplay-release promote $RELEASE_ID"

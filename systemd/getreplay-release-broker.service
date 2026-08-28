@@ -1,0 +1,28 @@
+[Unit]
+Description=GetReplay release broker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=getreplay-release
+UMask=0077
+RuntimeDirectory=getreplay-release
+RuntimeDirectoryMode=0750
+StateDirectory=getreplay-release
+StateDirectoryMode=0700
+ExecStart=/usr/bin/python3 /usr/local/libexec/getreplay-release/broker.py serve
+Restart=on-failure
+RestartSec=2s
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/run/getreplay-release /var/lib/getreplay-release
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+
+[Install]
+WantedBy=multi-user.target

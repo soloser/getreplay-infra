@@ -1,91 +1,133 @@
-# Release-only gateway
+# Release broker
 
-`getreplay_release.py` is the only production command exposed to the agent's SSH
-identity. It can inspect release status and deploy or roll back an allowlisted
-application component to an exact commit already contained in `origin/main`.
+This directory defines the production release handle used only by the manually
+started GitHub Actions workflow. The agent has no production SSH key, deployment
+API token, shell, sudo rule, database credential, or Docker socket access. The
+workflow's forced SSH identity can only submit a bounded request to a root-owned
+broker over `/run/getreplay-release/control.sock`.
 
-It deliberately cannot run migrations, execute one-shot data jobs, edit databases,
-accept branches, accept abbreviated SHAs, or pass arbitrary environment variables.
-The Go one-shot components can be *installed* as a release, but this gateway cannot
-run them.
+The broker accepts these shapes:
 
-## Server installation
+```text
+getreplay-release status
+getreplay-release preview promote <release-id>
+getreplay-release promote <release-id>
+```
 
-Keep this repository at `/home/solo/infra`. Create a separate locked account; it has a
-normal shell only because `sshd` needs one to start a forced command, but it gets no
-password and no unrestricted authorized key:
+A release ID is useful only if a root-owned, non-group-writable manifest already
+exists under `/var/lib/getreplay-release/manifests/<release-id>.json`. The manifest
+binds an allowlisted component or database migration to both a full Git revision and
+an immutable `sha256:` artifact digest. It cannot choose an executable. The broker
+maps the complete release to one fixed root-owned adapter:
+
+```text
+/usr/local/libexec/getreplay-release/adapters/promote-release
+```
+
+This separation is intentional: trusted CI registers tested immutable artifacts as
+the `candidate` manifest, while only a human with GitHub repository write access can
+press **Run workflow**. Giving an agent permission to deploy any commit it can push
+would also give that commit a code-execution path on production.
+
+## Human-only button
+
+The button is `.github/workflows/deploy-production.yml`. It has only the manual
+`workflow_dispatch` trigger, deploys the fixed `candidate` manifest, uses a protected
+`production` environment, and serializes releases with a concurrency group. It uses
+no third-party actions and never checks repository code out onto the runner.
+
+Configure the `production` GitHub Environment with:
+
+- variables `PRODUCTION_RELEASE_HOST`, `PRODUCTION_RELEASE_PORT`, and
+  `PRODUCTION_RELEASE_USER`;
+- secrets `PRODUCTION_RELEASE_SSH_KEY` and `PRODUCTION_RELEASE_KNOWN_HOSTS`;
+- deployment branch restriction: protected `main` only.
+
+Protect `main` with required pull requests and required CODEOWNER review. The agent's
+Git credential may create branches and pull requests but must not be able to push
+directly to `main`. This is what prevents an agent-authored workflow change from
+obtaining the production environment secret.
+
+## Server installation preview
+
+Do not install this until the production adapters and immutable artifacts exist.
+The broker fails closed when an adapter or manifest is missing. On the production
+host, review and run:
 
 ```bash
-sudo useradd --create-home --shell /bin/bash getreplay-release
+sudo groupadd --system getreplay-release
+sudo useradd --system --create-home --shell /bin/sh --gid getreplay-release getreplay-release
 sudo passwd --lock getreplay-release
-sudo chown root:root /home/getreplay-release
-sudo chmod 0755 /home/getreplay-release
 
 sudo install -d -o root -g root -m 0755 /usr/local/libexec/getreplay-release
+sudo install -d -o root -g root -m 0755 /usr/local/libexec/getreplay-release/adapters
 sudo install -o root -g root -m 0755 \
+  /home/solo/infra/release/broker.py \
   /home/solo/infra/release/forced_command.py \
   /home/solo/infra/release/getreplay_release.py \
+  /home/solo/infra/release/release_client.py \
+  /home/solo/infra/release/release_protocol.py \
   /usr/local/libexec/getreplay-release/
+sudo install -o root -g root -m 0644 \
+  /home/solo/infra/systemd/getreplay-release-broker.service \
+  /etc/systemd/system/getreplay-release-broker.service
+
+sudo install -d -o root -g root -m 0755 /var/lib/getreplay-release/manifests
+sudo systemctl daemon-reload
+sudo systemctl enable --now getreplay-release-broker.service
 ```
 
-Allow that account to run exactly the validated release program as the existing
-`solo` deploy user. Create `/etc/sudoers.d/getreplay-release` with this one rule and
-validate it with `visudo -cf /etc/sudoers.d/getreplay-release`:
-
-```sudoers
-getreplay-release ALL=(solo) NOPASSWD: /usr/bin/python3 /home/solo/infra/release/getreplay_release.py *
-```
-
-Create a root-owned SSH directory and `authorized_keys`. Prefix the dedicated public
-key with the forced command below; replace only `<PUBLIC-KEY>` and never copy the
-private key to the server or repository.
-
-```bash
-sudo install -d -o root -g root -m 0755 /home/getreplay-release/.ssh
-sudoedit /home/getreplay-release/.ssh/authorized_keys
-sudo chown root:root /home/getreplay-release/.ssh/authorized_keys
-sudo chmod 0600 /home/getreplay-release/.ssh/authorized_keys
-```
+Install the workflow's dedicated public key in a root-owned
+`/home/getreplay-release/.ssh/authorized_keys`. Keep the private key off the server
+and out of every repository. The line must include the forced command:
 
 ```text
 restrict,command="/usr/bin/python3 /usr/local/libexec/getreplay-release/forced_command.py" <PUBLIC-KEY>
 ```
 
-`restrict` disables PTY allocation, forwarding, agent forwarding and X11 forwarding.
-The forced-command parser accepts only these shapes:
-
-```text
-getreplay-release status [component]
-getreplay-release preview <component> <40-char-commit>
-getreplay-release deploy <component> <40-char-commit>
-getreplay-release rollback <component> <40-char-commit>
-```
-
-Allowed components are `frontend`, `php`, `go-match-updater`, `go-demo-uploader`,
-`go-highlight-extractor`, `go-replay-converter`, and `go-stats-extractor`.
-
-The forced command validates every token before delegating to the existing `solo`
-deploy user. The release account itself gets no repository write access, database
-credentials, service sudo rules, or general interactive login. The existing deploy
-user keeps the service permissions already needed by the component scripts.
-
-Verify the boundary before configuring the agent client:
+The private key goes only into the GitHub `production` Environment secret; do not
+place it on the agent workstation. There must be no
+`/etc/sudoers.d/getreplay-release` file and the account must not be
+in `sudo`, `docker`, `www-data`, or application groups. `restrict` disables PTY,
+forwarding, agent forwarding and X11 forwarding. Verify the boundary:
 
 ```bash
 ssh -i /path/to/release-only-key getreplay-release@SERVER \
-  'getreplay-release status frontend'
+  'getreplay-release status'
 ssh -i /path/to/release-only-key getreplay-release@SERVER 'id'
+sudo -l -U getreplay-release
 ```
 
-The first command must return JSON status; the second must be rejected by the forced
-command. Also verify that SSH without a command does not open a shell.
+The status command must return JSON, `id` must be rejected by the forced command,
+and `sudo -l` must show no permitted commands.
+
+Every accepted request, completion, and error is emitted as structured JSON to the
+systemd journal together with Unix peer PID/UID/GID when the kernel exposes them.
+Inspect it with `journalctl -u getreplay-release-broker.service`.
+
+## Adapter contract
+
+The `promote-release` adapter is the only privileged deployment implementation. It
+must:
+
+- be an executable regular file owned by root and not writable by group or others;
+- accept exactly `--manifest PATH --release-id ID`;
+- re-read and verify the named manifest and artifact digest;
+- deploy every component and forward migration listed in the manifest, never accept
+  a service, path, command, SQL statement or image name from the caller;
+- use a root-owned production Compose file and deploy an image by digest;
+- run migrations using database roles limited to schema changes, not the
+  applications' unrestricted credentials;
+- perform a health check and return non-zero on failure.
+
+Do not adapt the old native `deploy.sh` scripts by running them as `solo`: build
+scripts from a commit would inherit everything `solo` can do. The intended next
+step is to build images in an isolated hosted CI runner, publish them by digest,
+and add small Compose adapters here.
 
 ## Local checks
 
 ```bash
 python3 -m unittest discover -s release/tests -v
-python3 release/getreplay_release.py preview frontend <40-char-commit>
+python3 release/broker.py check
 ```
-
-Production setup is intentionally a separate, confirmed step: installing a public
-key changes persistent access and must be reviewed against the exact target host.
