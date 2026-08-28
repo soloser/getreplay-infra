@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import binascii
 import dataclasses
 import datetime as dt
 import fcntl
@@ -88,10 +90,9 @@ def _validate_artifact_entry(value: object, *, migration: bool) -> dict[str, str
     return {key: str(value[key]) for key in keys}
 
 
-def load_manifest(config: BrokerConfig, release_id: str) -> tuple[Path, dict[str, Any]]:
-    release_protocol.validate_release_id(release_id)
-    path = config.manifest_root / f"{release_id}.json"
-    payload = _read_trusted_json(path, config.trusted_uid)
+def _validate_manifest(payload: object, release_id: str) -> dict[str, Any]:
+    if not isinstance(payload, Mapping):
+        raise BrokerError("release manifest must be an object")
     if set(payload) != {"version", "release_id", "components", "migrations"}:
         raise BrokerError("release manifest fields do not match version 1")
     if payload["version"] != 1 or payload["release_id"] != release_id:
@@ -110,11 +111,53 @@ def load_manifest(config: BrokerConfig, release_id: str) -> tuple[Path, dict[str
     validated_migrations = {
         name: _validate_artifact_entry(value, migration=True) for name, value in migrations.items()
     }
-    return path, {
+    return {
         "version": 1,
         "release_id": release_id,
         "components": validated_components,
         "migrations": validated_migrations,
+    }
+
+
+def load_manifest(config: BrokerConfig, release_id: str) -> tuple[Path, dict[str, Any]]:
+    release_protocol.validate_release_id(release_id)
+    path = config.manifest_root / f"{release_id}.json"
+    payload = _read_trusted_json(path, config.trusted_uid)
+    return path, _validate_manifest(payload, release_id)
+
+
+def stage_manifest(config: BrokerConfig, request: release_protocol.Request) -> dict[str, Any]:
+    request = release_protocol.validate_request(request)
+    if request.operation != "stage" or request.release_id is None or request.manifest is None:
+        raise BrokerError("stage request is required")
+    try:
+        raw = base64.b64decode(request.manifest, validate=True)
+        payload = json.loads(raw)
+    except (binascii.Error, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise BrokerError("staged manifest is not valid base64 JSON") from exc
+    manifest = _validate_manifest(payload, request.release_id)
+    config.manifest_root.mkdir(parents=True, exist_ok=True, mode=0o700)
+    destination = config.manifest_root / f"{request.release_id}.json"
+    temporary = config.manifest_root / f".{request.release_id}.{secrets.token_hex(8)}.tmp"
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0)
+    descriptor = os.open(temporary, flags, 0o600)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as target:
+            descriptor = -1
+            json.dump(manifest, target, sort_keys=True)
+            target.write("\n")
+            target.flush()
+            os.fsync(target.fileno())
+        temporary.replace(destination)
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+        temporary.unlink(missing_ok=True)
+    return {
+        "release_id": request.release_id,
+        "components": sorted(manifest["components"]),
+        "migrations": sorted(manifest["migrations"]),
+        "manifest": str(destination),
     }
 
 
@@ -205,7 +248,7 @@ def _snapshot_manifest(config: BrokerConfig, release_plan: Mapping[str, Any]) ->
 
 
 def execute(config: BrokerConfig, request: release_protocol.Request) -> dict[str, Any]:
-    release_plan = plan(config, dataclasses.replace(request, preview=False))
+    release_plan = plan(config, request)
     if request.preview:
         return release_plan
     config.state_root.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -247,7 +290,12 @@ def execute(config: BrokerConfig, request: release_protocol.Request) -> dict[str
 
 
 def handle(config: BrokerConfig, request: release_protocol.Request) -> dict[str, Any]:
-    result = status(config) if request.operation == "status" else execute(config, request)
+    if request.operation == "status":
+        result = status(config)
+    elif request.operation == "stage":
+        result = stage_manifest(config, request)
+    else:
+        result = execute(config, request)
     return {"status": "ok", "result": result}
 
 
@@ -302,7 +350,7 @@ def serve(config: BrokerConfig) -> None:
                 peer = _peer_credentials(connection)
                 try:
                     request = release_protocol.decode_request(_receive(connection))
-                    _audit("request", peer=peer, request=request.as_dict())
+                    _audit("request", peer=peer, request=request.audit_dict())
                     response = handle(config, request)
                     _audit(
                         "complete",

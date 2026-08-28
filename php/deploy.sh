@@ -6,6 +6,8 @@ REPO_ROOT="${REPO_ROOT:-/var/www/fun-php/repo}"
 APP_ROOT="${APP_ROOT:-${REPO_ROOT}/src}"
 BRANCH="${BRANCH:-main}"
 REVISION="${REVISION:-}"
+SOURCE_PREPARED="${SOURCE_PREPARED:-false}"
+BUILD_USER="${BUILD_USER:-}"
 PHP_BIN="${PHP_BIN:-/usr/bin/php}"
 APP_USER="${APP_USER:-www-data}"
 COMPOSER_BIN="${COMPOSER_BIN:-composer}"
@@ -27,6 +29,14 @@ log() {
 fail() {
   printf '[php-deploy] ERROR: %s\n' "$*" >&2
   exit 1
+}
+
+run_build() {
+  if [ -n "$BUILD_USER" ]; then
+    sudo -u "$BUILD_USER" -- env HOME="/home/$BUILD_USER" PATH="$PATH" "$@"
+  else
+    "$@"
+  fi
 }
 
 run_artisan() {
@@ -105,20 +115,28 @@ redis_reply="$("$REDIS_CLI" -h "$REDIS_DEPLOY_HOST" -p "$REDIS_DEPLOY_PORT" ping
 
 sudo systemctl is-active --quiet "$PHP_FPM_SERVICE" || \
   fail "$PHP_FPM_SERVICE is not active"
-sudo systemctl enable --now cron >/dev/null
+sudo systemctl is-active --quiet cron || fail "cron is not active"
 
-log "Fetching origin/$BRANCH"
-git -C "$REPO_ROOT" fetch --prune origin
-TARGET="origin/$BRANCH"
-if [ -n "$REVISION" ]; then
-  git -C "$REPO_ROOT" cat-file -e "$REVISION^{commit}" 2>/dev/null \
-    || fail "Commit is not available after fetch: $REVISION"
-  git -C "$REPO_ROOT" merge-base --is-ancestor "$REVISION" "origin/$BRANCH" \
-    || fail "Commit is not contained in origin/$BRANCH: $REVISION"
+if [ "$SOURCE_PREPARED" = "true" ]; then
+  [ -n "$REVISION" ] || fail "SOURCE_PREPARED=true requires REVISION"
+  [ "$(git -C "$REPO_ROOT" rev-parse HEAD)" = "$REVISION" ] || \
+    fail "Prepared PHP revision does not match $REVISION"
   TARGET="$REVISION"
+  log "Using prepared revision $REVISION"
 else
-  git -C "$REPO_ROOT" merge-base --is-ancestor HEAD "origin/$BRANCH" || \
-    fail "PHP checkout contains commits not present in origin/$BRANCH"
+  log "Fetching origin/$BRANCH"
+  git -C "$REPO_ROOT" fetch --prune origin
+  TARGET="origin/$BRANCH"
+  if [ -n "$REVISION" ]; then
+    git -C "$REPO_ROOT" cat-file -e "$REVISION^{commit}" 2>/dev/null \
+      || fail "Commit is not available after fetch: $REVISION"
+    git -C "$REPO_ROOT" merge-base --is-ancestor "$REVISION" "origin/$BRANCH" \
+      || fail "Commit is not contained in origin/$BRANCH: $REVISION"
+    TARGET="$REVISION"
+  else
+    git -C "$REPO_ROOT" merge-base --is-ancestor HEAD "origin/$BRANCH" || \
+      fail "PHP checkout contains commits not present in origin/$BRANCH"
+  fi
 fi
 
 if [ -f "$APP_ROOT/storage/framework/down" ]; then
@@ -130,7 +148,9 @@ else
   maintenance_enabled=1
 fi
 
-if [ -n "$REVISION" ]; then
+if [ "$SOURCE_PREPARED" = "true" ]; then
+  :
+elif [ -n "$REVISION" ]; then
   log "Checking out exact revision $TARGET"
   git -C "$REPO_ROOT" reset --hard "$TARGET"
 else
@@ -141,7 +161,7 @@ fi
 log "Installing production Composer dependencies"
 (
   cd "$APP_ROOT"
-  COMPOSER_ALLOW_SUPERUSER=1 "$COMPOSER_PATH" install \
+  run_build env COMPOSER_ALLOW_SUPERUSER=0 "$COMPOSER_PATH" install \
     --no-dev \
     --no-scripts \
     --prefer-dist \

@@ -21,6 +21,8 @@ SRC="${SRC:-/home/solo/getreplay-go}"           # git clone of github.com/solose
 BIN_DIR="${BIN_DIR:-/var/www/getreplay-go}"      # binaries + launcher .sh + getreplay-go.env
 BRANCH="${BRANCH:-main}"
 REVISION="${REVISION:-}"
+SOURCE_PREPARED="${SOURCE_PREPARED:-false}"
+BUILD_USER="${BUILD_USER:-}"
 GO_BIN="${GO_BIN:-go}"
 LOG_DIR="${LOG_DIR:-/var/log}"
 # ---------------------------------------------------------------------------
@@ -28,6 +30,14 @@ LOG_DIR="${LOG_DIR:-/var/log}"
 INFRA_GO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"   # this dir (infra/go on the server)
 log() { printf '\033[1;34m[go-deploy %s]\033[0m %s\n' "$(date +%H:%M:%S)" "$*"; }
 die() { printf '\033[1;31m[go-deploy]\033[0m %s\n' "$*" >&2; exit 1; }
+
+run_build() {
+  if [ -n "$BUILD_USER" ]; then
+    sudo -u "$BUILD_USER" -- env HOME="/home/$BUILD_USER" PATH="$PATH" "$@"
+  else
+    "$@"
+  fi
+}
 
 case "$APP" in
   match-updater)       SERVICE="go-app.service";        LAUNCHER="start.sh" ;;
@@ -50,22 +60,28 @@ if [ -n "$(git -C "$SRC" status --porcelain --untracked-files=no)" ]; then
   die "Go checkout has local tracked changes; commit or remove them before deploying"
 fi
 
-log "update source ($BRANCH)"
-git -C "$SRC" fetch --prune origin
-TARGET="origin/$BRANCH"
-if [ -n "$REVISION" ]; then
-  git -C "$SRC" cat-file -e "$REVISION^{commit}" 2>/dev/null || die "commit is not available after fetch: $REVISION"
-  git -C "$SRC" merge-base --is-ancestor "$REVISION" "origin/$BRANCH" \
-    || die "commit is not contained in origin/$BRANCH: $REVISION"
-  TARGET="$REVISION"
+if [ "$SOURCE_PREPARED" = "true" ]; then
+  [ -n "$REVISION" ] || die "SOURCE_PREPARED=true requires REVISION"
+  [ "$(git -C "$SRC" rev-parse HEAD)" = "$REVISION" ] || die "prepared Go revision does not match $REVISION"
+  log "using prepared revision $REVISION"
+else
+  log "update source ($BRANCH)"
+  git -C "$SRC" fetch --prune origin
+  TARGET="origin/$BRANCH"
+  if [ -n "$REVISION" ]; then
+    git -C "$SRC" cat-file -e "$REVISION^{commit}" 2>/dev/null || die "commit is not available after fetch: $REVISION"
+    git -C "$SRC" merge-base --is-ancestor "$REVISION" "origin/$BRANCH" \
+      || die "commit is not contained in origin/$BRANCH: $REVISION"
+    TARGET="$REVISION"
+  fi
+  git -C "$SRC" reset --hard "$TARGET"
 fi
-git -C "$SRC" reset --hard "$TARGET"
 log "at $(git -C "$SRC" rev-parse --short HEAD)"
 
 log "build $APP (CGO off — a static binary, like the old cross-build)"
 tmp="$BIN_DIR/.$APP.new.$$"
 trap 'rm -f "$tmp"' EXIT
-( cd "$SRC" && CGO_ENABLED=0 "$GO_BIN" build -o "$tmp" "./cmd/$APP" ) || die "build failed — nothing deployed"
+( cd "$SRC" && run_build env CGO_ENABLED=0 "$GO_BIN" build -o "$tmp" "./cmd/$APP" ) || die "build failed — nothing deployed"
 chmod 0755 "$tmp"
 mv -f "$tmp" "$BIN_DIR/$APP"          # atomic swap; safe on Linux even while the old binary runs
 trap - EXIT

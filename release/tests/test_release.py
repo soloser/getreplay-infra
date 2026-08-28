@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import base64
 import os
 from pathlib import Path
 import stat
@@ -13,6 +14,7 @@ RELEASE_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(RELEASE_DIR))
 
 import broker  # noqa: E402
+import promote_release  # noqa: E402
 import release_protocol  # noqa: E402
 
 
@@ -29,6 +31,16 @@ class ReleaseProtocolTest(unittest.TestCase):
         self.assertIsNone(promotion.target)
         self.assertTrue(preview.preview)
 
+    def test_stage_accepts_only_one_bounded_manifest_payload(self) -> None:
+        encoded = base64.b64encode(b'{"version":1}').decode("ascii")
+        request = release_protocol.parse_ssh_command(
+            f"getreplay-release stage candidate {encoded}"
+        )
+
+        self.assertEqual("stage", request.operation)
+        self.assertEqual("candidate", request.release_id)
+        self.assertEqual(encoded, request.manifest)
+
     def test_shell_and_path_injection_are_rejected(self) -> None:
         commands = (
             "bash",
@@ -37,6 +49,8 @@ class ReleaseProtocolTest(unittest.TestCase):
             "getreplay-release deploy frontend ../../etc/passwd",
             "getreplay-release migrate mysql release;id",
             "getreplay-release migrate production release-1",
+            "getreplay-release stage candidate payload extra",
+            "getreplay-release preview stage candidate payload",
         )
         for command in commands:
             with self.subTest(command=command):
@@ -158,6 +172,99 @@ class BrokerTest(unittest.TestCase):
 
         with self.assertRaisesRegex(broker.BrokerError, "unexpected fields"):
             broker.load_manifest(self.config, "release-1")
+
+    def test_stage_validates_and_atomically_installs_manifest(self) -> None:
+        source = self.write_manifest()
+        encoded = base64.b64encode(source.read_bytes()).decode("ascii")
+        source.unlink()
+
+        result = broker.stage_manifest(
+            self.config,
+            release_protocol.Request("stage", None, "release-1", False, encoded),
+        )
+
+        self.assertEqual("release-1", result["release_id"])
+        staged = self.manifests / "release-1.json"
+        self.assertTrue(staged.is_file())
+        self.assertEqual(0, stat.S_IMODE(staged.stat().st_mode) & 0o077)
+
+    def test_stage_rejects_invalid_base64_without_replacing_candidate(self) -> None:
+        original = self.write_manifest()
+        before = original.read_bytes()
+
+        with self.assertRaisesRegex(broker.BrokerError, "base64 JSON"):
+            broker.stage_manifest(
+                self.config,
+                release_protocol.Request("stage", None, "release-1", False, "not@base64"),
+            )
+
+        self.assertEqual(before, original.read_bytes())
+
+
+class PromotionPlanTest(unittest.TestCase):
+    def manifest(self) -> dict[str, object]:
+        return {
+            "components": {
+                "frontend": {"revision": "a" * 40, "artifact": "sha256:" + "b" * 64},
+                "php": {"revision": "c" * 40, "artifact": "sha256:" + "d" * 64},
+                "go-demo-uploader": {
+                    "revision": "e" * 40,
+                    "artifact": "sha256:" + "f" * 64,
+                },
+                "go-match-updater": {
+                    "revision": "e" * 40,
+                    "artifact": "sha256:" + "f" * 64,
+                },
+            },
+            "migrations": {
+                "mysql": {
+                    "revision": "1" * 40,
+                    "artifact": "sha256:" + "2" * 64,
+                    "migration": "mysql-release",
+                }
+            },
+        }
+
+    def test_deployment_order_is_fixed(self) -> None:
+        self.assertEqual(
+            [
+                "migration:mysql",
+                "component:php",
+                "component:go-match-updater",
+                "component:go-demo-uploader",
+                "component:frontend",
+            ],
+            promote_release.deployment_order(self.manifest()),
+        )
+
+    def test_go_components_must_share_one_source(self) -> None:
+        manifest = self.manifest()
+        manifest["components"]["go-demo-uploader"]["revision"] = "9" * 40
+
+        with self.assertRaisesRegex(promote_release.PromotionError, "one revision"):
+            promote_release.release_sources(manifest)
+
+    def test_committed_candidate_is_valid_and_complete(self) -> None:
+        payload = json.loads((RELEASE_DIR / "candidate.json").read_text(encoding="utf-8"))
+
+        manifest = broker._validate_manifest(payload, "candidate")
+
+        self.assertEqual(set(release_protocol.COMPONENTS), set(manifest["components"]))
+        self.assertEqual(set(release_protocol.DATABASES), set(manifest["migrations"]))
+        self.assertEqual(
+            [
+                "migration:mysql",
+                "migration:clickhouse",
+                "component:php",
+                "component:go-match-updater",
+                "component:go-demo-uploader",
+                "component:go-highlight-extractor",
+                "component:go-replay-converter",
+                "component:go-stats-extractor",
+                "component:frontend",
+            ],
+            promote_release.deployment_order(manifest),
+        )
 
 
 if __name__ == "__main__":

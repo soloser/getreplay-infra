@@ -22,7 +22,7 @@ def send_request(
     request: release_protocol.Request,
     *,
     socket_path: Path = DEFAULT_SOCKET,
-    timeout: float = 900,
+    timeout: float = 1900,
 ) -> dict[str, Any]:
     payload = release_protocol.encode_request(request)
     response = bytearray()

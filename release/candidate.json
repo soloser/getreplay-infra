@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "release_id": "candidate",
+  "components": {
+    "frontend": {
+      "revision": "b116fc35e2c911259743ed93066a5f29f20fae00",
+      "artifact": "sha256:6fbd4aa93e308bdfae5b076989c445574abb7d003da6d9831c24c30f137c9f68"
+    },
+    "php": {
+      "revision": "d70a00d5ba09db900ccaff07156658d5e8c22c59",
+      "artifact": "sha256:ed52fbcb329bba927bf948492b44aa5fbde1f72a0eca083d46287c993c782766"
+    },
+    "go-match-updater": {
+      "revision": "17d1bbaa386ea012b6487236eebf02ad94ab2bca",
+      "artifact": "sha256:5c1792be8a5c01c80a3df2f0dc227193bce00a578d9b7bd237d07c4b40cb2ccb"
+    },
+    "go-demo-uploader": {
+      "revision": "17d1bbaa386ea012b6487236eebf02ad94ab2bca",
+      "artifact": "sha256:5c1792be8a5c01c80a3df2f0dc227193bce00a578d9b7bd237d07c4b40cb2ccb"
+    },
+    "go-highlight-extractor": {
+      "revision": "17d1bbaa386ea012b6487236eebf02ad94ab2bca",
+      "artifact": "sha256:5c1792be8a5c01c80a3df2f0dc227193bce00a578d9b7bd237d07c4b40cb2ccb"
+    },
+    "go-replay-converter": {
+      "revision": "17d1bbaa386ea012b6487236eebf02ad94ab2bca",
+      "artifact": "sha256:5c1792be8a5c01c80a3df2f0dc227193bce00a578d9b7bd237d07c4b40cb2ccb"
+    },
+    "go-stats-extractor": {
+      "revision": "17d1bbaa386ea012b6487236eebf02ad94ab2bca",
+      "artifact": "sha256:5c1792be8a5c01c80a3df2f0dc227193bce00a578d9b7bd237d07c4b40cb2ccb"
+    }
+  },
+  "migrations": {
+    "mysql": {
+      "revision": "8d07f1a729b6cee6f72e03d206f19615e01e4571",
+      "artifact": "sha256:57e07a8bc7da2e8295d7ff8c8c30c903716e5bbb6ce935ac4e555ed6bc39b274",
+      "migration": "mysql-8d07f1a729b6"
+    },
+    "clickhouse": {
+      "revision": "8d07f1a729b6cee6f72e03d206f19615e01e4571",
+      "artifact": "sha256:57e07a8bc7da2e8295d7ff8c8c30c903716e5bbb6ce935ac4e555ed6bc39b274",
+      "migration": "clickhouse-8d07f1a729b6"
+    }
+  }
+}

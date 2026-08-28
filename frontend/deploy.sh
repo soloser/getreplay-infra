@@ -21,6 +21,8 @@ set -euo pipefail
 APP_ROOT="${APP_ROOT:-/home/solo/getreplay-front}"   # the git checkout = systemd WorkingDirectory
 BRANCH="${BRANCH:-main}"
 REVISION="${REVISION:-}"
+SOURCE_PREPARED="${SOURCE_PREPARED:-false}"
+BUILD_USER="${BUILD_USER:-}"
 SERVICE="${SERVICE:-nextjs.service}"
 NODE_BIN="${NODE_BIN:-/opt/node-20/bin}"             # isolated Node install
 HEALTH_URL="${HEALTH_URL:-http://[::1]:3000/}"       # matches `next start -H ::1`
@@ -28,6 +30,14 @@ HEALTH_URL="${HEALTH_URL:-http://[::1]:3000/}"       # matches `next start -H ::
 
 log() { printf '\033[1;34m[deploy %s]\033[0m %s\n' "$(date +%H:%M:%S)" "$*"; }
 die() { printf '\033[1;31m[deploy]\033[0m %s\n' "$*" >&2; exit 1; }
+
+run_build() {
+  if [ -n "$BUILD_USER" ]; then
+    sudo -u "$BUILD_USER" -- env HOME="/home/$BUILD_USER" PATH="$PATH" "$@"
+  else
+    "$@"
+  fi
+}
 
 # --- pick the correct Node (first in PATH so npm's `env node` finds it too) ---
 export PATH="$NODE_BIN:$PATH"
@@ -51,24 +61,30 @@ if [ -f .nvmrc ]; then
 fi
 log "using $(node -v) from $NODE_BIN"
 
-log "fetch origin/$BRANCH"
-git fetch --prune origin
-TARGET="origin/$BRANCH"
-if [ -n "$REVISION" ]; then
-  git cat-file -e "$REVISION^{commit}" 2>/dev/null || die "commit is not available after fetch: $REVISION"
-  git merge-base --is-ancestor "$REVISION" "origin/$BRANCH" \
-    || die "commit is not contained in origin/$BRANCH: $REVISION"
-  TARGET="$REVISION"
+if [ "$SOURCE_PREPARED" = "true" ]; then
+  [ -n "$REVISION" ] || die "SOURCE_PREPARED=true requires REVISION"
+  [ "$(git rev-parse HEAD)" = "$REVISION" ] || die "prepared frontend revision does not match $REVISION"
+  log "using prepared revision $REVISION"
+else
+  log "fetch origin/$BRANCH"
+  git fetch --prune origin
+  TARGET="origin/$BRANCH"
+  if [ -n "$REVISION" ]; then
+    git cat-file -e "$REVISION^{commit}" 2>/dev/null || die "commit is not available after fetch: $REVISION"
+    git merge-base --is-ancestor "$REVISION" "origin/$BRANCH" \
+      || die "commit is not contained in origin/$BRANCH: $REVISION"
+    TARGET="$REVISION"
+  fi
+  git reset --hard "$TARGET"   # untracked files (.env.production, node_modules, .next) are kept
 fi
-git reset --hard "$TARGET"   # untracked files (.env.production, node_modules, .next) are kept
 
 log "stop $SERVICE (build window begins)"
 sudo systemctl stop "$SERVICE"
 
 log "npm ci"
-npm ci
+run_build npm ci
 log "npm run build"
-npm run build
+run_build npm run build
 
 log "start $SERVICE"
 sudo systemctl start "$SERVICE"

@@ -50,7 +50,8 @@ infra/
 - [x] PHP one-command deploy (`php/deploy.sh`) + daily highlight-feed cron.
 - [ ] Capture Laravel queue/scheduler units (or supervisor) and remaining crons.
 - [ ] Zero-downtime frontend (blue-green: two ports + graceful `caddy reload`) — deferred.
-- [ ] CI: build artifact + remote deploy.
+- [x] Human-approved GitHub Actions release button with a forced-command SSH gateway.
+- [ ] Move source builds from production to prebuilt CI artifacts when release volume warrants it.
 - [ ] Consider `output: 'standalone'` for the frontend to drop `npm ci` on prod.
 
 ## What to copy from prod into this repo

@@ -1,5 +1,5 @@
 name: Deploy production
-run-name: Deploy current production candidate
+run-name: Deploy reviewed candidate by @${{ github.actor }}
 
 on:
   workflow_dispatch:
@@ -14,9 +14,10 @@ jobs:
   deploy:
     name: Promote candidate
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 40
     environment: production
-    permissions: {}
+    permissions:
+      contents: read
     env:
       RELEASE_HOST: ${{ vars.PRODUCTION_RELEASE_HOST }}
       RELEASE_PORT: ${{ vars.PRODUCTION_RELEASE_PORT }}
@@ -24,6 +25,7 @@ jobs:
       RELEASE_ID: candidate
       RELEASE_KEY: ${{ secrets.PRODUCTION_RELEASE_SSH_KEY }}
       RELEASE_KNOWN_HOSTS: ${{ secrets.PRODUCTION_RELEASE_KNOWN_HOSTS }}
+      GITHUB_TOKEN: ${{ github.token }}
     steps:
       - name: Validate fixed deployment target
         shell: bash
@@ -45,6 +47,42 @@ jobs:
           printf '%s\n' "$RELEASE_KNOWN_HOSTS" > "$RUNNER_TEMP/getreplay-release-ssh/known_hosts"
           chmod 0600 "$RUNNER_TEMP/getreplay-release-ssh/id"
           chmod 0644 "$RUNNER_TEMP/getreplay-release-ssh/known_hosts"
+
+      - name: Load reviewed candidate from this commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          api_url="$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/contents/release/candidate.json?ref=$GITHUB_SHA"
+          response="$(curl --fail --silent --show-error \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $GITHUB_TOKEN" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            "$api_url")"
+          manifest="$(jq -r '.content' <<<"$response" | tr -d '\n')"
+          [[ "$manifest" =~ ^[A-Za-z0-9+/]+={0,2}$ ]]
+          printf '%s' "$manifest" | base64 --decode | jq -e \
+            '.version == 1 and .release_id == "candidate" and (.components | type == "object") and (.migrations | type == "object")' \
+            >/dev/null
+          printf 'RELEASE_MANIFEST=%s\n' "$manifest" >> "$GITHUB_ENV"
+
+      - name: Stage reviewed candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh \
+            -F /dev/null \
+            -T \
+            -o BatchMode=yes \
+            -o ClearAllForwardings=yes \
+            -o ConnectTimeout=15 \
+            -o IdentitiesOnly=yes \
+            -o RequestTTY=no \
+            -o StrictHostKeyChecking=yes \
+            -o "UserKnownHostsFile=$RUNNER_TEMP/getreplay-release-ssh/known_hosts" \
+            -i "$RUNNER_TEMP/getreplay-release-ssh/id" \
+            -p "$RELEASE_PORT" \
+            "$RELEASE_USER@$RELEASE_HOST" \
+            "getreplay-release stage $RELEASE_ID $RELEASE_MANIFEST"
 
       - name: Preview immutable release
         shell: bash

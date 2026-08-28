@@ -30,6 +30,8 @@ load_config() {
   MIGRATIONS_DIR="${MIGRATIONS_DIR:-/home/solo/fun-migrations/migrations}"
   MIGRATIONS_REMOTE="${MIGRATIONS_REMOTE:-origin}"
   MIGRATIONS_BRANCH="${MIGRATIONS_BRANCH:-main}"
+  REVISION="${REVISION:-}"
+  SOURCE_PREPARED="${SOURCE_PREPARED:-false}"
 
   [ -d "$MIGRATIONS_DIR/.git" ] || fail "Git repository not found: $MIGRATIONS_DIR"
   command -v git >/dev/null 2>&1 || fail "git is not installed"
@@ -44,6 +46,14 @@ update_migrations() {
 
   if [ -n "$(git -C "$MIGRATIONS_DIR" status --porcelain --untracked-files=no)" ]; then
     fail "Migration checkout has local tracked changes: $MIGRATIONS_DIR"
+  fi
+
+  if [ "$SOURCE_PREPARED" = "true" ]; then
+    [ -n "$REVISION" ] || fail "SOURCE_PREPARED=true requires REVISION"
+    [ "$(git -C "$MIGRATIONS_DIR" rev-parse HEAD)" = "$REVISION" ] || \
+      fail "Prepared migrations revision does not match $REVISION"
+    log "Using prepared migrations revision $REVISION"
+    return 0
   fi
 
   log "Pulling $MIGRATIONS_REMOTE/$MIGRATIONS_BRANCH"

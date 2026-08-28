@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import dataclasses
+import hashlib
 import json
 import re
 import shlex
@@ -10,7 +11,7 @@ from typing import Mapping, Sequence
 
 
 PROTOCOL_VERSION = 1
-MAX_REQUEST_BYTES = 4096
+MAX_REQUEST_BYTES = 16 * 1024
 COMPONENTS = (
     "frontend",
     "php",
@@ -21,7 +22,7 @@ COMPONENTS = (
     "go-stats-extractor",
 )
 DATABASES = ("mysql", "clickhouse")
-OPERATIONS = ("status", "promote")
+OPERATIONS = ("status", "stage", "promote")
 RELEASE_ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,63}$")
 
 
@@ -35,6 +36,7 @@ class Request:
     target: str | None = None
     release_id: str | None = None
     preview: bool = False
+    manifest: str | None = None
 
     def as_dict(self) -> dict[str, object]:
         return {
@@ -43,7 +45,18 @@ class Request:
             "target": self.target,
             "release_id": self.release_id,
             "preview": self.preview,
+            "manifest": self.manifest,
         }
+
+    def audit_dict(self) -> dict[str, object]:
+        result = self.as_dict()
+        manifest = result.pop("manifest")
+        result["manifest_sha256"] = (
+            hashlib.sha256(str(manifest).encode("ascii")).hexdigest()
+            if manifest is not None
+            else None
+        )
+        return result
 
 
 def validate_release_id(value: str) -> str:
@@ -56,12 +69,23 @@ def validate_request(request: Request) -> Request:
     if request.operation not in OPERATIONS:
         raise ReleaseError(f"operation is not allowed: {request.operation}")
     if request.operation == "status":
-        if request.target is not None or request.release_id is not None or request.preview:
-            raise ReleaseError("status cannot contain target, release_id or preview")
+        if (
+            request.target is not None
+            or request.release_id is not None
+            or request.preview
+            or request.manifest is not None
+        ):
+            raise ReleaseError("status cannot contain target, release_id, preview or manifest")
         return request
     if request.target is not None or request.release_id is None:
-        raise ReleaseError("promote requires release_id and cannot contain a target")
+        raise ReleaseError(f"{request.operation} requires release_id and cannot contain a target")
     validate_release_id(request.release_id)
+    if request.operation == "stage":
+        if request.preview or not isinstance(request.manifest, str) or not request.manifest:
+            raise ReleaseError("stage requires a base64 manifest and cannot be previewed")
+        return request
+    if request.manifest is not None:
+        raise ReleaseError("promote cannot contain a manifest")
     return request
 
 
@@ -75,8 +99,15 @@ def parse_argv(argv: Sequence[str]) -> Request:
         if preview or len(words) != 1:
             raise ReleaseError("allowed shape: status")
         return validate_request(Request("status"))
+    if len(words) == 3 and words[0] == "stage":
+        if preview:
+            raise ReleaseError("stage cannot be previewed")
+        return validate_request(Request("stage", None, words[1], False, words[2]))
     if len(words) != 2 or words[0] != "promote":
-        raise ReleaseError("allowed shape: [preview] promote <release_id>")
+        raise ReleaseError(
+            "allowed shapes: stage <release_id> <base64-manifest> or "
+            "[preview] promote <release_id>"
+        )
     return validate_request(Request("promote", None, words[1], preview))
 
 
@@ -105,7 +136,7 @@ def decode_request(raw: bytes) -> Request:
         payload = json.loads(raw)
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise ReleaseError("request is not valid JSON") from exc
-    expected = {"version", "operation", "target", "release_id", "preview"}
+    expected = {"version", "operation", "target", "release_id", "preview", "manifest"}
     if not isinstance(payload, Mapping) or set(payload) != expected:
         raise ReleaseError("request fields do not match protocol version 1")
     if payload["version"] != PROTOCOL_VERSION:
@@ -118,6 +149,14 @@ def decode_request(raw: bytes) -> Request:
         raise ReleaseError("release_id must be a string or null")
     if not isinstance(payload["preview"], bool):
         raise ReleaseError("preview must be a boolean")
+    if payload["manifest"] is not None and not isinstance(payload["manifest"], str):
+        raise ReleaseError("manifest must be a string or null")
     return validate_request(
-        Request(payload["operation"], payload["target"], payload["release_id"], payload["preview"])
+        Request(
+            payload["operation"],
+            payload["target"],
+            payload["release_id"],
+            payload["preview"],
+            payload["manifest"],
+        )
     )
