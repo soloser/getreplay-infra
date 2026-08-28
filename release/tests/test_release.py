@@ -5,6 +5,7 @@ import base64
 import os
 from pathlib import Path
 import stat
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -322,6 +323,59 @@ class PromotionPlanTest(unittest.TestCase):
         self.assertIn("--property=ProtectSystem=strict", command)
         self.assertNotIn("--property=NoNewPrivileges=no", command)
         self.assertEqual("candidate", command[-1])
+
+
+class MigrationDeployTest(unittest.TestCase):
+    def test_prepared_revision_does_not_require_a_branch_name(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            repository = Path(temporary) / "migrations"
+            repository.mkdir()
+            subprocess.run(
+                ["git", "init", "--initial-branch=master", str(repository)],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            subprocess.run(
+                ["git", "-C", str(repository), "config", "user.email", "test@example.invalid"],
+                check=True,
+            )
+            subprocess.run(
+                ["git", "-C", str(repository), "config", "user.name", "Release test"],
+                check=True,
+            )
+            (repository / "migration.sql").write_text("SELECT 1;\n", encoding="utf-8")
+            subprocess.run(["git", "-C", str(repository), "add", "migration.sql"], check=True)
+            subprocess.run(
+                ["git", "-C", str(repository), "commit", "-m", "test migration"],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            revision = subprocess.run(
+                ["git", "-C", str(repository), "rev-parse", "HEAD"],
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+
+            completed = subprocess.run(
+                [
+                    "bash",
+                    "-c",
+                    'source "$1"; MIGRATIONS_DIR="$2"; MIGRATIONS_BRANCH=main; '
+                    'REVISION="$3"; SOURCE_PREPARED=true; update_migrations',
+                    "migration-test",
+                    str(RELEASE_DIR.parent / "migrations" / "common.sh"),
+                    str(repository),
+                    revision,
+                ],
+                capture_output=True,
+                text=True,
+            )
+
+            self.assertEqual(0, completed.returncode, completed.stderr)
+            self.assertIn(f"Using prepared migrations revision {revision}", completed.stdout)
 
 
 if __name__ == "__main__":

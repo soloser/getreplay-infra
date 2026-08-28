@@ -40,10 +40,6 @@ load_config() {
 update_migrations() {
   local current_branch
 
-  current_branch="$(git -C "$MIGRATIONS_DIR" branch --show-current)"
-  [ "$current_branch" = "$MIGRATIONS_BRANCH" ] || \
-    fail "Expected branch $MIGRATIONS_BRANCH, found ${current_branch:-detached HEAD} in $MIGRATIONS_DIR"
-
   if [ -n "$(git -C "$MIGRATIONS_DIR" status --porcelain --untracked-files=no)" ]; then
     fail "Migration checkout has local tracked changes: $MIGRATIONS_DIR"
   fi
@@ -55,6 +51,10 @@ update_migrations() {
     log "Using prepared migrations revision $REVISION"
     return 0
   fi
+
+  current_branch="$(git -C "$MIGRATIONS_DIR" branch --show-current)"
+  [ "$current_branch" = "$MIGRATIONS_BRANCH" ] || \
+    fail "Expected branch $MIGRATIONS_BRANCH, found ${current_branch:-detached HEAD} in $MIGRATIONS_DIR"
 
   log "Pulling $MIGRATIONS_REMOTE/$MIGRATIONS_BRANCH"
   git -C "$MIGRATIONS_DIR" pull --ff-only "$MIGRATIONS_REMOTE" "$MIGRATIONS_BRANCH"
