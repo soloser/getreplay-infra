@@ -266,6 +266,16 @@ class PromotionPlanTest(unittest.TestCase):
             promote_release.deployment_order(manifest),
         )
 
+    def test_broker_sandbox_allows_unprivileged_builds_and_node(self) -> None:
+        unit = (RELEASE_DIR.parent / "systemd" / "getreplay-release-broker.service").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertNotIn("NoNewPrivileges=yes", unit)
+        self.assertNotIn("MemoryDenyWriteExecute=yes", unit)
+        self.assertIn("ProtectSystem=strict", unit)
+        self.assertIn("ProtectHome=read-only", unit)
+
 
 if __name__ == "__main__":
     unittest.main()
