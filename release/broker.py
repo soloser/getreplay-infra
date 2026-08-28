@@ -182,6 +182,7 @@ def _adapter_path(config: BrokerConfig) -> Path:
 def status(config: BrokerConfig) -> dict[str, Any]:
     return {
         "last_release": _read_state(config.state_root / "last-release.json"),
+        "last_failure": _failure_summary(_read_state(config.state_root / "last-failure.json")),
     }
 
 
@@ -226,6 +227,38 @@ def _write_state(config: BrokerConfig, request: release_protocol.Request, result
     temporary.write_text(json.dumps(result, sort_keys=True) + "\n", encoding="utf-8")
     temporary.chmod(0o600)
     temporary.replace(destination)
+
+
+def _write_failure(config: BrokerConfig, result: Mapping[str, Any]) -> None:
+    config.state_root.mkdir(parents=True, exist_ok=True, mode=0o700)
+    destination = config.state_root / "last-failure.json"
+    temporary = destination.with_suffix(f".tmp.{os.getpid()}")
+    temporary.write_text(json.dumps(result, sort_keys=True) + "\n", encoding="utf-8")
+    temporary.chmod(0o600)
+    temporary.replace(destination)
+
+
+def _extract_adapter_error(stdout: str, stderr: str) -> str | None:
+    for line in reversed((stdout + "\n" + stderr).splitlines()):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            payload = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, Mapping) and isinstance(payload.get("error"), str):
+            return str(payload["error"])[:2000]
+    return None
+
+
+def _failure_summary(payload: dict[str, Any] | None) -> dict[str, Any] | None:
+    if payload is None:
+        return None
+    return {
+        key: payload.get(key)
+        for key in ("release_id", "exit_code", "completed_at", "adapter_error")
+    }
 
 
 def _snapshot_manifest(config: BrokerConfig, release_plan: Mapping[str, Any]) -> Path:
@@ -288,7 +321,7 @@ def _adapter_command(
         f"--unit={unit}",
         "--property=User=root",
         "--property=Group=root",
-        "--property=UMask=0077",
+        "--property=UMask=0022",
         "--property=PrivateTmp=yes",
         "--property=ProtectHome=read-only",
         "--property=ProtectSystem=strict",
@@ -340,7 +373,14 @@ def execute(config: BrokerConfig, request: release_protocol.Request) -> dict[str
             "adapter_stderr": adapter_stderr,
         }
         if completed.returncode != 0:
-            raise BrokerError(f"release adapter failed with exit code {completed.returncode}")
+            adapter_error = _extract_adapter_error(adapter_stdout, adapter_stderr)
+            failure = {**result, "adapter_error": adapter_error}
+            _write_failure(config, failure)
+            detail = f": {adapter_error}" if adapter_error else ""
+            raise BrokerError(
+                f"release adapter failed with exit code {completed.returncode}{detail}; "
+                "root details: /var/lib/getreplay-release/state/last-failure.json"
+            )
         _write_state(config, request, result)
         return result
 
