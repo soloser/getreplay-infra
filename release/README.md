@@ -4,8 +4,12 @@ Production is deployed from manual workflows in this repository. **Deploy produc
 still promotes the complete reviewed `release/candidate.json`. The separate **Deploy
 frontend**, **Deploy Node GC**, **Deploy PHP**, **Deploy Go services**, and **Deploy
 migrations** buttons select only their fixed scope from that same reviewed candidate.
-Every workflow stages its reduced manifest, previews the exact plan, and promotes it
-through the same forced-command SSH identity and global production lock.
+Every button owns a normal job gated by the protected `production` Environment so its
+Environment secrets are resolved directly by GitHub. The job fetches the reviewed
+`release/run-production-scope.sh` from its exact workflow commit, stages its reduced
+manifest, previews the exact plan, and promotes it through the same forced-command SSH
+identity and global production lock. Do not replace these jobs with a reusable-workflow
+call: GitHub does not reliably expose protected Environment secrets through that boundary.
 
 The agent has no production key, shell, sudo rule, database credential, or Docker
 socket access. The private release key exists only in the protected GitHub
@@ -155,5 +159,5 @@ merge an owner-reviewed pull request to protected `main`, then press the same bu
 ```bash
 python3 -m unittest discover -s release/tests -v
 python3 release/broker.py check
-bash -n release/install-server.sh frontend/deploy.sh go/deploy.sh php/deploy.sh migrations/*.sh
+bash -n release/install-server.sh release/run-production-scope.sh frontend/deploy.sh go/deploy.sh php/deploy.sh migrations/*.sh
 ```
