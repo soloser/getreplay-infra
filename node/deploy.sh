@@ -32,6 +32,7 @@ run_build() {
 [ -d "$SRC/.git" ] || fail "Node source checkout is missing: $SRC"
 [ -f "$SRC/.env" ] || fail "production Node environment file is missing: $SRC/.env"
 [ -f "$UNIT_SOURCE" ] || fail "trusted node-app unit is missing"
+[ -f "$UNIT_TARGET" ] || fail "installed node-app unit is missing; rerun release/install-server.sh"
 [ -d "$RELEASE_ROOT" ] || fail "release root is missing; rerun release/install-server.sh"
 [ -L "$CURRENT_LINK" ] || fail "current Node release link is missing; rerun release/install-server.sh"
 
@@ -51,7 +52,15 @@ unit_backup="$RELEASE_ROOT/.node-app.service.previous.$$"
 link_candidate="$RELEASE_ROOT/.current.new.$$"
 health_body="$RELEASE_ROOT/.health.$$"
 rollback_needed=0
-had_unit=false
+
+write_unit_in_place() {
+  local source="$1"
+
+  # The release executor may write this allowlisted file, but its parent directory
+  # intentionally stays read-only. Keep the inode and replace only its contents.
+  command cat "$source" > "$UNIT_TARGET"
+  cmp -s "$source" "$UNIT_TARGET" || fail "node-app unit verification failed"
+}
 
 on_exit() {
   status=$?
@@ -63,11 +72,7 @@ on_exit() {
     log "deployment failed; restoring previous Node release"
     ln -s "$previous_target" "$link_candidate"
     mv -Tf "$link_candidate" "$CURRENT_LINK"
-    if [ "$had_unit" = true ]; then
-      cp -p "$unit_backup" "$UNIT_TARGET"
-    else
-      rm -f -- "$UNIT_TARGET"
-    fi
+    write_unit_in_place "$unit_backup"
     systemctl daemon-reload || true
     systemctl restart "$SERVICE" || true
   fi
@@ -99,13 +104,10 @@ fi
 previous_target="$(readlink -f "$CURRENT_LINK")"
 [ -d "$previous_target" ] || fail "current Node release target is invalid"
 
-if [ -f "$UNIT_TARGET" ]; then
-  cp -p "$UNIT_TARGET" "$unit_backup"
-  had_unit=true
-fi
+cp -p "$UNIT_TARGET" "$unit_backup"
 rollback_needed=1
 
-install -m 0644 "$UNIT_SOURCE" "$UNIT_TARGET"
+write_unit_in_place "$UNIT_SOURCE"
 systemctl daemon-reload
 ln -s "$release_dir" "$link_candidate"
 mv -Tf "$link_candidate" "$CURRENT_LINK"
