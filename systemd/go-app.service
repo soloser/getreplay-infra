@@ -1,6 +1,8 @@
 [Unit]
 Description=Go Application Service
-After=network.target
+Wants=network-online.target kafka.service
+Requires=kafka-topics.service
+After=network-online.target kafka.service kafka-topics.service
 
 [Service]
 Type=simple

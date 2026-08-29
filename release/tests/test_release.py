@@ -379,19 +379,12 @@ class PromotionPlanTest(unittest.TestCase):
         self.assertEqual(0, result)
         self.assertEqual(["prepare", "preflight", "deploy"], order)
 
-    def test_committed_candidate_is_valid_and_has_baseline(self) -> None:
+    def test_committed_candidate_is_valid_and_has_full_queue_pipeline(self) -> None:
         payload = json.loads((RELEASE_DIR / "candidate.json").read_text(encoding="utf-8"))
 
         manifest = broker._validate_manifest(payload, "candidate")
 
-        queue_workers = {
-            "go-match-discovery-worker",
-            "go-demo-downloader-worker",
-            "go-demo-processor-worker",
-        }
-        baseline_components = set(release_protocol.COMPONENTS) - queue_workers
-        self.assertEqual(baseline_components, set(manifest["components"]))
-        self.assertTrue(queue_workers.isdisjoint(manifest["components"]))
+        self.assertEqual(set(release_protocol.COMPONENTS), set(manifest["components"]))
         self.assertEqual(set(release_protocol.DATABASES), set(manifest["migrations"]))
         self.assertEqual(
             [
@@ -399,6 +392,9 @@ class PromotionPlanTest(unittest.TestCase):
                 "migration:clickhouse",
                 "component:php",
                 "component:node",
+                "component:go-demo-processor-worker",
+                "component:go-demo-downloader-worker",
+                "component:go-match-discovery-worker",
                 "component:go-match-updater",
                 "component:go-demo-uploader",
                 "component:go-highlight-extractor",

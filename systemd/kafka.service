@@ -1,0 +1,37 @@
+[Unit]
+Description=GetReplay Apache Kafka (single-node KRaft)
+Documentation=file:/home/solo/infra/kafka/README.md
+Wants=network-online.target
+After=network-online.target
+ConditionPathExists=/var/lib/kafka/meta.properties
+
+[Service]
+Type=simple
+User=kafka
+Group=kafka
+UMask=0027
+Environment="KAFKA_HEAP_OPTS=-Xms512m -Xmx512m"
+Environment=LOG_DIR=/var/log/kafka
+ExecStart=/opt/kafka/bin/kafka-server-start.sh /etc/kafka/getreplay-server.properties
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=120
+SuccessExitStatus=143
+LimitNOFILE=100000
+StateDirectory=kafka
+StateDirectoryMode=0750
+LogsDirectory=kafka
+LogsDirectoryMode=0750
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/kafka /var/log/kafka
+ProtectControlGroups=yes
+ProtectKernelTunables=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictSUIDSGID=yes
+LockPersonality=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -3,6 +3,9 @@
 # Build a Go service ON THE SERVER and deploy it. One app per call:
 #   ./deploy.sh match-updater
 #   ./deploy.sh demo-uploader
+#   ./deploy.sh match-discovery-worker
+#   ./deploy.sh demo-downloader-worker
+#   ./deploy.sh demo-processor-worker
 #   ./deploy.sh highlight-extractor
 #   ./deploy.sh replay-converter
 #   ./deploy.sh stats-extractor
@@ -39,13 +42,54 @@ run_build() {
   fi
 }
 
+wait_for_service() {
+  local service="$1"
+  local stable_checks=0
+  local previous_restarts=""
+  local current_restarts
+
+  for ((attempt = 1; attempt <= 30; attempt++)); do
+    if sudo systemctl is-active --quiet "$service"; then
+      if current_restarts="$(sudo systemctl show --property=NRestarts --value "$service" 2>/dev/null)" \
+        && [ -n "$current_restarts" ]; then
+        if [ "$current_restarts" = "$previous_restarts" ]; then
+          stable_checks=$((stable_checks + 1))
+        else
+          stable_checks=1
+          previous_restarts="$current_restarts"
+        fi
+        if [ "$stable_checks" -ge 8 ]; then
+          return 0
+        fi
+      else
+        stable_checks=0
+        previous_restarts=""
+      fi
+    else
+      stable_checks=0
+      previous_restarts=""
+    fi
+    sleep 1
+  done
+
+  return 1
+}
+
+restart_and_wait() {
+  local service="$1"
+  sudo systemctl restart "$service" && wait_for_service "$service"
+}
+
 case "$APP" in
-  match-updater)       SERVICE="go-app.service";        LAUNCHER="start.sh" ;;
-  demo-uploader)       SERVICE="demo-uploader.service"; LAUNCHER="demo-uploader.sh" ;;
-  highlight-extractor) SERVICE="";                      LAUNCHER="" ;;
-  replay-converter)    SERVICE="";                      LAUNCHER="" ;;
-  stats-extractor)     SERVICE="";                      LAUNCHER="" ;;
-  *) die "usage: $0 <match-updater|demo-uploader|highlight-extractor|replay-converter|stats-extractor>" ;;
+  match-updater)          SERVICE="go-app.service";                    LAUNCHER="start.sh" ;;
+  demo-uploader)          SERVICE="demo-uploader.service";             LAUNCHER="demo-uploader.sh" ;;
+  match-discovery-worker) SERVICE="match-discovery-worker.service";    LAUNCHER="match-discovery-worker.sh" ;;
+  demo-downloader-worker) SERVICE="demo-downloader-worker.service";    LAUNCHER="demo-downloader-worker.sh" ;;
+  demo-processor-worker)  SERVICE="demo-processor-worker.service";     LAUNCHER="demo-processor-worker.sh" ;;
+  highlight-extractor)    SERVICE="";                                  LAUNCHER="" ;;
+  replay-converter)       SERVICE="";                                  LAUNCHER="" ;;
+  stats-extractor)        SERVICE="";                                  LAUNCHER="" ;;
+  *) die "usage: $0 <match-updater|demo-uploader|match-discovery-worker|demo-downloader-worker|demo-processor-worker|highlight-extractor|replay-converter|stats-extractor>" ;;
 esac
 
 command -v "$GO_BIN" >/dev/null 2>&1 || die "Go not found ($GO_BIN) — install Go >= 1.24 (see README.md)"
@@ -80,18 +124,71 @@ log "at $(run_build git -C "$SRC" rev-parse --short HEAD)"
 
 log "build $APP (CGO off — a static binary, like the old cross-build)"
 tmp="$BIN_DIR/.$APP.new.$$"
-trap 'rm -f "$tmp"' EXIT
+target="$BIN_DIR/$APP"
+binary_backup=""
+launcher_target=""
+launcher_backup=""
+had_binary=false
+had_launcher=false
+
+cleanup_deploy_files() {
+  rm -f -- "$tmp"
+  [ -z "$binary_backup" ] || rm -f -- "$binary_backup"
+  [ -z "$launcher_backup" ] || rm -f -- "$launcher_backup"
+}
+
+restore_previous_service_files() {
+  if [ "$had_binary" = true ]; then
+    mv -f -- "$binary_backup" "$target"
+    binary_backup=""
+  else
+    rm -f -- "$target"
+  fi
+  if [ "$had_launcher" = true ]; then
+    mv -f -- "$launcher_backup" "$launcher_target"
+    launcher_backup=""
+  else
+    rm -f -- "$launcher_target"
+  fi
+}
+
+trap cleanup_deploy_files EXIT
 ( cd "$SRC" && run_build env CGO_ENABLED=0 "$GO_BIN" build -o "$tmp" "./cmd/$APP" ) || die "build failed — nothing deployed"
 chmod 0755 "$tmp"
-mv -f "$tmp" "$BIN_DIR/$APP"          # atomic swap; safe on Linux even while the old binary runs
-trap - EXIT
-log "installed $BIN_DIR/$APP"
+
+if [ -n "$SERVICE" ]; then
+  binary_backup="$BIN_DIR/.$APP.previous.$$"
+  launcher_target="$BIN_DIR/$LAUNCHER"
+  launcher_backup="$BIN_DIR/.$LAUNCHER.previous.$$"
+  if [ -f "$target" ]; then
+    cp -p -- "$target" "$binary_backup"
+    had_binary=true
+  fi
+  if [ -f "$launcher_target" ]; then
+    cp -p -- "$launcher_target" "$launcher_backup"
+    had_launcher=true
+  fi
+fi
+
+mv -f -- "$tmp" "$target"          # atomic swap; safe on Linux even while the old binary runs
+log "staged $target"
 
 case "$APP" in
-  match-updater|demo-uploader)
-    install -m 0755 "$INFRA_GO/$LAUNCHER" "$BIN_DIR/$LAUNCHER"   # keep the launcher in sync
+  match-updater|demo-uploader|match-discovery-worker|demo-downloader-worker|demo-processor-worker)
+    if ! install -m 0755 "$INFRA_GO/$LAUNCHER" "$launcher_target"; then
+      restore_previous_service_files
+      die "launcher install failed; previous $APP files restored"
+    fi
     log "restart $SERVICE"
-    sudo systemctl restart "$SERVICE"
+    if ! restart_and_wait "$SERVICE"; then
+      log "readiness failed; restoring previous $APP files"
+      restore_previous_service_files
+      if [ "$had_binary" = true ] && restart_and_wait "$SERVICE"; then
+        die "new $APP failed readiness; previous version restored and restarted"
+      fi
+      sudo systemctl stop "$SERVICE" || true
+      die "new $APP failed readiness; rollback could not restore a healthy service"
+    fi
     log "done — $APP live ($SERVICE)"
     ;;
 
