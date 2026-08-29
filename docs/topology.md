@@ -27,11 +27,15 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 | Frontend (zone-map-ui) | `[::1]:3000` | **Node 20** (`/opt/node-20`) | solo | `nextjs.service` |
 | Go backend (match-updater) | `0.0.0.0:3006` (Caddy `/srv/*`) | Go | www-data | `go-app.service` → `start.sh` |
 | Demo uploader | `0.0.0.0:3005` (uploads from PHP) | Go | www-data | `demo-uploader.service` → `demo-uploader.sh` |
+| Match discovery worker | — | Go + Kafka | www-data | `match-discovery-worker.service` |
+| Demo downloader worker | — | Go + Kafka | www-data | `demo-downloader-worker.service` |
+| Demo processor worker | — | Go + Kafka | www-data | `demo-processor-worker.service` |
 | Highlight extractor | — (one-shot runner) | Go | www-data | **cron** `/etc/cron.d/getreplay-highlight-extractor` (hourly :20) → `highlight-extractor-cron.sh` |
 | Highlight feed builder | — (one-shot runner) | PHP 8.4 CLI + Redis | www-data | **cron** `/etc/cron.d/getreplay-highlight-feed` (daily 03:40) → `highlight-feed-cron.sh` |
 | Node backend | (internal) | **system Node 18** | solo | `node-app.service` → `/home/solo/getreplay-node`, `/usr/bin/npm start`, EnvFile `.env` |
 | PHP API + admin | `unix//run/php/php8.4-fpm.sock` | PHP 8.4-FPM | www-data | `php8.4-fpm.service` (distro) |
 | Redis | `127.0.0.1:6379` | Redis 7 / distro package | redis | `redis-server.service`; highlight feed uses database `2` |
+| Kafka | `127.0.0.1:9092` | Apache Kafka 4.3.1, KRaft | kafka | `kafka.service`; `kafka-topics.service` provisions topics |
 | Caddy | 80/443 | — | — | `caddy.service` |
 
 > ⚠️ **Two Node runtimes coexist.** The frontend runs **Node 20** isolated at `/opt/node-20`
@@ -41,7 +45,11 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 > system node. See [`../frontend/DEPLOY.md`](../frontend/DEPLOY.md).
 >
 > The Go units call helper scripts (`start.sh`, `demo-uploader.sh`) that hold the actual run
-> command/flags/port — capture those too (they live in `/var/www/getreplay-go/`).
+> command/flags/port. Queue workers use their matching `*-worker.sh` launchers. All live in
+> `/var/www/getreplay-go/` and source the same mode-0600 `getreplay-go.env`.
+>
+> Kafka is one persistent broker on this host. It removes application-process queue loss, not
+> host/disk failure; host-level HA requires at least three brokers on independent hosts.
 
 ## Filesystem paths
 
@@ -51,6 +59,8 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 | PHP / Laravel | `/var/www/fun-php/repo/src/...` |
 | PHP cron wrappers | `/var/www/fun-php/bin/` |
 | Replay storage | `/var/www/getreplay-storage/` (`replays/` + `*.replay2`) |
+| Kafka data | `/var/lib/kafka/` (persistent KRaft metadata + topic log) |
+| Kafka config | `/etc/kafka/getreplay-server.properties` |
 | Laravel public storage | `/var/www/fun-php/repo/src/storage/app/public` |
 | Caddyfile | `/etc/caddy/Caddyfile` |
 
@@ -59,6 +69,7 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 Application deployment entrypoints:
 
 - Go: `go/deploy.sh <app>`
+- Kafka/systemd first install: `kafka/README.md` (human-reviewed privileged procedure)
 - PHP: `php/deploy.sh`
 - Frontend: `frontend/deploy.sh`
 

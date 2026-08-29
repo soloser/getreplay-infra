@@ -50,9 +50,9 @@ current scaling or availability requirement.
 ## What the button deploys
 
 [`candidate.json`](candidate.json) pins the reviewed frontend, PHP, production Node GC, selected Go commands, MySQL
-migration, and ClickHouse migration commits plus their source archive digests. The protocol
-supports the Kafka workers, but the current candidate deliberately omits them until a real Go
-commit contains their commands. The fixed order is migrations, PHP, downstream Kafka workers,
+migration, and ClickHouse migration commits plus their source archive digests. The current
+candidate includes all three Kafka workers and pins them to the same reviewed Go source as the
+API and uploader. The fixed order is migrations, PHP, downstream Kafka workers,
 upstream Go producers and one-shot Go tools, and frontend, followed by the existing service and
 HTTP health checks.
 
