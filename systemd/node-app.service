@@ -5,9 +5,9 @@ After=network.target
 [Service]
 Type=simple
 User=solo
-WorkingDirectory=/home/solo/getreplay-node
+WorkingDirectory=/home/solo/getreplay-node-releases/current
 EnvironmentFile=/home/solo/getreplay-node/.env
-ExecStart=/usr/bin/npm start
+ExecStart=/usr/bin/env NODE_ENV=production GETREPLAY_STEAM_GC_SINGLETON=production /usr/bin/npm start
 Restart=on-failure
 RestartSec=30s
 StartLimitInterval=600

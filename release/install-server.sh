@@ -34,6 +34,7 @@ public_key="$(tr -d '\r\n' < "$PUBLIC_KEY_FILE")"
 for required_path in \
   /home/solo/getreplay-front/.git \
   /home/solo/getreplay-go/.git \
+  /home/solo/getreplay-node/.git \
   /home/solo/fun-migrations/migrations/.git \
   /var/www/fun-php/repo/.git \
   /home/solo/infra/migrations/.env; do
@@ -63,11 +64,14 @@ install -o root -g root -m 0755 \
 install -d -o root -g root -m 0755 \
   "$DEPLOY_ROOT/frontend" \
   "$DEPLOY_ROOT/go/cron" \
+  "$DEPLOY_ROOT/node" \
   "$DEPLOY_ROOT/php/cron" \
   "$DEPLOY_ROOT/migrations"
 install -o root -g root -m 0755 "$INFRA_ROOT/frontend/deploy.sh" "$DEPLOY_ROOT/frontend/deploy.sh"
 install -o root -g root -m 0755 "$INFRA_ROOT/go/"*.sh "$DEPLOY_ROOT/go/"
 install -o root -g root -m 0644 "$INFRA_ROOT/go/cron/"* "$DEPLOY_ROOT/go/cron/"
+install -o root -g root -m 0755 "$INFRA_ROOT/node/deploy.sh" "$DEPLOY_ROOT/node/deploy.sh"
+install -o root -g root -m 0644 "$INFRA_ROOT/systemd/node-app.service" "$DEPLOY_ROOT/node/node-app.service"
 install -o root -g root -m 0755 "$INFRA_ROOT/php/deploy.sh" "$INFRA_ROOT/php/highlight-feed-cron.sh" "$DEPLOY_ROOT/php/"
 install -o root -g root -m 0644 "$INFRA_ROOT/php/cron/"* "$DEPLOY_ROOT/php/cron/"
 install -o root -g root -m 0755 \
@@ -79,6 +83,16 @@ install -o root -g root -m 0755 \
 install -o root -g root -m 0644 \
   "$INFRA_ROOT/systemd/getreplay-release-broker.service" \
   /etc/systemd/system/getreplay-release-broker.service
+
+deploy_group="$(id -gn "$DEPLOY_USER")"
+install -d -o "$DEPLOY_USER" -g "$deploy_group" -m 0755 /home/solo/getreplay-node-releases
+if [ -L /home/solo/getreplay-node-releases/current ]; then
+  :
+elif [ -e /home/solo/getreplay-node-releases/current ]; then
+  fail "/home/solo/getreplay-node-releases/current must be a symlink"
+else
+  ln -s /home/solo/getreplay-node /home/solo/getreplay-node-releases/current
+fi
 
 install -d -o root -g root -m 0755 "/home/$RELEASE_USER"
 install -d -o root -g root -m 0755 "/home/$RELEASE_USER/.ssh"

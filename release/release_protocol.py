@@ -15,8 +15,12 @@ MAX_REQUEST_BYTES = 16 * 1024
 COMPONENTS = (
     "frontend",
     "php",
+    "node",
     "go-match-updater",
     "go-demo-uploader",
+    "go-match-discovery-worker",
+    "go-demo-downloader-worker",
+    "go-demo-processor-worker",
     "go-highlight-extractor",
     "go-replay-converter",
     "go-stats-extractor",

@@ -1,8 +1,11 @@
 # Human-approved production releases
 
-Production is deployed from the manual **Deploy production** workflow in this
-repository. The workflow stages the reviewed `release/candidate.json`, previews the
-exact plan, and promotes it through one forced-command SSH identity.
+Production is deployed from manual workflows in this repository. **Deploy production**
+still promotes the complete reviewed `release/candidate.json`. The separate **Deploy
+frontend**, **Deploy Node GC**, **Deploy PHP**, **Deploy Go services**, and **Deploy
+migrations** buttons select only their fixed scope from that same reviewed candidate.
+Every workflow stages its reduced manifest, previews the exact plan, and promotes it
+through the same forced-command SSH identity and global production lock.
 
 The agent has no production key, shell, sudo rule, database credential, or Docker
 socket access. The private release key exists only in the protected GitHub
@@ -42,14 +45,26 @@ current scaling or availability requirement.
 
 ## What the button deploys
 
-[`candidate.json`](candidate.json) pins the reviewed frontend, PHP, Go, MySQL
-migration, and ClickHouse migration commits plus their source archive digests. The
-fixed order is migrations, PHP, Go, and frontend, followed by the existing service
-and HTTP health checks.
+[`candidate.json`](candidate.json) pins the reviewed frontend, PHP, production Node GC, selected Go commands, MySQL
+migration, and ClickHouse migration commits plus their source archive digests. The protocol
+supports the Kafka workers, but the current candidate deliberately omits them until a real Go
+commit contains their commands. The fixed order is migrations, PHP, downstream Kafka workers,
+upstream Go producers and one-shot Go tools, and frontend, followed by the existing service and
+HTTP health checks.
 
 Changing the candidate or workflow requires review from `@soloser` through
 `.github/CODEOWNERS`. Protect `main`; otherwise an account able to push directly to
 `main` could alter the workflow or candidate before the human presses the button.
+
+Adding a component is also a one-time control-plane update. Before the first Node GC release,
+update `/home/solo/infra`, rerun `release/install-server.sh`, and verify that
+`/home/solo/getreplay-node-releases/current` points to the existing checkout. This installs the
+Node adapter without restarting `node-app`; the **Deploy Node GC** workflow performs the first
+controlled switch, one restart, the revision-2 health gate, and rollback if needed. Before the first candidate that
+contains the three Kafka workers, a production administrator must update `/home/solo/infra`,
+rerun `release/install-server.sh` to install the reviewed protocol/adapter, and install the new
+worker units as documented in `go/README.md`. Until then the old broker correctly rejects the
+new component names.
 
 ## One-time server installation
 
@@ -107,9 +122,11 @@ and is serialized by the `getreplay-production` concurrency group.
 
 ## Running a release
 
-Open **Actions → Deploy production → Run workflow** on `main`, approve the protected
-`production` Environment, and read the staged preview before promotion. The workflow
-always deploys `candidate.json` from the exact infra commit running the workflow.
+Open the component-specific workflow under **Actions**, press **Run workflow** on `main`,
+approve the protected `production` Environment, and read the staged preview before promotion.
+Use **Deploy production** only when every component in the candidate should move together.
+Every button reads `candidate.json` from the exact infra commit running the workflow; the fixed
+scope selector cannot add components or migrations that were not reviewed there.
 
 Inspect the last result:
 
@@ -126,7 +143,11 @@ Update SHAs only after the commits are on `origin/main`. Recalculate each digest
 git archive --format=tar <full-commit-sha> | sha256sum
 ```
 
-Use the same digest for every Go component pinned to the same Go commit. Run checks,
+Use the same digest for every Go component pinned to the same Go commit. Node uses the digest
+of the pinned `getreplay-node` commit and is deployed independently with **Deploy Node GC**.
+The three worker
+components must point to a commit that actually contains their `cmd/` binaries; placeholder
+or pre-worker revisions make promotion fail closed at build time. Run checks,
 merge an owner-reviewed pull request to protected `main`, then press the same button.
 
 ## Local checks

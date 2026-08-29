@@ -1,0 +1,15 @@
+name: Deploy migrations
+run-name: Deploy migrations candidate by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy migrations only
+    uses: ./.github/workflows/_deploy-production-scope.yml
+    with:
+      release-scope: migrations

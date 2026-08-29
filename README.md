@@ -13,8 +13,10 @@ and gitignored by the parent.
 ```
 infra/
   caddy/Caddyfile        # prod Caddy config (TLS, routing) — source of truth
-  systemd/               # service units (nextjs, go-app, demo-uploader, node-app)
+  systemd/               # service units (apps, Kafka, and durable queue workers)
+  kafka/                 # Kafka KRaft config, topic provisioning, production runbook
   frontend/              # zone-map-ui deploy: deploy.sh (one command) + DEPLOY.md
+  node/                  # production-only Steam GC deploy with health-gated rollback
   go/                    # Go deploy: deploy.sh <app> (builds on server) + launchers +
                          #   shared getreplay-go.env + highlight-extractor cron + README
   php/                   # native Laravel deploy + cron jobs + captured PHP config
@@ -37,6 +39,8 @@ infra/
 
 - **Never commit secrets.** Env files (`.env.production`, credentials) live only on the
   server under `shared/`; put templates here if useful, not real values.
+- **Durable demo queue:** Kafka is a loopback-only, persistent systemd service on the current
+  single production host. It survives app deploys but is not host-level HA; see `kafka/README.md`.
 - **Atomic deploys:** build in a fresh release dir, swap a `current` symlink, health-check,
   auto-rollback on failure. See `frontend/deploy.sh`.
 - **Node 20** for the frontend, installed isolated at `/opt/node-20` so it doesn't clash
@@ -47,10 +51,11 @@ infra/
 - [x] Frontend one-command deploy (`frontend/deploy.sh`, single service, auto Node 20).
 - [x] Go services one-command deploy (`go/deploy.sh <app>`, builds on server) +
       highlight-extractor cron + shared `getreplay-go.env`.
+- [x] Durable Kafka demo pipeline config, explicit topics, and three worker units.
 - [x] PHP one-command deploy (`php/deploy.sh`) + daily highlight-feed cron.
 - [ ] Capture Laravel queue/scheduler units (or supervisor) and remaining crons.
 - [ ] Zero-downtime frontend (blue-green: two ports + graceful `caddy reload`) — deferred.
-- [x] Human-approved GitHub Actions release button with a forced-command SSH gateway.
+- [x] Human-approved component-specific GitHub Actions release buttons with one forced-command SSH gateway.
 - [ ] Move source builds from production to prebuilt CI artifacts when release volume warrants it.
 - [ ] Consider `output: 'standalone'` for the frontend to drop `npm ci` on prod.
 
@@ -59,7 +64,7 @@ infra/
 Config that lives outside the app repos and should be versioned here (⚠️ **never** commit
 secrets — `.env`, TLS keys, DB passwords):
 
-- **systemd** — done: nextjs, go-app, demo-uploader, node-app. Enumerate more with
+- **systemd** — done: nextjs, Go API/uploader/workers, Kafka, node-app. Enumerate more with
   `systemctl list-unit-files --state=enabled`.
 - **PHP** — done (`php/`): deploy script, highlight-feed cron, fpm `php.ini`,
   `pool.d/*.conf`, `conf.d/*`, cli `php.ini`.

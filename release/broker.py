@@ -301,6 +301,8 @@ def _adapter_command(
         (
             "-/home/solo/getreplay-front",
             "-/home/solo/getreplay-go",
+            "-/home/solo/getreplay-node",
+            "-/home/solo/getreplay-node-releases",
             "-/home/solo/fun-migrations",
             "-/home/solo/.npm",
             "-/home/solo/.cache",
@@ -308,6 +310,7 @@ def _adapter_command(
             "-/var/www/fun-php",
             "-/var/www/getreplay-go",
             "-/etc/cron.d",
+            "-/etc/systemd/system/node-app.service",
             "-/var/log",
         )
     )
