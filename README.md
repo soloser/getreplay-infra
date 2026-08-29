@@ -51,7 +51,7 @@ infra/
 - [x] Frontend one-command deploy (`frontend/deploy.sh`, single service, auto Node 20).
 - [x] Go services one-command deploy (`go/deploy.sh <app>`, builds on server) +
       highlight-extractor cron + shared `getreplay-go.env`.
-- [x] Durable Kafka demo pipeline config, explicit topics, and three worker units.
+- [x] Durable Kafka demo pipeline config with one all-in-one Match Updater service.
 - [x] PHP one-command deploy (`php/deploy.sh`) + daily highlight-feed cron.
 - [ ] Capture Laravel queue/scheduler units (or supervisor) and remaining crons.
 - [ ] Zero-downtime frontend (blue-green: two ports + graceful `caddy reload`) — deferred.

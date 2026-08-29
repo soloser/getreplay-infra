@@ -51,9 +51,9 @@ current scaling or availability requirement.
 
 [`candidate.json`](candidate.json) pins the reviewed frontend, PHP, production Node GC, selected Go commands, MySQL
 migration, and ClickHouse migration commits plus their source archive digests. The protocol
-supports the Kafka workers, but the current candidate deliberately omits them until a real Go
-commit contains their commands. The fixed order is migrations, PHP, downstream Kafka workers,
-upstream Go producers and one-shot Go tools, and frontend, followed by the existing service and
+supports separate Kafka workers for future scaling, but the current single-process candidate
+deliberately omits them. The fixed order is migrations, PHP, Node, Go services and one-shot Go
+tools, and frontend, followed by the existing service and
 HTTP health checks.
 
 Changing the candidate or workflow requires review from `@soloser` through
@@ -64,11 +64,9 @@ Adding a component is also a one-time control-plane update. Before the first Nod
 update `/home/solo/infra`, rerun `release/install-server.sh`, and verify that
 `/home/solo/getreplay-node-releases/current` points to the existing checkout. This installs the
 Node adapter without restarting `node-app`; the **Deploy Node GC** workflow performs the first
-controlled switch, one restart, the revision-2 health gate, and rollback if needed. Before the first candidate that
-contains the three Kafka workers, a production administrator must update `/home/solo/infra`,
-rerun `release/install-server.sh` to install the reviewed protocol/adapter, and install the new
-worker units as documented in `go/README.md`. Until then the old broker correctly rejects the
-new component names.
+controlled switch, one restart, the revision-2 health gate, and rollback if needed. Kafka itself
+is installed once using the reviewed procedure in `kafka/README.md`; no additional Go unit is
+introduced for the queue migration.
 
 ## One-time server installation
 
@@ -149,9 +147,8 @@ git archive --format=tar <full-commit-sha> | sha256sum
 
 Use the same digest for every Go component pinned to the same Go commit. Node uses the digest
 of the pinned `getreplay-node` commit and is deployed independently with **Deploy Node GC**.
-The three worker
-components must point to a commit that actually contains their `cmd/` binaries; placeholder
-or pre-worker revisions make promotion fail closed at build time. Run checks,
+The current candidate omits optional standalone worker components because Match Updater owns the
+complete Kafka pipeline. Run checks,
 merge an owner-reviewed pull request to protected `main`, then press the same button.
 
 ## Local checks

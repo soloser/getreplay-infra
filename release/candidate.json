@@ -15,36 +15,36 @@
       "artifact": "sha256:b9500412c2313d4c04be53e6862d9b1bf9ac92660f823296419b0e75746a9523"
     },
     "go-match-updater": {
-      "revision": "17d1bbaa386ea012b6487236eebf02ad94ab2bca",
-      "artifact": "sha256:5c1792be8a5c01c80a3df2f0dc227193bce00a578d9b7bd237d07c4b40cb2ccb"
+      "revision": "92c09905631c51fba9a9de809650da784163c614",
+      "artifact": "sha256:ca93d2f2e1cb2e7ea95bdd60a55108484f80e556d2b46639ffe51b9002b13a09"
     },
     "go-demo-uploader": {
-      "revision": "17d1bbaa386ea012b6487236eebf02ad94ab2bca",
-      "artifact": "sha256:5c1792be8a5c01c80a3df2f0dc227193bce00a578d9b7bd237d07c4b40cb2ccb"
+      "revision": "92c09905631c51fba9a9de809650da784163c614",
+      "artifact": "sha256:ca93d2f2e1cb2e7ea95bdd60a55108484f80e556d2b46639ffe51b9002b13a09"
     },
     "go-highlight-extractor": {
-      "revision": "17d1bbaa386ea012b6487236eebf02ad94ab2bca",
-      "artifact": "sha256:5c1792be8a5c01c80a3df2f0dc227193bce00a578d9b7bd237d07c4b40cb2ccb"
+      "revision": "92c09905631c51fba9a9de809650da784163c614",
+      "artifact": "sha256:ca93d2f2e1cb2e7ea95bdd60a55108484f80e556d2b46639ffe51b9002b13a09"
     },
     "go-replay-converter": {
-      "revision": "17d1bbaa386ea012b6487236eebf02ad94ab2bca",
-      "artifact": "sha256:5c1792be8a5c01c80a3df2f0dc227193bce00a578d9b7bd237d07c4b40cb2ccb"
+      "revision": "92c09905631c51fba9a9de809650da784163c614",
+      "artifact": "sha256:ca93d2f2e1cb2e7ea95bdd60a55108484f80e556d2b46639ffe51b9002b13a09"
     },
     "go-stats-extractor": {
-      "revision": "17d1bbaa386ea012b6487236eebf02ad94ab2bca",
-      "artifact": "sha256:5c1792be8a5c01c80a3df2f0dc227193bce00a578d9b7bd237d07c4b40cb2ccb"
+      "revision": "92c09905631c51fba9a9de809650da784163c614",
+      "artifact": "sha256:ca93d2f2e1cb2e7ea95bdd60a55108484f80e556d2b46639ffe51b9002b13a09"
     }
   },
   "migrations": {
     "mysql": {
-      "revision": "8d07f1a729b6cee6f72e03d206f19615e01e4571",
-      "artifact": "sha256:57e07a8bc7da2e8295d7ff8c8c30c903716e5bbb6ce935ac4e555ed6bc39b274",
-      "migration": "mysql-8d07f1a729b6"
+      "revision": "2fb362ea5ae62c5b926b95c40c9cef10ab15a2e8",
+      "artifact": "sha256:5e359553da4a73f940983b378e549d39faf68561e9f048eb8821e616906a5513",
+      "migration": "mysql-2fb362ea5ae6"
     },
     "clickhouse": {
-      "revision": "8d07f1a729b6cee6f72e03d206f19615e01e4571",
-      "artifact": "sha256:57e07a8bc7da2e8295d7ff8c8c30c903716e5bbb6ce935ac4e555ed6bc39b274",
-      "migration": "clickhouse-8d07f1a729b6"
+      "revision": "2fb362ea5ae62c5b926b95c40c9cef10ab15a2e8",
+      "artifact": "sha256:5e359553da4a73f940983b378e549d39faf68561e9f048eb8821e616906a5513",
+      "migration": "clickhouse-2fb362ea5ae6"
     }
   }
 }

@@ -10,13 +10,17 @@ ENV_FILE="$SCRIPT_DIR/getreplay-go.env"
 set -a; . "$ENV_FILE"; set +a
 
 # --- per-service ---
+: "${DEMO_QUEUE_MAX_MESSAGE_BYTES:=1000000}"
+: "${QUEUE_RECOVERY_MISSING_INTERVAL:=30m}"
+export DEMO_QUEUE_MAX_MESSAGE_BYTES QUEUE_RECOVERY_MISSING_INTERVAL
 # ⚠ binds 0.0.0.0 — reachable externally unless firewalled. Caddy only needs localhost;
 #   consider 127.0.0.1:3006 / [::1]:3006. See ../docs/topology.md.
 export SERVER_TCP_ADDR=0.0.0.0:3006
 export STATCHANNEL_PRINT_STATS=false
 export DOWNLOADER_NUM_WORKERS=4
 export PARSER_NUM_WORKERS=6
-export PARSER_REPLAY_SAMPLING_RATE=16
+: "${PARSER_REPLAY_SAMPLING_RATE:=16}"
+export PARSER_REPLAY_SAMPLING_RATE
 # REQUIRED by match-updater (CheckRange ≥1) — reference match for the debug nade-stats
 # endpoint (HandleDemoNadeStats). Omitting it makes match-updater fail validation on start.
 export DEMO_MATCH_ID=112426

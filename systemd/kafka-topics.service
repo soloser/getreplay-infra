@@ -1,0 +1,21 @@
+[Unit]
+Description=Provision GetReplay Kafka topics
+Requires=kafka.service
+After=kafka.service
+
+[Service]
+Type=oneshot
+User=kafka
+Group=kafka
+ExecStart=/usr/local/libexec/getreplay-kafka/create-topics.sh
+RemainAfterExit=yes
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictSUIDSGID=yes
+LockPersonality=yes
+
+[Install]
+WantedBy=multi-user.target
