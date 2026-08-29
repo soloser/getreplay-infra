@@ -587,7 +587,9 @@ class NodeDeployIntegrationTest(unittest.TestCase):
         current.symlink_to(source)
         unit_source = root / "node-app.service"
         unit_source.write_text("new unit\n", encoding="utf-8")
-        unit_target = root / "active-node-app.service"
+        unit_directory = root / "systemd"
+        unit_directory.mkdir()
+        unit_target = unit_directory / "node-app.service"
         unit_target.write_text("old unit\n", encoding="utf-8")
 
         fake_bin = root / "bin"
@@ -640,13 +642,17 @@ class NodeDeployIntegrationTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             environment, current, unit_target, _, revision = self.prepare(Path(temporary))
             environment["FAKE_HEALTH"] = "ok"
+            unit_target.parent.chmod(0o555)
 
-            completed = subprocess.run(
-                [str(RELEASE_DIR.parent / "node" / "deploy.sh")],
-                env=environment,
-                capture_output=True,
-                text=True,
-            )
+            try:
+                completed = subprocess.run(
+                    [str(RELEASE_DIR.parent / "node" / "deploy.sh")],
+                    env=environment,
+                    capture_output=True,
+                    text=True,
+                )
+            finally:
+                unit_target.parent.chmod(0o755)
 
             self.assertEqual(0, completed.returncode, completed.stderr)
             self.assertEqual(revision, current.resolve().name)
@@ -656,13 +662,17 @@ class NodeDeployIntegrationTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             environment, current, unit_target, source, _ = self.prepare(Path(temporary))
             environment["FAKE_HEALTH"] = "fail"
+            unit_target.parent.chmod(0o555)
 
-            completed = subprocess.run(
-                [str(RELEASE_DIR.parent / "node" / "deploy.sh")],
-                env=environment,
-                capture_output=True,
-                text=True,
-            )
+            try:
+                completed = subprocess.run(
+                    [str(RELEASE_DIR.parent / "node" / "deploy.sh")],
+                    env=environment,
+                    capture_output=True,
+                    text=True,
+                )
+            finally:
+                unit_target.parent.chmod(0o755)
 
             self.assertNotEqual(0, completed.returncode)
             self.assertEqual(source.resolve(), current.resolve())
