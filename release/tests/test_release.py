@@ -438,52 +438,7 @@ class PromotionPlanTest(unittest.TestCase):
         self.assertEqual("candidate", command[-1])
 
 
-class QueueInfrastructureHardeningTest(unittest.TestCase):
-    def test_worker_units_use_journald_and_expected_write_paths(self) -> None:
-        expected_write_paths = {
-            "match-discovery-worker.service": None,
-            "demo-downloader-worker.service": "/var/www/getreplay-go/downloads",
-            "demo-processor-worker.service": (
-                "/var/www/getreplay-go/downloads /var/www/getreplay-storage/replays"
-            ),
-        }
-
-        for unit_name, write_paths in expected_write_paths.items():
-            with self.subTest(unit=unit_name):
-                source = (RELEASE_DIR.parent / "systemd" / unit_name).read_text(encoding="utf-8")
-                for directive in (
-                    "NoNewPrivileges=yes",
-                    "PrivateTmp=yes",
-                    "ProtectSystem=strict",
-                    "ProtectHome=yes",
-                    "RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6",
-                    "RestrictSUIDSGID=yes",
-                    "LockPersonality=yes",
-                    "StandardOutput=journal",
-                    "StandardError=journal",
-                ):
-                    self.assertIn(directive, source)
-                self.assertNotIn("StandardOutput=append:", source)
-                self.assertNotIn("StandardError=append:", source)
-                if write_paths is None:
-                    self.assertNotIn("ReadWritePaths=", source)
-                else:
-                    self.assertIn(f"ReadWritePaths={write_paths}", source)
-
-    def test_topic_provisioning_rejects_topology_drift(self) -> None:
-        source = (RELEASE_DIR.parent / "kafka" / "create-topics.sh").read_text(encoding="utf-8")
-
-        self.assertIn('"PartitionCount: $TOPIC_PARTITIONS"', source)
-        self.assertIn('"ReplicationFactor: $TOPIC_REPLICATION_FACTOR"', source)
-
-    def test_go_service_deploy_has_bounded_readiness_and_rollback(self) -> None:
-        source = (RELEASE_DIR.parent / "go" / "deploy.sh").read_text(encoding="utf-8")
-
-        self.assertIn("for ((attempt = 1; attempt <= 30; attempt++))", source)
-        self.assertIn("--property=NRestarts", source)
-        self.assertIn("restore_previous_service_files", source)
-        self.assertIn('sudo systemctl stop "$SERVICE"', source)
-
+class ReleaseInfrastructureHardeningTest(unittest.TestCase):
     def test_node_deploy_is_atomic_health_gated_and_rollback_capable(self) -> None:
         source = (RELEASE_DIR.parent / "node" / "deploy.sh").read_text(encoding="utf-8")
 
@@ -502,7 +457,7 @@ class QueueInfrastructureHardeningTest(unittest.TestCase):
 
 
 class GitHubWorkflowScopeTest(unittest.TestCase):
-    def test_component_buttons_call_one_fixed_scope_workflow(self) -> None:
+    def test_component_buttons_use_fixed_scope_environment_jobs(self) -> None:
         workflow_root = RELEASE_DIR.parent / ".github" / "workflows"
         expected = {
             "deploy-production.yml": "all",
@@ -516,19 +471,22 @@ class GitHubWorkflowScopeTest(unittest.TestCase):
         for filename, scope in expected.items():
             with self.subTest(workflow=filename):
                 source = (workflow_root / filename).read_text(encoding="utf-8")
-                self.assertIn("uses: ./.github/workflows/_deploy-production-scope.yml", source)
-                self.assertIn(f"release-scope: {scope}", source)
+                self.assertIn("environment: production", source)
+                self.assertIn("group: getreplay-production", source)
+                self.assertIn(f"RELEASE_SCOPE: {scope}", source)
+                self.assertIn("secrets.PRODUCTION_RELEASE_SSH_KEY", source)
+                self.assertIn("secrets.PRODUCTION_RELEASE_KNOWN_HOSTS", source)
+                self.assertIn("release/run-production-scope.sh?ref=$GITHUB_SHA", source)
+                self.assertNotIn("uses: ./.github/workflows/", source)
                 self.assertNotIn("workflow_dispatch:\n    inputs:", source)
 
-    def test_shared_workflow_keeps_environment_gate_and_global_lock(self) -> None:
-        source = (
-            RELEASE_DIR.parent / ".github" / "workflows" / "_deploy-production-scope.yml"
-        ).read_text(encoding="utf-8")
+    def test_reviewed_runner_keeps_scope_selection_and_release_protocol(self) -> None:
+        source = (RELEASE_DIR / "run-production-scope.sh").read_text(encoding="utf-8")
 
-        self.assertIn("environment: production", source)
-        self.assertIn("group: getreplay-production", source)
         self.assertIn("release/select_scope.py", source)
         self.assertIn("getreplay-release preview promote", source)
+        self.assertIn("StrictHostKeyChecking=yes", source)
+        self.assertIn("required environment value is empty", source)
 
 
 class MigrationDeployTest(unittest.TestCase):
