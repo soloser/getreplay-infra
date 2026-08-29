@@ -10,6 +10,10 @@
       "revision": "d70a00d5ba09db900ccaff07156658d5e8c22c59",
       "artifact": "sha256:ed52fbcb329bba927bf948492b44aa5fbde1f72a0eca083d46287c993c782766"
     },
+    "node": {
+      "revision": "45549df0dc5fd0d51976ed1239b95bd3f8edf16d",
+      "artifact": "sha256:b9500412c2313d4c04be53e6862d9b1bf9ac92660f823296419b0e75746a9523"
+    },
     "go-match-updater": {
       "revision": "17d1bbaa386ea012b6487236eebf02ad94ab2bca",
       "artifact": "sha256:5c1792be8a5c01c80a3df2f0dc227193bce00a578d9b7bd237d07c4b40cb2ccb"

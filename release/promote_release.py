@@ -28,19 +28,28 @@ DEPLOY_ROOT = Path("/usr/local/libexec/getreplay-release/deploy")
 REPOSITORIES = {
     "frontend": Path("/home/solo/getreplay-front"),
     "php": Path("/var/www/fun-php/repo"),
+    "node": Path("/home/solo/getreplay-node"),
     "go": Path("/home/solo/getreplay-go"),
     "migrations": Path("/home/solo/fun-migrations/migrations"),
 }
 COMPONENT_REPOSITORY = {
     "frontend": "frontend",
     "php": "php",
+    "node": "node",
     "go-match-updater": "go",
     "go-demo-uploader": "go",
+    "go-match-discovery-worker": "go",
+    "go-demo-downloader-worker": "go",
+    "go-demo-processor-worker": "go",
     "go-highlight-extractor": "go",
     "go-replay-converter": "go",
     "go-stats-extractor": "go",
 }
 GO_COMPONENT_APP = {
+    # Start downstream consumers before their upstream producers on first rollout.
+    "go-demo-processor-worker": "demo-processor-worker",
+    "go-demo-downloader-worker": "demo-downloader-worker",
+    "go-match-discovery-worker": "match-discovery-worker",
     "go-match-updater": "match-updater",
     "go-demo-uploader": "demo-uploader",
     "go-highlight-extractor": "highlight-extractor",
@@ -149,6 +158,8 @@ def deployment_order(manifest: Mapping[str, Any]) -> list[str]:
     result = [f"migration:{name}" for name in ("mysql", "clickhouse") if name in manifest["migrations"]]
     if "php" in manifest["components"]:
         result.append("component:php")
+    if "node" in manifest["components"]:
+        result.append("component:node")
     result.extend(
         f"component:{name}" for name in GO_COMPONENT_ORDER if name in manifest["components"]
     )
@@ -182,7 +193,7 @@ def _archive_digest(repository: Path, revision: str) -> str:
     return f"sha256:{digest.hexdigest()}"
 
 
-def _prepare_source(name: str, entry: Mapping[str, str]) -> None:
+def _prepare_source(name: str, entry: Mapping[str, str], *, checkout: bool = True) -> None:
     repository = REPOSITORIES[name]
     if not (repository / ".git").is_dir():
         raise PromotionError(f"production checkout is missing: {repository}")
@@ -200,11 +211,34 @@ def _prepare_source(name: str, entry: Mapping[str, str]) -> None:
         ["/usr/bin/git", "-C", str(repository), "merge-base", "--is-ancestor", revision, "origin/main"],
         user=DEPLOY_USER,
     )
-    _run(["/usr/bin/git", "-C", str(repository), "reset", "--hard", revision], user=DEPLOY_USER)
+    if checkout:
+        _run(["/usr/bin/git", "-C", str(repository), "reset", "--hard", revision], user=DEPLOY_USER)
     actual_digest = _archive_digest(repository, revision)
     if actual_digest != entry["artifact"]:
         raise PromotionError(
             f"source digest mismatch for {name}: expected {entry['artifact']}, got {actual_digest}"
+        )
+
+
+def _preflight_go_components(manifest: Mapping[str, Any]) -> None:
+    """Build every selected Go command before any deployment mutation runs."""
+    components = manifest["components"]
+    for component in GO_COMPONENT_ORDER:
+        if component not in components:
+            continue
+        app = GO_COMPONENT_APP[component]
+        _run(
+            [
+                "/opt/go/bin/go",
+                "build",
+                "-mod=readonly",
+                "-o",
+                "/dev/null",
+                f"./cmd/{app}",
+            ],
+            user=DEPLOY_USER,
+            cwd=REPOSITORIES["go"],
+            env={"CGO_ENABLED": "0"},
         )
 
 
@@ -230,6 +264,10 @@ def _deploy(manifest: Mapping[str, Any]) -> None:
     if "php" in components:
         script = _trusted_executable(DEPLOY_ROOT / "php" / "deploy.sh")
         _run([str(script)], env={**common, "REVISION": components["php"]["revision"]})
+
+    if "node" in components:
+        script = _trusted_executable(DEPLOY_ROOT / "node" / "deploy.sh")
+        _run([str(script)], env={**common, "REVISION": components["node"]["revision"]})
 
     for component in GO_COMPONENT_ORDER:
         if component not in components:
@@ -266,9 +304,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         payload = broker._read_trusted_json(args.manifest, 0)
         manifest = broker._validate_manifest(payload, args.release_id)
         sources = release_sources(manifest)
-        for name in ("migrations", "php", "go", "frontend"):
+        for name in ("migrations", "php", "node", "go", "frontend"):
             if name in sources:
-                _prepare_source(name, sources[name])
+                _prepare_source(name, sources[name], checkout=name != "node")
+        _preflight_go_components(manifest)
         _deploy(manifest)
         result = {
             "status": "ok",

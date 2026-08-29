@@ -1,0 +1,15 @@
+name: Deploy frontend
+run-name: Deploy frontend candidate by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy frontend only
+    uses: ./.github/workflows/_deploy-production-scope.yml
+    with:
+      release-scope: frontend
