@@ -25,11 +25,8 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 | Service | Port / socket | Runtime | User | Unit / entrypoint |
 |---|---|---|---|---|
 | Frontend (zone-map-ui) | `[::1]:3000` | **Node 20** (`/opt/node-20`) | solo | `nextjs.service` |
-| Go backend (match-updater) | `0.0.0.0:3006` (Caddy `/srv/*`) | Go | www-data | `go-app.service` → `start.sh` |
+| Go backend (match-updater + Kafka pipeline) | `0.0.0.0:3006` (Caddy `/srv/*`) | Go + Kafka | www-data | `go-app.service` → `start.sh` |
 | Demo uploader | `0.0.0.0:3005` (uploads from PHP) | Go | www-data | `demo-uploader.service` → `demo-uploader.sh` |
-| Match discovery worker | — | Go + Kafka | www-data | `match-discovery-worker.service` |
-| Demo downloader worker | — | Go + Kafka | www-data | `demo-downloader-worker.service` |
-| Demo processor worker | — | Go + Kafka | www-data | `demo-processor-worker.service` |
 | Highlight extractor | — (one-shot runner) | Go | www-data | **cron** `/etc/cron.d/getreplay-highlight-extractor` (hourly :20) → `highlight-extractor-cron.sh` |
 | Highlight feed builder | — (one-shot runner) | PHP 8.4 CLI + Redis | www-data | **cron** `/etc/cron.d/getreplay-highlight-feed` (daily 03:40) → `highlight-feed-cron.sh` |
 | Node backend | (internal) | **system Node 18** | solo | `node-app.service` → `/home/solo/getreplay-node`, `/usr/bin/npm start`, EnvFile `.env` |
@@ -45,8 +42,9 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 > system node. See [`../frontend/DEPLOY.md`](../frontend/DEPLOY.md).
 >
 > The Go units call helper scripts (`start.sh`, `demo-uploader.sh`) that hold the actual run
-> command/flags/port. Queue workers use their matching `*-worker.sh` launchers. All live in
-> `/var/www/getreplay-go/` and source the same mode-0600 `getreplay-go.env`.
+> command/flags/port. Both live in `/var/www/getreplay-go/` and source the same mode-0600
+> `getreplay-go.env`. Match discovery, download, parse/persist, and event delivery consume Kafka
+> inside the single `match-updater` process.
 >
 > Kafka is one persistent broker on this host. It removes application-process queue loss, not
 > host/disk failure; host-level HA requires at least three brokers on independent hosts.

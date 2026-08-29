@@ -1,14 +1,11 @@
 # Go services deploy
 
-Eight Go binaries from `github.com/soloser/getreplay-go`, all living in `/var/www/getreplay-go/`:
+Five Go binaries from `github.com/soloser/getreplay-go`, all living in `/var/www/getreplay-go/`:
 
 | App | How it runs | Unit / trigger | Port |
 |---|---|---|---|
-| `match-updater` | long-running | `go-app.service` → `start.sh` | `:3006` (Caddy `/srv/*`) |
+| `match-updater` | long-running API + Kafka pipeline | `go-app.service` → `start.sh` | `:3006` (Caddy `/srv/*`) |
 | `demo-uploader` | long-running | `demo-uploader.service` → `demo-uploader.sh` | `:3005` (uploads from PHP) |
-| `match-discovery-worker` | long-running Kafka worker | `match-discovery-worker.service` | — |
-| `demo-downloader-worker` | long-running Kafka worker | `demo-downloader-worker.service` | — |
-| `demo-processor-worker` | long-running Kafka worker | `demo-processor-worker.service` | — |
 | `highlight-extractor` | one-shot runner | **cron** hourly → `highlight-extractor-cron.sh` | — |
 | `replay-converter` | one-shot runner | **by hand** → `replay-converter-{match,range}.sh` | — |
 | `stats-extractor` | one-shot runner | **by hand** → `stats-extractor-{match,range}.sh` | — |
@@ -22,9 +19,6 @@ launcher only adds its per-service ports/worker-counts.
 ```bash
 /home/solo/infra/go/deploy.sh match-updater
 /home/solo/infra/go/deploy.sh demo-uploader
-/home/solo/infra/go/deploy.sh demo-processor-worker
-/home/solo/infra/go/deploy.sh demo-downloader-worker
-/home/solo/infra/go/deploy.sh match-discovery-worker
 /home/solo/infra/go/deploy.sh highlight-extractor
 /home/solo/infra/go/deploy.sh replay-converter
 /home/solo/infra/go/deploy.sh stats-extractor
@@ -50,7 +44,7 @@ git clone git@github.com:soloser/getreplay-go.git /home/solo/getreplay-go
 #    Follow infra/kafka/README.md; the checked-in files do not install themselves.
 
 # 4. Shared queue artifact directories. Uploads and downloads intentionally meet in one
-#    directory; the processor consumes from it and writes published replays separately.
+#    directory; Match Updater consumes from it and writes published replays separately.
 sudo install -d -o www-data -g www-data -m 0750 \
   /var/www/getreplay-go/downloads \
   /var/www/getreplay-storage/replays
@@ -63,25 +57,13 @@ sudo chown www-data:www-data getreplay-go.env   # services + cron run as www-dat
 sudo chmod 600 getreplay-go.env
 
 # 6. Ensure the units are installed (once), then deploy each app
-sudo cp /home/solo/infra/systemd/{go-app,demo-uploader,match-discovery-worker,demo-downloader-worker,demo-processor-worker}.service /etc/systemd/system/
+sudo cp /home/solo/infra/systemd/{go-app,demo-uploader}.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable \
-  go-app.service \
-  demo-uploader.service \
-  match-discovery-worker.service \
-  demo-downloader-worker.service \
-  demo-processor-worker.service
-/home/solo/infra/go/deploy.sh demo-processor-worker
-/home/solo/infra/go/deploy.sh demo-downloader-worker
-/home/solo/infra/go/deploy.sh match-discovery-worker
+sudo systemctl enable go-app.service demo-uploader.service
 /home/solo/infra/go/deploy.sh match-updater
 /home/solo/infra/go/deploy.sh demo-uploader
 /home/solo/infra/go/deploy.sh highlight-extractor   # also wires up the cron
 ```
-
-Deploy the downstream processor before the downloader and discovery producer on the first
-rollout. Kafka retains work while a consumer is unavailable, but this order also ensures each
-message schema has a live consumer before upstream starts publishing it.
 
 For long-running services, `deploy.sh` keeps exact binary/launcher backups until systemd reports
 the new process active with a stable restart counter for eight checks. A failed readiness check
@@ -91,12 +73,12 @@ queue/database checks in the first-cutover runbook below.
 
 ## Durable demo queue
 
-All queue processes use `DEMO_QUEUE_BROKER_SERVERS` and `DEMO_QUEUE_VERSION` from the shared
-`getreplay-go.env`. Consumer group names are stable application configuration: never include a
+Match Updater and Demo Uploader use `DEMO_QUEUE_BROKER_SERVERS` and `DEMO_QUEUE_VERSION` from the
+shared `getreplay-go.env`. The consumer group name is stable application configuration: never include a
 release ID, PID, or host name, or a deploy will create a fresh group and replay retained work.
 
 The broker has automatic topic creation disabled. `infra/kafka/create-topics.sh` idempotently
-creates the six versioned topics before the worker units start:
+creates the six versioned topics before Match Updater starts:
 
 - `getreplay.match-refresh.v1`
 - `getreplay.demo-download.v1`
@@ -110,29 +92,22 @@ and those writes must be idempotent by match/job identity. Producers must wait f
 acknowledgement instead of treating a local channel send as a durable enqueue.
 
 `DOWNLOADER_TARGET_DIR` and `UPLOADS_DIR` must resolve to the same shared directory
-(`/var/www/getreplay-go/downloads` in the example). Both the uploader/downloader and processor
-run as `www-data`; do not split ownership or mount a private directory over only one worker.
+(`/var/www/getreplay-go/downloads` in the example). Both Demo Uploader and Match Updater run as
+`www-data`; do not split ownership or mount a private directory over only one service.
 `MATCHUPDATER_REPLAY_DIR` and `REPLAY_WRITER_REPLAY_DIR` point to the separately persisted
 published replay directory.
 
-The worker units now use a read-only system filesystem, private `/tmp`, journald, and only the
-write paths each stage needs. They still share the `www-data` identity and shared environment
-file, so a compromised worker could read another Go service's credentials; separating service
-accounts and per-worker secret files remains a follow-up hardening item.
-
 ## Production queue cutover (reviewed runbook; not executed)
 
-The checked-in candidate contains all three Kafka workers, pins every Go component to the same
-reviewed full commit SHA, and records the digest produced by `git archive --format=tar`. Promotion
-preflight-builds every selected `./cmd/<app>` before migrations or service deployment. The Go and
-infra commits must still be merged to `origin/main` and receive normal owner review before the
-candidate can be promoted.
+The checked-in candidate deploys the existing `match-updater` command, which now owns discovery,
+download, parse/persist, and event delivery internally. It pins every Go component to the same
+reviewed full commit SHA and records the digest produced by `git archive --format=tar`.
 
 The cutover needs a maintenance window and an operator with production access. No command in
 this repository has been run against production automatically.
 
 1. Back up the relevant database state, install/verify Kafka and the artifact directories, copy
-   (but do not start) the three reviewed worker units, and install the reviewed release adapter.
+   the reviewed `go-app.service`, and install the reviewed release adapter.
 2. Freeze both sources of new queue work: return a maintenance response for external `/srv/*`
    match refreshes and pause PHP calls to the demo-uploader `/upload` and `/upload/bulk`
    endpoints. Verify the freeze before continuing.
@@ -165,17 +140,15 @@ this repository has been run against production automatically.
    `demo_missing` rows, record that decision and set `QUEUE_RECOVERY_RECOVER_MISSING=false`; this
    does not exempt ownerless `new` rows.
 5. Stop the legacy Go API/uploader only after the drain and owner audit pass. Start Kafka/topic
-   provisioning, then deploy/start in dependency order:
-   `demo-processor-worker`, `demo-downloader-worker`, `match-discovery-worker`, `match-updater`,
-   and finally `demo-uploader`.
-6. Keep ingress frozen while checking `systemctl is-active`, worker/API journals, all six topic
+   provisioning, then deploy `match-updater` and finally `demo-uploader`.
+6. Keep ingress frozen while checking `systemctl is-active`, application journals, all six topic
    descriptions, and `kafka-consumer-groups.sh --list` plus `--describe` for each configured
    group. Submit one controlled demo and require its database status, source cleanup, replay,
    events, and consumer lag to reach the expected terminal state exactly once.
 7. Restore upload/refresh ingress only after those checks pass. Continue monitoring lag, DLQ,
    broker disk, service restarts, and ownerless recoverable rows through the window.
 
-If a check fails before ingress is restored, keep ingress frozen, stop the new producers/workers,
+If a check fails before ingress is restored, keep ingress frozen, stop the new Go services,
 and redeploy the previously reviewed candidate/binaries. Do not delete Kafka logs or shared demo
 artifacts: reconcile any already-published events and database state before retrying. After ingress
 is restored, rollback is a data-migration decision as well as a binary rollback and requires a new

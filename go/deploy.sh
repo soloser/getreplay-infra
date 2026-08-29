@@ -3,9 +3,6 @@
 # Build a Go service ON THE SERVER and deploy it. One app per call:
 #   ./deploy.sh match-updater
 #   ./deploy.sh demo-uploader
-#   ./deploy.sh match-discovery-worker
-#   ./deploy.sh demo-downloader-worker
-#   ./deploy.sh demo-processor-worker
 #   ./deploy.sh highlight-extractor
 #   ./deploy.sh replay-converter
 #   ./deploy.sh stats-extractor
@@ -81,15 +78,12 @@ restart_and_wait() {
 }
 
 case "$APP" in
-  match-updater)          SERVICE="go-app.service";                    LAUNCHER="start.sh" ;;
-  demo-uploader)          SERVICE="demo-uploader.service";             LAUNCHER="demo-uploader.sh" ;;
-  match-discovery-worker) SERVICE="match-discovery-worker.service";    LAUNCHER="match-discovery-worker.sh" ;;
-  demo-downloader-worker) SERVICE="demo-downloader-worker.service";    LAUNCHER="demo-downloader-worker.sh" ;;
-  demo-processor-worker)  SERVICE="demo-processor-worker.service";     LAUNCHER="demo-processor-worker.sh" ;;
-  highlight-extractor)    SERVICE="";                                  LAUNCHER="" ;;
-  replay-converter)       SERVICE="";                                  LAUNCHER="" ;;
-  stats-extractor)        SERVICE="";                                  LAUNCHER="" ;;
-  *) die "usage: $0 <match-updater|demo-uploader|match-discovery-worker|demo-downloader-worker|demo-processor-worker|highlight-extractor|replay-converter|stats-extractor>" ;;
+  match-updater)       SERVICE="go-app.service";        LAUNCHER="start.sh" ;;
+  demo-uploader)       SERVICE="demo-uploader.service"; LAUNCHER="demo-uploader.sh" ;;
+  highlight-extractor) SERVICE="";                      LAUNCHER="" ;;
+  replay-converter)    SERVICE="";                      LAUNCHER="" ;;
+  stats-extractor)     SERVICE="";                      LAUNCHER="" ;;
+  *) die "usage: $0 <match-updater|demo-uploader|highlight-extractor|replay-converter|stats-extractor>" ;;
 esac
 
 command -v "$GO_BIN" >/dev/null 2>&1 || die "Go not found ($GO_BIN) — install Go >= 1.24 (see README.md)"
@@ -174,7 +168,7 @@ mv -f -- "$tmp" "$target"          # atomic swap; safe on Linux even while the o
 log "staged $target"
 
 case "$APP" in
-  match-updater|demo-uploader|match-discovery-worker|demo-downloader-worker|demo-processor-worker)
+  match-updater|demo-uploader)
     if ! install -m 0755 "$INFRA_GO/$LAUNCHER" "$launcher_target"; then
       restore_previous_service_files
       die "launcher install failed; previous $APP files restored"
