@@ -99,60 +99,23 @@ published replay directory.
 
 ## Production queue cutover (reviewed runbook; not executed)
 
-The checked-in candidate deploys the existing `match-updater` command, which now owns discovery,
-download, parse/persist, and event delivery internally. It pins every Go component to the same
-reviewed full commit SHA and records the digest produced by `git archive --format=tar`.
+The rollout starts a persistent Kafka broker and replaces Match Updater's process-local queue.
+It does not scan or enqueue historical MySQL rows and requires no queue-related database migration.
 
-The cutover needs a maintenance window and an operator with production access. No command in
-this repository has been run against production automatically.
+1. Install and start Kafka using `infra/kafka/README.md`. Verify that `/var/lib/kafka` exists on
+   persistent host storage and that all six topics were created.
+2. Create the shared download/replay directories and install the updated `go-app.service`.
+3. Deploy Match Updater. New refresh and upload requests acknowledged after this point publish
+   their work to Kafka; consumer offsets advance only after successful processing.
+4. Submit one controlled demo and verify its terminal database status, replay, websocket event,
+   and zero consumer lag.
+5. Restart `go-app.service` during a second controlled job and verify that the uncommitted Kafka
+   message resumes after startup.
 
-1. Back up the relevant database state, install/verify Kafka and the artifact directories, copy
-   the reviewed `go-app.service`, and install the reviewed release adapter.
-2. Freeze both sources of new queue work: return a maintenance response for external `/srv/*`
-   match refreshes and pause PHP calls to the demo-uploader `/upload` and `/upload/bulk`
-   endpoints. Verify the freeze before continuing.
-3. Let the legacy match-updater finish its in-memory work. Run the count repeatedly and require
-   both `new` and `processing` to remain zero; do not restart the legacy process while draining:
-
-   ```sql
-   SELECT demo_status, COUNT(*) AS matches
-   FROM matches
-   WHERE is_user_match = 1
-     AND demo_status IN ('new', 'processing')
-   GROUP BY demo_status;
-   ```
-
-4. Audit all recoverable user matches without a time filter. The new recovery path fails closed
-   rather than inventing an owner:
-
-   ```sql
-   SELECT demo_status, COUNT(*) AS matches, MIN(id) AS first_match_id
-   FROM matches
-   WHERE is_user_match = 1
-     AND demo_status IN ('new', 'demo_missing')
-     AND (owner_id IS NULL OR owner_id = 0)
-   GROUP BY demo_status;
-   ```
-
-   The result must be empty. Reconcile each returned ID from an authoritative upload/user record,
-   or quarantine it through a separately reviewed per-ID data change. Never guess `owner_id` and
-   never apply a blanket update. If product owners explicitly choose not to recover historical
-   `demo_missing` rows, record that decision and set `QUEUE_RECOVERY_RECOVER_MISSING=false`; this
-   does not exempt ownerless `new` rows.
-5. Stop the legacy Go API/uploader only after the drain and owner audit pass. Start Kafka/topic
-   provisioning, then deploy `match-updater` and finally `demo-uploader`.
-6. Keep ingress frozen while checking `systemctl is-active`, application journals, all six topic
-   descriptions, and `kafka-consumer-groups.sh --list` plus `--describe` for each configured
-   group. Submit one controlled demo and require its database status, source cleanup, replay,
-   events, and consumer lag to reach the expected terminal state exactly once.
-7. Restore upload/refresh ingress only after those checks pass. Continue monitoring lag, DLQ,
-   broker disk, service restarts, and ownerless recoverable rows through the window.
-
-If a check fails before ingress is restored, keep ingress frozen, stop the new Go services,
-and redeploy the previously reviewed candidate/binaries. Do not delete Kafka logs or shared demo
-artifacts: reconcile any already-published events and database state before retrying. After ingress
-is restored, rollback is a data-migration decision as well as a binary rollback and requires a new
-reviewed plan.
+Old `new`, `processing`, or `demo_missing` database rows are deliberately ignored. Do not run a
+backfill or blanket status update as part of this rollout. A rollback may redeploy the previous Go
+binary, but must not delete `/var/lib/kafka`, because that directory contains the queue and consumer
+offsets.
 
 ## highlight-extractor: cron + backfill
 

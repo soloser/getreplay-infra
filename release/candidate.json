@@ -15,36 +15,25 @@
       "artifact": "sha256:b9500412c2313d4c04be53e6862d9b1bf9ac92660f823296419b0e75746a9523"
     },
     "go-match-updater": {
-      "revision": "92c09905631c51fba9a9de809650da784163c614",
-      "artifact": "sha256:ca93d2f2e1cb2e7ea95bdd60a55108484f80e556d2b46639ffe51b9002b13a09"
+      "revision": "4b99e50b83b795084ace3f63c1f4f5240463ea28",
+      "artifact": "sha256:5202667d29fd1cf96d8c7cc3e21449935bc3c46df9a469897b082b0260d1432e"
     },
     "go-demo-uploader": {
-      "revision": "92c09905631c51fba9a9de809650da784163c614",
-      "artifact": "sha256:ca93d2f2e1cb2e7ea95bdd60a55108484f80e556d2b46639ffe51b9002b13a09"
+      "revision": "4b99e50b83b795084ace3f63c1f4f5240463ea28",
+      "artifact": "sha256:5202667d29fd1cf96d8c7cc3e21449935bc3c46df9a469897b082b0260d1432e"
     },
     "go-highlight-extractor": {
-      "revision": "92c09905631c51fba9a9de809650da784163c614",
-      "artifact": "sha256:ca93d2f2e1cb2e7ea95bdd60a55108484f80e556d2b46639ffe51b9002b13a09"
+      "revision": "4b99e50b83b795084ace3f63c1f4f5240463ea28",
+      "artifact": "sha256:5202667d29fd1cf96d8c7cc3e21449935bc3c46df9a469897b082b0260d1432e"
     },
     "go-replay-converter": {
-      "revision": "92c09905631c51fba9a9de809650da784163c614",
-      "artifact": "sha256:ca93d2f2e1cb2e7ea95bdd60a55108484f80e556d2b46639ffe51b9002b13a09"
+      "revision": "4b99e50b83b795084ace3f63c1f4f5240463ea28",
+      "artifact": "sha256:5202667d29fd1cf96d8c7cc3e21449935bc3c46df9a469897b082b0260d1432e"
     },
     "go-stats-extractor": {
-      "revision": "92c09905631c51fba9a9de809650da784163c614",
-      "artifact": "sha256:ca93d2f2e1cb2e7ea95bdd60a55108484f80e556d2b46639ffe51b9002b13a09"
+      "revision": "4b99e50b83b795084ace3f63c1f4f5240463ea28",
+      "artifact": "sha256:5202667d29fd1cf96d8c7cc3e21449935bc3c46df9a469897b082b0260d1432e"
     }
   },
-  "migrations": {
-    "mysql": {
-      "revision": "2fb362ea5ae62c5b926b95c40c9cef10ab15a2e8",
-      "artifact": "sha256:5e359553da4a73f940983b378e549d39faf68561e9f048eb8821e616906a5513",
-      "migration": "mysql-2fb362ea5ae6"
-    },
-    "clickhouse": {
-      "revision": "2fb362ea5ae62c5b926b95c40c9cef10ab15a2e8",
-      "artifact": "sha256:5e359553da4a73f940983b378e549d39faf68561e9f048eb8821e616906a5513",
-      "migration": "clickhouse-2fb362ea5ae6"
-    }
-  }
+  "migrations": {}
 }

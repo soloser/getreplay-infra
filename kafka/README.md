@@ -104,6 +104,5 @@ Production Go services connect with `DEMO_QUEUE_BROKER_SERVERS=127.0.0.1:9092`. 
 legacy Sarama client must advertise protocol version `2.6.0` even though the broker itself is
 4.3.1; upgrade the client before raising `DEMO_QUEUE_VERSION`.
 
-The application drain, ownerless `is_user_match` audit, release pinning, and rollback
-sequence are mandatory parts of the first rollout; follow the production cutover runbook in
+The application restart, release pinning, and verification sequence are described in
 [`../go/README.md`](../go/README.md#production-queue-cutover-reviewed-runbook-not-executed).

@@ -11,8 +11,7 @@ set -a; . "$ENV_FILE"; set +a
 
 # --- per-service ---
 : "${DEMO_QUEUE_MAX_MESSAGE_BYTES:=1000000}"
-: "${QUEUE_RECOVERY_MISSING_INTERVAL:=30m}"
-export DEMO_QUEUE_MAX_MESSAGE_BYTES QUEUE_RECOVERY_MISSING_INTERVAL
+export DEMO_QUEUE_MAX_MESSAGE_BYTES
 # ⚠ binds 0.0.0.0 — reachable externally unless firewalled. Caddy only needs localhost;
 #   consider 127.0.0.1:3006 / [::1]:3006. See ../docs/topology.md.
 export SERVER_TCP_ADDR=0.0.0.0:3006
