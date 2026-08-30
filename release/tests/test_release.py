@@ -392,11 +392,9 @@ class PromotionPlanTest(unittest.TestCase):
         baseline_components = set(release_protocol.COMPONENTS) - queue_workers
         self.assertEqual(baseline_components, set(manifest["components"]))
         self.assertTrue(queue_workers.isdisjoint(manifest["components"]))
-        self.assertEqual(set(release_protocol.DATABASES), set(manifest["migrations"]))
+        self.assertEqual({}, manifest["migrations"])
         self.assertEqual(
             [
-                "migration:mysql",
-                "migration:clickhouse",
                 "component:php",
                 "component:node",
                 "component:go-match-updater",

@@ -64,8 +64,30 @@ app.getreplay.gg {
     encode zstd gzip
 
     root * /var/www/fun-php/repo/src/public
-    php_fastcgi unix//run/php/php8.4-fpm.sock
-    file_server
+
+    @demo_upload {
+        path /backend/demo-library/uploadSingleAction /backend/demo-library/uploadBulkAction
+    }
+    @regular_admin_request {
+        not path /backend/demo-library/uploadSingleAction /backend/demo-library/uploadBulkAction
+    }
+
+    route {
+        # Demo archives can be large. Relax the limit only for the two admin
+        # upload actions and keep every other admin request on the normal limit.
+        request_body @demo_upload {
+            max_size 8GiB
+        }
+        request_body @regular_admin_request {
+            max_size 64MiB
+        }
+        php_fastcgi @demo_upload unix//run/php/php8.4-fpm.sock {
+            env PHP_VALUE "upload_max_filesize=2G"
+            env PHP_ADMIN_VALUE "post_max_size=8G"
+        }
+        php_fastcgi unix//run/php/php8.4-fpm.sock
+        file_server
+    }
 
     header {
         Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
