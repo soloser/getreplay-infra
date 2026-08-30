@@ -87,9 +87,11 @@ creates the six versioned topics before Match Updater starts:
 - `getreplay.demo-events.v1`
 - `getreplay.demo-dlq.v1`
 
-Queue processing is at-least-once: a consumer commits only after its external writes succeed,
-and those writes must be idempotent by match/job identity. Producers must wait for Kafka
-acknowledgement instead of treating a local channel send as a durable enqueue.
+Queue processing is at-least-once: a consumer commits only after its external writes succeed.
+A crash after a partial write can therefore repeat conversion or event insertion; this rollout
+accepts that rare duplicate work instead of adding queue-generation columns or database recovery
+state. Producers must wait for Kafka acknowledgement instead of treating a local channel send as
+a durable enqueue.
 
 `DOWNLOADER_TARGET_DIR` and `UPLOADS_DIR` must resolve to the same shared directory
 (`/var/www/getreplay-go/downloads` in the example). Both Demo Uploader and Match Updater run as

@@ -96,9 +96,10 @@ Expected topics:
 - `getreplay.demo-dlq.v1`
 
 All six topics start with six partitions and replication factor one. Partition count can be
-increased but not reduced. Producers should use idempotence and `acks=all`; consumers must
-commit only after successful, idempotent processing. Monitor broker disk usage, consumer lag,
-offline partitions, and failed/DLQ records.
+increased but not reduced. Producers should use idempotence and `acks=all`; consumers commit only
+after successful processing. A crash after a partial external write may repeat work, which the
+current single-service rollout deliberately accepts instead of adding database queue state.
+Monitor broker disk usage, consumer lag, offline partitions, and failed/DLQ records.
 
 Production Go services connect with `DEMO_QUEUE_BROKER_SERVERS=127.0.0.1:9092`. The current
 legacy Sarama client must advertise protocol version `2.6.0` even though the broker itself is
