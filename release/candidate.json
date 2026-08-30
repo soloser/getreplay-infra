@@ -3,36 +3,36 @@
   "release_id": "candidate",
   "components": {
     "frontend": {
-      "revision": "b116fc35e2c911259743ed93066a5f29f20fae00",
-      "artifact": "sha256:6fbd4aa93e308bdfae5b076989c445574abb7d003da6d9831c24c30f137c9f68"
+      "revision": "aed30e4044454ec394bc0dd57ef90cd8d08fe624",
+      "artifact": "sha256:20caea97c0c652e9bbe064cfa72e2f16328d57acbee0a094cf917ed7d6effa2a"
     },
     "php": {
-      "revision": "d70a00d5ba09db900ccaff07156658d5e8c22c59",
-      "artifact": "sha256:ed52fbcb329bba927bf948492b44aa5fbde1f72a0eca083d46287c993c782766"
+      "revision": "0021ee42dce534297c70f95b432f9b5e92de8815",
+      "artifact": "sha256:ed451b32cc689bbbb3ab9804ca3fa1ca64a68cd44152ce0392eea6eb8b77b66f"
     },
     "node": {
       "revision": "45549df0dc5fd0d51976ed1239b95bd3f8edf16d",
       "artifact": "sha256:b9500412c2313d4c04be53e6862d9b1bf9ac92660f823296419b0e75746a9523"
     },
     "go-match-updater": {
-      "revision": "4b99e50b83b795084ace3f63c1f4f5240463ea28",
-      "artifact": "sha256:5202667d29fd1cf96d8c7cc3e21449935bc3c46df9a469897b082b0260d1432e"
+      "revision": "b9843a58bf43ba8708a3616b48969eec1dd0668c",
+      "artifact": "sha256:512e73ae0234afc715e134e0aa533e6d183e794b045da7975c380ac6a691a9ef"
     },
     "go-demo-uploader": {
-      "revision": "4b99e50b83b795084ace3f63c1f4f5240463ea28",
-      "artifact": "sha256:5202667d29fd1cf96d8c7cc3e21449935bc3c46df9a469897b082b0260d1432e"
+      "revision": "b9843a58bf43ba8708a3616b48969eec1dd0668c",
+      "artifact": "sha256:512e73ae0234afc715e134e0aa533e6d183e794b045da7975c380ac6a691a9ef"
     },
     "go-highlight-extractor": {
-      "revision": "4b99e50b83b795084ace3f63c1f4f5240463ea28",
-      "artifact": "sha256:5202667d29fd1cf96d8c7cc3e21449935bc3c46df9a469897b082b0260d1432e"
+      "revision": "b9843a58bf43ba8708a3616b48969eec1dd0668c",
+      "artifact": "sha256:512e73ae0234afc715e134e0aa533e6d183e794b045da7975c380ac6a691a9ef"
     },
     "go-replay-converter": {
-      "revision": "4b99e50b83b795084ace3f63c1f4f5240463ea28",
-      "artifact": "sha256:5202667d29fd1cf96d8c7cc3e21449935bc3c46df9a469897b082b0260d1432e"
+      "revision": "b9843a58bf43ba8708a3616b48969eec1dd0668c",
+      "artifact": "sha256:512e73ae0234afc715e134e0aa533e6d183e794b045da7975c380ac6a691a9ef"
     },
     "go-stats-extractor": {
-      "revision": "4b99e50b83b795084ace3f63c1f4f5240463ea28",
-      "artifact": "sha256:5202667d29fd1cf96d8c7cc3e21449935bc3c46df9a469897b082b0260d1432e"
+      "revision": "b9843a58bf43ba8708a3616b48969eec1dd0668c",
+      "artifact": "sha256:512e73ae0234afc715e134e0aa533e6d183e794b045da7975c380ac6a691a9ef"
     }
   },
   "migrations": {}
