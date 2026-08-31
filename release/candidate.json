@@ -5,7 +5,7 @@
     "frontend": {
       "revision": "3c155bf105d76c70d16eb9bceb0577beabc2b5b0",
       "artifact": "sha256:34bdea18f26124762ddf4aca7df38eb6db6ed252470ccffd3a0b7c6c57f87564"
-    }
+    },
     "php": {
       "revision": "0021ee42dce534297c70f95b432f9b5e92de8815",
       "artifact": "sha256:ed451b32cc689bbbb3ab9804ca3fa1ca64a68cd44152ce0392eea6eb8b77b66f"
