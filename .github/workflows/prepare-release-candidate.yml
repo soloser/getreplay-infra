@@ -1,0 +1,222 @@
+name: Prepare release candidate
+run-name: Prepare ${{ inputs.component }} candidate at ${{ inputs.revision }} by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      component:
+        description: Component source to pin in candidate.json
+        required: true
+        type: choice
+        options:
+          - frontend
+          - php
+          - node
+          - go
+      revision:
+        description: Full commit SHA from the component main branch, or main for its latest commit
+        required: true
+        default: main
+        type: string
+      description:
+        description: Optional note included in the candidate pull request
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: prepare-release-candidate-${{ inputs.component }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: Validate source and open candidate PR
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CANDIDATE_DESCRIPTION: ${{ inputs.description }}
+      COMPONENT_SCOPE: ${{ inputs.component }}
+      INFRA_TOKEN: ${{ github.token }}
+      REQUESTED_REVISION: ${{ inputs.revision }}
+      SOURCE_TOKEN: ${{ secrets.RELEASE_CANDIDATE_SOURCE_TOKEN }}
+    steps:
+      - name: Resolve and validate component source
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ -n "$SOURCE_TOKEN" ]] || {
+            echo "Repository secret RELEASE_CANDIDATE_SOURCE_TOKEN is required" >&2
+            exit 1
+          }
+          case "$COMPONENT_SCOPE" in
+            frontend) source_repository="soloser/getreplay-front" ;;
+            php) source_repository="soloser/getreplay-php" ;;
+            node) source_repository="soloser/getreplay-node" ;;
+            go) source_repository="soloser/getreplay-go" ;;
+            *) echo "Unsupported component scope: $COMPONENT_SCOPE" >&2; exit 1 ;;
+          esac
+
+          askpass="$RUNNER_TEMP/getreplay-git-askpass.sh"
+          umask 077
+          cat > "$askpass" <<'SH'
+          #!/bin/sh
+          case "$1" in
+            *Username*) printf '%s\n' x-access-token ;;
+            *Password*) printf '%s\n' "$GIT_AUTH_TOKEN" ;;
+            *) exit 1 ;;
+          esac
+          SH
+          chmod 700 "$askpass"
+          export GIT_ASKPASS="$askpass"
+          export GIT_TERMINAL_PROMPT=0
+
+          source_root="$RUNNER_TEMP/component-source"
+          git init --initial-branch=main "$source_root"
+          git -C "$source_root" remote add origin "https://github.com/$source_repository.git"
+          GIT_AUTH_TOKEN="$SOURCE_TOKEN" git -C "$source_root" fetch --no-tags origin main
+
+          if [[ "$REQUESTED_REVISION" == main ]]; then
+            revision="$(git -C "$source_root" rev-parse FETCH_HEAD)"
+          elif [[ "$REQUESTED_REVISION" =~ ^[0-9a-f]{40}$ ]]; then
+            revision="$REQUESTED_REVISION"
+          else
+            echo "Revision must be main or a full lowercase commit SHA" >&2
+            exit 1
+          fi
+          git -C "$source_root" cat-file -e "$revision^{commit}"
+          git -C "$source_root" merge-base --is-ancestor "$revision" FETCH_HEAD
+          artifact="sha256:$(git -C "$source_root" archive --format=tar "$revision" | sha256sum | awk '{print $1}')"
+
+          printf 'repository=%s\n' "$source_repository" >> "$GITHUB_OUTPUT"
+          printf 'revision=%s\n' "$revision" >> "$GITHUB_OUTPUT"
+          printf 'artifact=%s\n' "$artifact" >> "$GITHUB_OUTPUT"
+          printf 'short_revision=%s\n' "${revision:0:12}" >> "$GITHUB_OUTPUT"
+
+      - name: Update reviewed candidate and run release checks
+        id: candidate
+        env:
+          SOURCE_ARTIFACT: ${{ steps.source.outputs.artifact }}
+          SOURCE_REVISION: ${{ steps.source.outputs.revision }}
+          SOURCE_SHORT_REVISION: ${{ steps.source.outputs.short_revision }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          askpass="$RUNNER_TEMP/getreplay-git-askpass.sh"
+          export GIT_ASKPASS="$askpass"
+          export GIT_TERMINAL_PROMPT=0
+
+          infra_root="$RUNNER_TEMP/infra-source"
+          branch="codex/release-candidate-$COMPONENT_SCOPE"
+          git init --initial-branch=main "$infra_root"
+          git -C "$infra_root" remote add origin "https://github.com/$GITHUB_REPOSITORY.git"
+          GIT_AUTH_TOKEN="$INFRA_TOKEN" git -C "$infra_root" fetch --no-tags origin main
+          git -C "$infra_root" switch --create "$branch" FETCH_HEAD
+
+          update_summary="$(python3 "$infra_root/release/prepare_candidate.py" \
+            --input "$infra_root/release/candidate.json" \
+            --output "$infra_root/release/candidate.json" \
+            --scope "$COMPONENT_SCOPE" \
+            --revision "$SOURCE_REVISION" \
+            --artifact "$SOURCE_ARTIFACT")"
+          source_root="$RUNNER_TEMP/component-source"
+          while IFS= read -r previous_revision; do
+            git -C "$source_root" cat-file -e "$previous_revision^{commit}"
+            if ! git -C "$source_root" merge-base --is-ancestor \
+              "$previous_revision" "$SOURCE_REVISION"; then
+              echo "Refusing to move $COMPONENT_SCOPE backward from $previous_revision to $SOURCE_REVISION" >&2
+              exit 1
+            fi
+          done < <(jq -r '.previous_revisions[]' <<<"$update_summary")
+          python3 -m unittest discover -s "$infra_root/release/tests" -v
+          python3 "$infra_root/release/broker.py" check
+          git -C "$infra_root" diff --check
+
+          git -C "$infra_root" config user.name github-actions[bot]
+          git -C "$infra_root" config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git -C "$infra_root" add release/candidate.json
+          if git -C "$infra_root" diff --cached --quiet; then
+            echo "candidate.json already pins $COMPONENT_SCOPE at $SOURCE_REVISION" >&2
+            exit 1
+          fi
+          git -C "$infra_root" commit -m "Pin $COMPONENT_SCOPE release candidate at $SOURCE_SHORT_REVISION"
+
+          remote_branch="refs/remotes/origin/release-candidate"
+          if GIT_AUTH_TOKEN="$INFRA_TOKEN" git -C "$infra_root" fetch --no-tags origin \
+            "refs/heads/$branch:$remote_branch"; then
+            previous="$(git -C "$infra_root" rev-parse "$remote_branch")"
+            GIT_AUTH_TOKEN="$INFRA_TOKEN" git -C "$infra_root" push \
+              --force-with-lease="refs/heads/$branch:$previous" \
+              origin "HEAD:refs/heads/$branch"
+          else
+            GIT_AUTH_TOKEN="$INFRA_TOKEN" git -C "$infra_root" push \
+              origin "HEAD:refs/heads/$branch"
+          fi
+          printf 'branch=%s\n' "$branch" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update pull request
+        id: pull_request
+        env:
+          CANDIDATE_BRANCH: ${{ steps.candidate.outputs.branch }}
+          SOURCE_ARTIFACT: ${{ steps.source.outputs.artifact }}
+          SOURCE_REPOSITORY: ${{ steps.source.outputs.repository }}
+          SOURCE_REVISION: ${{ steps.source.outputs.revision }}
+          SOURCE_SHORT_REVISION: ${{ steps.source.outputs.short_revision }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          api_config="$RUNNER_TEMP/getreplay-github-api.conf"
+          umask 077
+          printf 'header = "Accept: application/vnd.github+json"\n' > "$api_config"
+          printf 'header = "Authorization: Bearer %s"\n' "$INFRA_TOKEN" >> "$api_config"
+          printf 'header = "Content-Type: application/json"\n' >> "$api_config"
+          printf 'header = "X-GitHub-Api-Version: 2022-11-28"\n' >> "$api_config"
+
+          title="Pin $COMPONENT_SCOPE release candidate at $SOURCE_SHORT_REVISION"
+          body="$(printf '%s\n\n%s\n%s\n%s\n%s\n\n%s\n' \
+            '## Automated release candidate' \
+            "- Scope: \`$COMPONENT_SCOPE\`" \
+            "- Source: \`$SOURCE_REPOSITORY\`" \
+            "- Revision: \`$SOURCE_REVISION\`" \
+            "- Artifact: \`$SOURCE_ARTIFACT\`" \
+            "${CANDIDATE_DESCRIPTION:-No additional note.}")"
+          create_payload="$(jq -n \
+            --arg title "$title" \
+            --arg head "$CANDIDATE_BRANCH" \
+            --arg base main \
+            --arg body "$body" \
+            '{title:$title,head:$head,base:$base,body:$body}')"
+          update_payload="$(jq -n \
+            --arg title "$title" \
+            --arg base main \
+            --arg body "$body" \
+            '{title:$title,base:$base,body:$body}')"
+
+          existing="$(curl --fail --silent --show-error --config "$api_config" \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/pulls?state=open&head=$GITHUB_REPOSITORY_OWNER:$CANDIDATE_BRANCH&base=main&per_page=1")"
+          number="$(jq -r '.[0].number // empty' <<<"$existing")"
+          if [[ -n "$number" ]]; then
+            response="$(curl --fail --silent --show-error --config "$api_config" \
+              --request PATCH \
+              --data "$update_payload" \
+              "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/pulls/$number")"
+          else
+            response="$(curl --fail --silent --show-error --config "$api_config" \
+              --request POST \
+              --data "$create_payload" \
+              "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/pulls")"
+          fi
+          url="$(jq -r '.html_url' <<<"$response")"
+          printf 'url=%s\n' "$url" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Release candidate prepared"
+            echo
+            echo "- Pull request: $url"
+            echo "- Scope: \`$COMPONENT_SCOPE\`"
+            echo "- Revision: \`$SOURCE_REVISION\`"
+            echo "- Artifact: \`$SOURCE_ARTIFACT\`"
+          } >> "$GITHUB_STEP_SUMMARY"
