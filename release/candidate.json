@@ -3,8 +3,8 @@
   "release_id": "candidate",
   "components": {
     "frontend": {
-      "revision": "3c155bf105d76c70d16eb9bceb0577beabc2b5b0",
-      "artifact": "sha256:34bdea18f26124762ddf4aca7df38eb6db6ed252470ccffd3a0b7c6c57f87564"
+      "revision": "3a2f6b84c00849b28ee0933180b832d0c2c1be92",
+      "artifact": "sha256:92ecc791df4ad5b8746843d857d1827323b5f20eb3a64b536f7e285207e58e7f"
     },
     "php": {
       "revision": "0021ee42dce534297c70f95b432f9b5e92de8815",
@@ -15,24 +15,24 @@
       "artifact": "sha256:b9500412c2313d4c04be53e6862d9b1bf9ac92660f823296419b0e75746a9523"
     },
     "go-match-updater": {
-      "revision": "b9843a58bf43ba8708a3616b48969eec1dd0668c",
-      "artifact": "sha256:512e73ae0234afc715e134e0aa533e6d183e794b045da7975c380ac6a691a9ef"
+      "revision": "41c688ba7a258558fd63baf00fd1ad24c3540d38",
+      "artifact": "sha256:bdfa2c538148d8e02d9a012631a8eca0aae2a29cac2146da64cfd4bcd6d1e417"
     },
     "go-demo-uploader": {
-      "revision": "b9843a58bf43ba8708a3616b48969eec1dd0668c",
-      "artifact": "sha256:512e73ae0234afc715e134e0aa533e6d183e794b045da7975c380ac6a691a9ef"
+      "revision": "41c688ba7a258558fd63baf00fd1ad24c3540d38",
+      "artifact": "sha256:bdfa2c538148d8e02d9a012631a8eca0aae2a29cac2146da64cfd4bcd6d1e417"
     },
     "go-highlight-extractor": {
-      "revision": "b9843a58bf43ba8708a3616b48969eec1dd0668c",
-      "artifact": "sha256:512e73ae0234afc715e134e0aa533e6d183e794b045da7975c380ac6a691a9ef"
+      "revision": "41c688ba7a258558fd63baf00fd1ad24c3540d38",
+      "artifact": "sha256:bdfa2c538148d8e02d9a012631a8eca0aae2a29cac2146da64cfd4bcd6d1e417"
     },
     "go-replay-converter": {
-      "revision": "b9843a58bf43ba8708a3616b48969eec1dd0668c",
-      "artifact": "sha256:512e73ae0234afc715e134e0aa533e6d183e794b045da7975c380ac6a691a9ef"
+      "revision": "41c688ba7a258558fd63baf00fd1ad24c3540d38",
+      "artifact": "sha256:bdfa2c538148d8e02d9a012631a8eca0aae2a29cac2146da64cfd4bcd6d1e417"
     },
     "go-stats-extractor": {
-      "revision": "b9843a58bf43ba8708a3616b48969eec1dd0668c",
-      "artifact": "sha256:512e73ae0234afc715e134e0aa533e6d183e794b045da7975c380ac6a691a9ef"
+      "revision": "41c688ba7a258558fd63baf00fd1ad24c3540d38",
+      "artifact": "sha256:bdfa2c538148d8e02d9a012631a8eca0aae2a29cac2146da64cfd4bcd6d1e417"
     }
   },
   "migrations": {}
