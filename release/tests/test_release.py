@@ -486,6 +486,22 @@ class GitHubWorkflowScopeTest(unittest.TestCase):
         self.assertIn("StrictHostKeyChecking=yes", source)
         self.assertIn("required environment value is empty", source)
 
+    def test_candidate_preparer_is_review_only_and_refuses_source_rollback(self) -> None:
+        source = (
+            RELEASE_DIR.parent / ".github" / "workflows" / "prepare-release-candidate.yml"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("workflow_dispatch:\n    inputs:", source)
+        self.assertIn("contents: write", source)
+        self.assertIn("pull-requests: write", source)
+        self.assertIn("secrets.RELEASE_CANDIDATE_SOURCE_TOKEN", source)
+        self.assertIn("release/prepare_candidate.py", source)
+        self.assertIn("merge-base --is-ancestor", source)
+        self.assertIn('"$previous_revision" "$SOURCE_REVISION"', source)
+        self.assertIn("python3 -m unittest discover", source)
+        self.assertNotIn("environment: production", source)
+        self.assertNotIn("PRODUCTION_RELEASE_SSH_KEY", source)
+
 
 class MigrationDeployTest(unittest.TestCase):
     def test_prepared_revision_does_not_require_a_branch_name(self) -> None:
