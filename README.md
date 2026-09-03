@@ -56,6 +56,7 @@ infra/
 - [ ] Capture Laravel queue/scheduler units (or supervisor) and remaining crons.
 - [ ] Zero-downtime frontend (blue-green: two ports + graceful `caddy reload`) — deferred.
 - [x] Human-approved component-specific GitHub Actions release buttons with one forced-command SSH gateway.
+- [x] GitHub Actions candidate preparer with source ancestry checks and owner-reviewed PRs.
 - [ ] Move source builds from production to prebuilt CI artifacts when release volume warrants it.
 - [ ] Consider `output: 'standalone'` for the frontend to drop `npm ci` on prod.
 
