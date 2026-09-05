@@ -140,9 +140,12 @@ sudo journalctl -u getreplay-release-broker.service -n 100 --no-pager
 ## Preparing the next candidate
 
 The preferred path is the manual **Prepare release candidate** workflow in GitHub Actions.
-It provides a component dropdown for frontend, PHP, Node GC, or the currently selected Go
-services. Leave revision as `main` to pin the latest source main, including every earlier merged
-change, or enter a full commit SHA already contained in source main. The workflow:
+It provides a component dropdown for frontend, PHP, Node GC, the currently selected Go
+services, or migrations. For migrations, choose MySQL, ClickHouse, or both in the database
+dropdown; the workflow replaces the candidate's migration scope with exactly that selection and
+generates its audit identifier from the database and source revision. Leave revision as `main` to
+pin the latest source main, including every earlier merged change, or enter a full commit SHA
+already contained in source main. The workflow:
 
 1. reads the private source repository with a read-only token;
 2. verifies the requested commit is contained in its `main` branch;
@@ -154,7 +157,7 @@ change, or enter a full commit SHA already contained in source main. The workflo
 The preparer has no `production` Environment and receives none of its secrets. Configure it once:
 
 - create a fine-grained token with read-only **Contents** access to `getreplay-front`,
-  `getreplay-php`, `getreplay-node`, and `getreplay-go`;
+  `getreplay-php`, `getreplay-node`, `getreplay-go`, and `getreplay-migrations`;
 - save it in this repository as the Actions secret `RELEASE_CANDIDATE_SOURCE_TOKEN`;
 - under **Settings → Actions → General → Workflow permissions**, allow read and write access and
   allow GitHub Actions to create pull requests.
@@ -164,9 +167,6 @@ Then open **Actions → Prepare release candidate → Run workflow**, keep the w
 and optionally add a PR note. Review and merge the generated PR before using the matching deploy
 button. A rerun for the same component safely rebuilds its automation-owned branch from current
 infra `main` and updates the open PR.
-
-Migrations remain a manual candidate edit because they also require an explicit database and
-migration identifier. Update migration SHAs only after the commits are on `origin/main`.
 
 For a manual component candidate, update SHAs only after the commits are on `origin/main` and
 recalculate each digest:
