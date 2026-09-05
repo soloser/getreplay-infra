@@ -191,8 +191,11 @@ bash -n release/install-server.sh release/run-production-scope.sh frontend/deplo
 
 ### Frontend build isolation
 
-Before installing the updated frontend adapter, apply the one-time unit and Caddy
-migration in [`frontend/DEPLOY.md`](../frontend/DEPLOY.md). The release gateway
-continues passing the prepared revision; the adapter now builds an inactive slot
-and switches Caddy only after readiness. `install-server.sh` deliberately does not
-overwrite the live frontend upstream port.
+Follow the targeted upgrade in [`frontend/DEPLOY.md`](../frontend/DEPLOY.md):
+provision frontend assets, update only the broker, then replace the existing main-site
+frontend upstream. The app domain stays Laravel/Orchid; dashboard code is not part
+of this release. The full installer also provisions the frontend directories before
+starting the broker. Never overwrite the managed active-port file on reinstall.
+
+The executor retains `ProtectSystem=strict` and `ProtectHome=read-only`; only the
+frontend slots and `/var/lib/getreplay-frontend` are added to its write allowlist.

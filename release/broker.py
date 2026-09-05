@@ -300,6 +300,8 @@ def _adapter_command(
     writable_paths = " ".join(
         (
             "-/home/solo/getreplay-front",
+            "-/home/solo/getreplay-front-slots",
+            "-/var/lib/getreplay-frontend",
             "-/home/solo/getreplay-go",
             "-/home/solo/getreplay-node",
             "-/home/solo/getreplay-node-releases",

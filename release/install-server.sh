@@ -67,7 +67,7 @@ install -d -o root -g root -m 0755 \
   "$DEPLOY_ROOT/node" \
   "$DEPLOY_ROOT/php/cron" \
   "$DEPLOY_ROOT/migrations"
-install -o root -g root -m 0755 "$INFRA_ROOT/frontend/deploy.sh" "$DEPLOY_ROOT/frontend/deploy.sh"
+"$INFRA_ROOT/frontend/install-server.sh"
 install -o root -g root -m 0755 "$INFRA_ROOT/go/"*.sh "$DEPLOY_ROOT/go/"
 install -o root -g root -m 0644 "$INFRA_ROOT/go/cron/"* "$DEPLOY_ROOT/go/cron/"
 install -o root -g root -m 0755 "$INFRA_ROOT/node/deploy.sh" "$DEPLOY_ROOT/node/deploy.sh"
