@@ -7,8 +7,8 @@
       "artifact": "sha256:14b2126989a566b297ac59f59b01e7a5405c15e1159ca8de70431deece825e09"
     },
     "php": {
-      "revision": "344d04eee29afe31425f930cb156c63b07f55ca8",
-      "artifact": "sha256:5220faf321ffcaaaf3bec2ca593154103b79f3bcc37318bd060ee3908e58da40"
+      "revision": "33c42e42ab534f3b28987970a53842013585ea19",
+      "artifact": "sha256:8a35b905a5de91b660df0f5fc371128fce3564614887eb0d0130a5e36bdd2336"
     },
     "node": {
       "revision": "45549df0dc5fd0d51976ed1239b95bd3f8edf16d",
