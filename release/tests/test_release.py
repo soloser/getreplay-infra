@@ -432,6 +432,13 @@ class PromotionPlanTest(unittest.TestCase):
         self.assertIn("--property=ProtectSystem=strict", command)
         self.assertIn("-/home/solo/getreplay-node-releases", " ".join(command))
         self.assertIn("-/etc/systemd/system/node-app.service", " ".join(command))
+        writable = next(arg.split("=", 2)[2] for arg in command if arg.startswith("--property=ReadWritePaths="))
+        paths = set(writable.split())
+        self.assertIn("-/home/solo/getreplay-front-slots", paths)
+        self.assertIn("-/var/lib/getreplay-frontend", paths)
+        for broad_path in ("/", "/home", "/etc", "/etc/caddy", "/run/lock"):
+            self.assertNotIn(broad_path, paths)
+            self.assertNotIn("-" + broad_path, paths)
         self.assertNotIn("--property=NoNewPrivileges=no", command)
         self.assertEqual("candidate", command[-1])
 
