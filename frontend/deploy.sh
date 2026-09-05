@@ -1,45 +1,81 @@
 #!/usr/bin/env bash
-#
-# One-command deploy for zone-map-ui (single systemd service, in-place build).
-#
-# Runs the right Node regardless of the login shell's PATH (npm resolves its own
-# node via `#!/usr/bin/env node`, so /opt/node-20 must be first in PATH — the exact
-# gotcha that otherwise runs the build under system Node 18). Verifies the Node major
-# against .nvmrc before touching anything.
-#
-# The service is stopped for the build: `npm ci` wipes node_modules and `next build`
-# rewrites .next in place, which would break the live server if it kept serving.
-# So there's a downtime window ≈ install + build. A failed build leaves the service
-# stopped — fix and re-run (or `sudo systemctl start nextjs.service` to bring the old
-# build back only if node_modules/.next survived). For zero-downtime later, see the
-# blue-green note in DEPLOY.md.
-#
-# Usage:  ./deploy.sh          (config via env vars below)
+# Build an isolated inactive slot, check readiness, gracefully switch Caddy.
 set -euo pipefail
 
 # ---- config (override via env) --------------------------------------------
-APP_ROOT="${APP_ROOT:-/home/solo/getreplay-front}"   # the git checkout = systemd WorkingDirectory
+APP_ROOT="${APP_ROOT:-/home/solo/getreplay-front}"   # source checkout; never built in place
 BRANCH="${BRANCH:-main}"
 REVISION="${REVISION:-}"
 SOURCE_PREPARED="${SOURCE_PREPARED:-false}"
-BUILD_USER="${BUILD_USER:-}"
 SERVICE="${SERVICE:-nextjs.service}"
 NODE_BIN="${NODE_BIN:-/opt/node-20/bin}"             # isolated Node install
-HEALTH_URL="${HEALTH_URL:-http://[::1]:3000/}"       # matches `next start -H ::1`
+SLOTS_ROOT="${SLOTS_ROOT:-/home/solo/getreplay-front-slots}"
+UPSTREAM="${UPSTREAM:-/etc/caddy/frontend-upstream.caddy}"
+CADDY_CONFIG="${CADDY_CONFIG:-/etc/caddy/Caddyfile}"
+LOCK_FILE="${LOCK_FILE:-/run/lock/getreplay-frontend.lock}"
+HEALTH_PATH="${HEALTH_PATH:-/en}"
+DRAIN_SECONDS="${DRAIN_SECONDS:-30}"
+HEALTH_ATTEMPTS="${HEALTH_ATTEMPTS:-30}"
+BUILD_USER="${BUILD_USER:-solo}"
 # ---------------------------------------------------------------------------
 
 log() { printf '\033[1;34m[deploy %s]\033[0m %s\n' "$(date +%H:%M:%S)" "$*"; }
 die() { printf '\033[1;31m[deploy]\033[0m %s\n' "$*" >&2; exit 1; }
 
-service_stopped=0
+# Run as root (release gateway already does), with npm/git under BUILD_USER.
+[ "$(id -u)" -eq 0 ] || die "run with sudo (builds run as BUILD_USER=$BUILD_USER)"
+exec 9>"$LOCK_FILE"
+flock -n 9 || die "another frontend deployment is running"
+[ ! -e "$LOCK_FILE.recovery" ] || die "resolve previous Caddy reload failure: $LOCK_FILE.recovery"
+[ -f "$UPSTREAM" ] || die "install blue-green server setup first; see frontend/DEPLOY.md"
+[ "$(awk -v upstream="$UPSTREAM" '$1 == "import" && $2 == upstream && NF == 2 {n++} END {print n+0}' "$CADDY_CONFIG")" = 2 ] \
+  || die "both frontend routes must import $UPSTREAM; complete the Caddy migration first"
+[[ "$DRAIN_SECONDS" =~ ^[0-9]+$ ]] || die "DRAIN_SECONDS must be an integer"
+[[ "$HEALTH_ATTEMPTS" =~ ^[1-9][0-9]*$ ]] || die "HEALTH_ATTEMPTS must be positive"
+old_config="$(cat "$UPSTREAM")"
+case "$old_config" in
+  'reverse_proxy [::1]:3000 {'$'\n    header_up X-Forwarded-Host {host}\n}') active=3000; idle=3001 ;;
+  'reverse_proxy [::1]:3001 {'$'\n    header_up X-Forwarded-Host {host}\n}') active=3001; idle=3000 ;;
+  *) die "unexpected frontend upstream configuration" ;;
+esac
+candidate="nextjs@$idle.service"
+previous="nextjs@$active.service"
+if systemctl is-active --quiet "$SERVICE"; then
+  [ "$active" = 3000 ] || die "legacy service conflicts with blue-green routing"
+  previous="$SERVICE"
+fi
+systemctl is-active --quiet "$previous" || die "active frontend service is not running: $previous"
+caddy validate --config "$CADDY_CONFIG" --adapter caddyfile
+
+candidate_started=0
+switch_attempted=0
+committed=0
+write_upstream() {
+  printf '%s\n' "$1" > "$UPSTREAM.next"
+  chmod 644 "$UPSTREAM.next"
+  mv -f "$UPSTREAM.next" "$UPSTREAM"
+}
 on_exit() {
   local status=$?
-  if [ "$status" -ne 0 ] && [ "$service_stopped" -eq 1 ]; then
-    log "deployment failed; attempting to start $SERVICE"
-    sudo systemctl start "$SERVICE" || true
+  trap - EXIT
+  if [ "$status" -ne 0 ] && [ "$committed" -eq 0 ]; then
+    if [ "$switch_attempted" -eq 1 ]; then
+      write_upstream "$old_config"
+      if ! caddy reload --config "$CADDY_CONFIG" --adapter caddyfile; then
+        touch "$LOCK_FILE.recovery"
+        log "Caddy recovery failed; BOTH services retained. Resolve $LOCK_FILE.recovery before retry."
+        exit "$status"
+      fi
+    fi
+    if [ "$candidate_started" -eq 1 ]; then
+      systemctl disable --now "$candidate" || true
+    fi
   fi
+  exit "$status"
 }
 trap on_exit EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 run_build() {
   if [ -n "$BUILD_USER" ]; then
@@ -62,15 +98,6 @@ if [ -n "$(run_build git status --porcelain --untracked-files=no)" ]; then
   die "frontend checkout has local tracked changes; commit or remove them before deploying"
 fi
 
-# --- guard: running Node major must match .nvmrc ---
-if [ -f .nvmrc ]; then
-  want="$(tr -dc '0-9.' < .nvmrc)"; want_major="${want%%.*}"
-  have_major="$(node -p 'process.versions.node.split(".")[0]')"
-  [ "$want_major" = "$have_major" ] \
-    || die ".nvmrc wants Node $want but $NODE_BIN is $(node -v). Install /opt/node-$want_major or set NODE_BIN."
-fi
-log "using $(node -v) from $NODE_BIN"
-
 if [ "$SOURCE_PREPARED" = "true" ]; then
   [ -n "$REVISION" ] || die "SOURCE_PREPARED=true requires REVISION"
   [ "$(run_build git rev-parse HEAD)" = "$REVISION" ] || die "prepared frontend revision does not match $REVISION"
@@ -88,27 +115,68 @@ else
   run_build git reset --hard "$TARGET"   # untracked files (.env.production, node_modules, .next) are kept
 fi
 
-log "stop $SERVICE (build window begins)"
-sudo systemctl stop "$SERVICE"
-service_stopped=1
+# Only the inactive slot is replaced. The active tree, .next and dependencies
+# remain untouched, including on the first migration from nextjs.service.
+systemctl stop "$candidate"
+install -d -o "$BUILD_USER" -g "$(id -gn "$BUILD_USER")" -m 755 "$SLOTS_ROOT"
+slot="$SLOTS_ROOT/$idle"
+[ ! -L "$slot" ] || die "slot must not be a symlink: $slot"
+rm -rf -- "$slot"
+install -d -o "$BUILD_USER" -g "$(id -gn "$BUILD_USER")" -m 755 "$slot"
+run_build git archive HEAD | run_build tar -x -C "$slot"
+# Copy Next's production env inputs, including ignored files. Never print them.
+for name in .env .env.local .env.production .env.production.local; do
+  if [ -f "$APP_ROOT/$name" ]; then
+    run_build install -m 600 "$APP_ROOT/$name" "$slot/$name"
+  fi
+done
+revision="$(run_build git rev-parse HEAD)"
+cd "$slot"
+# --- guard: running Node major must match .nvmrc ---
+if [ -f .nvmrc ]; then
+  want="$(tr -dc '0-9.' < .nvmrc)"; want_major="${want%%.*}"
+  have_major="$(node -p 'process.versions.node.split(".")[0]')"
+  [ "$want_major" = "$have_major" ] \
+    || die ".nvmrc wants Node $want but $NODE_BIN is $(node -v). Install /opt/node-$want_major or set NODE_BIN."
+fi
+log "using $(node -v) from $NODE_BIN"
 
-log "npm ci"
+log "build $revision in inactive slot $idle; $previous keeps serving"
 run_build npm ci
-log "npm run build"
 run_build npm run build
+[ -s .next/BUILD_ID ] || die "build did not produce .next/BUILD_ID"
 
-log "start $SERVICE"
-sudo systemctl start "$SERVICE"
-service_stopped=0
-
-# --- health check ---
-log "health check $HEALTH_URL"
-ok=0; code=""
-for _ in $(seq 1 15); do
-  code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 3 "$HEALTH_URL" || true)"
-  case "$code" in 200|301|302|307|308) ok=1; break ;; esac
+# Keep the previous build's static chunks for tabs already open during deploy.
+# Only current build chunks are copied, avoiding unbounded history accumulation.
+if [ "$previous" = "$SERVICE" ]; then old_tree="$APP_ROOT"; else old_tree="$SLOTS_ROOT/$active"; fi
+if [ -d "$old_tree/.next/static" ]; then
+  run_build cp -a .next/static .next/current-static
+  static_source="$old_tree/.next/current-static"
+  [ -d "$static_source" ] || static_source="$old_tree/.next/static"
+  run_build cp -an "$static_source/." .next/static/
+fi
+candidate_started=1
+systemctl enable --now "$candidate"
+log "check candidate on [::1]:$idle$HEALTH_PATH"
+ok=0
+for _ in $(seq 1 "$HEALTH_ATTEMPTS"); do
+  code="$(curl --noproxy '*' -s -o /dev/null -w '%{http_code}' --max-time 3 "http://[::1]:$idle$HEALTH_PATH" || true)"
+  if [ "$code" = 200 ] && systemctl is-active --quiet "$candidate"; then ok=1; break; fi
   sleep 1
 done
-[ "$ok" = "1" ] || die "service not healthy (last code: ${code:-none}) — check: journalctl -u $SERVICE -n 50 ; tail /var/log/nextjs.log"
+[ "$ok" = 1 ] || die "candidate failed readiness; old frontend remains live"
 
-log "done — $(run_build git rev-parse --short HEAD) live"
+log "switch Caddy to $idle"
+switch_attempted=1
+write_upstream "$(printf 'reverse_proxy [::1]:%s {\n    header_up X-Forwarded-Host {host}\n}' "$idle")"
+caddy validate --config "$CADDY_CONFIG" --adapter caddyfile
+caddy reload --config "$CADDY_CONFIG" --adapter caddyfile
+committed=1
+log "new version live; draining old requests for $DRAIN_SECONDS seconds"
+sleep "$DRAIN_SECONDS"
+systemctl disable --now "$previous"
+# No release history: remove only the retired managed slot, never the source checkout.
+if [ "$previous" != "$SERVICE" ]; then
+  rm -rf -- "$SLOTS_ROOT/$active"
+fi
+log "done — $revision live on $candidate"

@@ -41,20 +41,20 @@ infra/
   server under `shared/`; put templates here if useful, not real values.
 - **Durable demo queue:** Kafka is a loopback-only, persistent systemd service on the current
   single production host. It survives app deploys but is not host-level HA; see `kafka/README.md`.
-- **Atomic deploys:** build in a fresh release dir, swap a `current` symlink, health-check,
-  auto-rollback on failure. See `frontend/deploy.sh`.
+- **Frontend deploys:** build the inactive slot, check readiness, gracefully switch
+  Caddy, then retire the previous process. See `frontend/DEPLOY.md`.
 - **Node 20** for the frontend, installed isolated at `/opt/node-20` so it doesn't clash
   with other node tooling on the box.
 
 ## Roadmap
 
-- [x] Frontend one-command deploy (`frontend/deploy.sh`, single service, auto Node 20).
+- [x] Frontend one-command deploy (`frontend/deploy.sh`, isolated slots, auto Node 20).
 - [x] Go services one-command deploy (`go/deploy.sh <app>`, builds on server) +
       highlight-extractor cron + shared `getreplay-go.env`.
 - [x] Durable Kafka demo pipeline config with one all-in-one Match Updater service.
 - [x] PHP one-command deploy (`php/deploy.sh`) + daily highlight-feed cron.
 - [ ] Capture Laravel queue/scheduler units (or supervisor) and remaining crons.
-- [ ] Zero-downtime frontend (blue-green: two ports + graceful `caddy reload`) — deferred.
+- [x] Frontend builds alongside the live version (two ports + graceful `caddy reload`).
 - [x] Human-approved component-specific GitHub Actions release buttons with one forced-command SSH gateway.
 - [x] GitHub Actions candidate preparer with source ancestry checks and owner-reviewed PRs.
 - [ ] Move source builds from production to prebuilt CI artifacts when release volume warrants it.

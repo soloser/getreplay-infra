@@ -9,9 +9,12 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 |---|---|---|
 | `getreplay.gg` `/srv/*` | Go backend `localhost:3006` | |
 | `getreplay.gg` `/api/*` | PHP-FPM (Laravel) `unix//run/php/php8.4-fpm.sock`, root `/var/www/fun-php/repo/src/public` | `/api` prefix stripped (`handle_path`) |
-| `getreplay.gg` (everything else) | **Next.js frontend** `[::1]:3000` | IPv6 localhost only |
+| `getreplay.gg` (everything else) | **Next.js frontend** active `[::1]:3000` / `[::1]:3001` | IPv6 localhost only |
 | `www.getreplay.gg` | — | 308 redirect → `getreplay.gg` |
-| `app.getreplay.gg` | PHP-FPM (Laravel/Orchid admin), same root | `X-Frame-Options: SAMEORIGIN` |
+| `app.getreplay.gg` `/backend*`, `/vendor/orchid/*`, `/storage/*` | PHP-FPM/static (Laravel/Orchid), same root | Admin stays isolated under `/backend`; `X-Frame-Options: SAMEORIGIN` |
+| `app.getreplay.gg` `/api/*` | PHP-FPM (Laravel API), same root | Same routing contract as the main domain |
+| `app.getreplay.gg` `/srv/*` | Go backend `localhost:3006` | HTTP + WebSocket, same-origin for the product UI |
+| `app.getreplay.gg` (everything else) | **Next.js frontend** active `[::1]:3000` / `[::1]:3001` | Canonical authenticated product host; `X-Robots-Tag: noindex, nofollow` |
 | `storage.getreplay.gg` | static file_server | replays + Laravel public storage, CORS `*` |
 
 ### Frame/embed rule (main site)
@@ -20,11 +23,21 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
   `Content-Security-Policy: frame-ancestors https://app.getreplay.gg` — so replay-embed
   pages can be iframed **only** by the admin app. Don't "simplify" this to a blanket DENY.
 
+### Auth handoff between public and app hosts
+
+- Laravel production config must set `FRONT_URL=https://app.getreplay.gg/token`.
+- The frontend build sets `NEXT_PUBLIC_APP_URL=https://app.getreplay.gg`.
+- OAuth starts on `getreplay.gg`, then Laravel sends a short-lived single-use handoff code
+  to the app token landing page in the URL fragment. The app exchanges it through its
+  same-origin `/api/auth/handoff/consume` route; JWT values are not placed in URLs.
+- An existing `getreplay.gg` localStorage session uses the same handoff before the old
+  origin-scoped token is removed.
+
 ## Services & ports
 
 | Service | Port / socket | Runtime | User | Unit / entrypoint |
 |---|---|---|---|---|
-| Frontend (zone-map-ui) | `[::1]:3000` | **Node 20** (`/opt/node-20`) | solo | `nextjs.service` |
+| Frontend (zone-map-ui) | `[::1]:3000` / `[::1]:3001` | **Node 20** (`/opt/node-20`) | solo | `nextjs@3000.service` / `nextjs@3001.service` |
 | Go backend (match-updater + Kafka pipeline) | `0.0.0.0:3006` (Caddy `/srv/*`) | Go + Kafka | www-data | `go-app.service` → `start.sh` |
 | Demo uploader | `0.0.0.0:3005` (uploads from PHP) | Go | www-data | `demo-uploader.service` → `demo-uploader.sh` |
 | Highlight extractor | — (one-shot runner) | Go | www-data | **cron** `/etc/cron.d/getreplay-highlight-extractor` (hourly :20) → `highlight-extractor-cron.sh` |
@@ -36,7 +49,7 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 | Caddy | 80/443 | — | — | `caddy.service` |
 
 > ⚠️ **Two Node runtimes coexist.** The frontend runs **Node 20** isolated at `/opt/node-20`
-> (patched `sharp` needs ≥20.9), referenced only by `nextjs.service`. The
+> (patched `sharp` needs ≥20.9), referenced by the `nextjs@.service` template. The
 > `node-app.service` backend still runs on **system Node 18** (`/usr/bin/npm`). Installing
 > Node 20 in `/opt` leaves system node untouched, so node-app is unaffected — do not replace
 > system node. See [`../frontend/DEPLOY.md`](../frontend/DEPLOY.md).
@@ -79,3 +92,6 @@ sudo cp caddy/Caddyfile /etc/caddy/Caddyfile
 sudo caddy validate --config /etc/caddy/Caddyfile
 sudo systemctl reload caddy      # graceful
 ```
+
+Frontend blue-green units/routes apply after the one-time migration in
+[`frontend/DEPLOY.md`](../frontend/DEPLOY.md). Until then `nextjs.service` serves port 3000.

@@ -188,3 +188,11 @@ python3 -m unittest discover -s release/tests -v
 python3 release/broker.py check
 bash -n release/install-server.sh release/run-production-scope.sh frontend/deploy.sh go/deploy.sh php/deploy.sh migrations/*.sh
 ```
+
+### Frontend build isolation
+
+Before installing the updated frontend adapter, apply the one-time unit and Caddy
+migration in [`frontend/DEPLOY.md`](../frontend/DEPLOY.md). The release gateway
+continues passing the prepared revision; the adapter now builds an inactive slot
+and switches Caddy only after readiness. `install-server.sh` deliberately does not
+overwrite the live frontend upstream port.
