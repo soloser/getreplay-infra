@@ -1,79 +1,97 @@
-# Frontend deploy — zone-map-ui (Next.js)
+# Frontend deploy without the build-time outage
 
-Single systemd service `nextjs.service` (User `solo`, `next start -H ::1` on `[::1]:3000`,
-**Node 20**) behind Caddy. Deploy is one command: [`deploy.sh`](deploy.sh).
+`deploy.sh` builds a separate checkout snapshot while the current Next.js process
+continues serving. It alternates `[::1]:3000` and `[::1]:3001`, starts the candidate,
+requires HTTP 200 from `/en`, then gracefully reloads Caddy for **both** domains.
+After a 30-second drain it disables/stops the old service and removes its managed
+slot. There is no release archive or automatic rollback after a successful switch.
 
-- App repo `zone-map-ui` owns `.nvmrc` (Node 20 pin) + `engines`. This infra repo owns
-  *how* it deploys.
-- Node 20 lives isolated at `/opt/node-20` (system Node 18 stays for `node-app.service`).
-- Validate app changes with `npx tsc --noEmit` (ESLint is disabled during `next build`).
+## One-time migration on the server
+
+Keep the existing `nextjs.service` running. Review the diff against the actual
+`/etc/caddy/Caddyfile` before applying it; preserve any server-only changes.
+The only necessary Caddy change is replacing both frontend `reverse_proxy` blocks
+with `import /etc/caddy/frontend-upstream.caddy` (see the tracked Caddyfile).
+Do not overwrite this upstream file on subsequent infrastructure updates: it
+records the active port. The initial value 3000 is only for legacy migration.
+
+```bash
+cd /home/solo/infra
+sudo cp systemd/nextjs@.service /etc/systemd/system/
+sudo systemctl daemon-reload
+# FIRST installation only; refuses to replace an existing active-port file:
+sudo test ! -e /etc/caddy/frontend-upstream.caddy && \
+  sudo install -m 644 caddy/frontend-upstream.caddy /etc/caddy/frontend-upstream.caddy
+# After reviewing/merging the Caddyfile changes:
+sudo caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+sudo caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile
+```
+
+At this stage both domains still use the legacy service on port 3000.
+Install the updated trusted release adapter through the existing
+[`release/install-server.sh`](../release/install-server.sh) procedure if using
+GitHub release buttons. It copies `frontend/deploy.sh`; the template unit and Caddy
+migration above must be installed first. No release manifest changes are needed.
 
 ## Deploy
 
 ```bash
-/path/to/infra/frontend/deploy.sh
+sudo /home/solo/infra/frontend/deploy.sh
 ```
 
-It picks Node from `/opt/node-20` (prepends it to `PATH` so `npm` and its `#!/usr/bin/env node`
-both resolve to Node 20, not system 18), checks the Node major against `.nvmrc`, then:
-`git reset --hard origin/main` → **stop service** → `npm ci` → `npm run build` → **start** →
-health-check `http://[::1]:3000/`.
+The first deployment builds slot 3001, then disables the legacy `nextjs.service`
+only after switching traffic. Later deployments alternate template instances.
+The source checkout remains `/home/solo/getreplay-front`; `.next` and `node_modules`
+there are never rebuilt or deleted by this script. Builds use `git archive HEAD`
+and copy `.env`, `.env.local`, `.env.production`, `.env.production.local` privately
+into the candidate. Node 20 is selected through `/opt/node-20/bin`.
 
-The service is stopped for the build on purpose: `npm ci` wipes `node_modules` and `next build`
-rewrites `.next` in place, which would break a live server that kept serving. **Downtime ≈ the
-build time** (a minute or two). That's the trade for a simple single-version deploy; do it at low
-traffic. A failed build leaves the service stopped — fix and re-run.
+GitHub's existing `SOURCE_PREPARED=true`, pinned `REVISION`, and `BUILD_USER=solo`
+contract is supported. Manual deploy fetches `origin/main` (or `BRANCH`) and can
+select a full `REVISION` contained in that branch. Rollback is another deployment
+of the previous revision, rebuilding it through the same path.
 
-Config via env vars (defaults in the script): `APP_ROOT`, `BRANCH`, `SERVICE`, `NODE_BIN`,
-`HEALTH_URL`.
+Config: `APP_ROOT`, `BRANCH`, `REVISION`, `SOURCE_PREPARED`, `BUILD_USER`, `NODE_BIN`,
+`SLOTS_ROOT`, `UPSTREAM`, `CADDY_CONFIG`, `LOCK_FILE`, `HEALTH_PATH`, `HEALTH_ATTEMPTS`, `DRAIN_SECONDS`.
+`SERVICE` is only the legacy unit name. Changes to `SLOTS_ROOT`, `BUILD_USER`, or
+`NODE_BIN` must also be reflected in the installed template unit. Ports stay fixed
+at 3000/3001. Run the adapter as root; npm and Git run as the build user.
 
-`sudo` is used for `systemctl stop/start`. For a truly promptless one command, allow just those
-via a `/etc/sudoers.d/` drop-in.
+## Failures and verification
 
-## One-time server setup
+- Install/build/readiness failures leave the old service and route active.
+- Validation/reload failures restore the previous upstream and reload it before
+  stopping the candidate. If that recovery reload fails, both services remain up
+  and a `/run/lock/getreplay-frontend.lock.recovery` marker blocks further deploys.
+  Inspect Caddy's actual active configuration, reconcile it with the upstream file,
+  validate/reload successfully, then remove that marker before retrying.
+- Concurrent direct deploys are rejected by `flock`; release-button source
+  preparation also remains covered by the existing release gateway lock.
+- After a successful reload, interruption/cleanup failure leaves the new version
+  live and may leave the retired service running; inspect units before retrying.
+- Enabled active units survive reboot. The deployed Caddyfile and upstream file
+  must stay consistent; do not reset the upstream to the tracked initial value.
 
 ```bash
-# 1. Node 20, isolated (does not touch system node 18)
-sudo mkdir -p /opt/node-20
-curl -fsSL https://nodejs.org/dist/v20.20.2/node-v20.20.2-linux-x64.tar.xz \
-  | sudo tar -xJ --strip-components=1 -C /opt/node-20
-/opt/node-20/bin/node -v   # v20.20.2
-
-# 2. Point the service at Node 20 (this repo's unit already does; install or use a drop-in)
-sudo cp <infra>/systemd/nextjs.service /etc/systemd/system/nextjs.service
-sudo systemctl daemon-reload
-#   (alternatively keep the old unit and override just ExecStart+PATH via `systemctl edit`)
-
-# 3. Deploy
-<infra>/frontend/deploy.sh
+cat /etc/caddy/frontend-upstream.caddy
+systemctl status nextjs@3000.service nextjs@3001.service
+curl --noproxy '*' -I 'http://[::1]:3001/en' # substitute active port
+curl -I https://getreplay.gg/en
+curl -I https://app.getreplay.gg/en
+python3 -m unittest discover -s frontend/tests -v
 ```
 
-The git checkout stays at `/home/solo/getreplay-front`; `deploy.sh` does `git reset --hard
-origin/main` there. Untracked files (`.env.production`, `node_modules`, `.next`) are preserved.
+Tests run the real shell with command doubles: no actual npm build, systemd or
+production changes. A production smoke check is still needed after installation.
 
-## Verify
+## Bounds
 
-```bash
-systemctl show nextjs.service -p ExecStart          # → /opt/node-20/bin/npm ...
-/opt/node-20/bin/node -e "console.log(require('sharp').versions)"   # sharp loads on Node 20
-cd /home/solo/getreplay-front && /opt/node-20/bin/npm audit --omit=dev   # runtime deps: 0
-curl -sI 'http://[::1]:3000/' | head -1             # backend up
-curl -sI 'https://getreplay.gg/' | head -1          # site via Caddy
-```
+The server needs resources for the live app plus a build and briefly two app
+processes. This prevents deliberate build-time shutdown; it is not host-level HA
+or protection against OOM. Requests exceeding the drain interval may be interrupted.
+The previous build's static chunks are carried forward for one deployment (not
+its runtime), which helps already-open tabs. Old server actions/data can still
+require a page refresh; no indefinite version-skew guarantee is made.
 
-## Rollback
-
-```bash
-cd /home/solo/getreplay-front
-git reset --hard <previous-commit>
-sudo systemctl stop nextjs.service
-/opt/node-20/bin/npm ci && /opt/node-20/bin/npm run build
-sudo systemctl start nextjs.service
-```
-
-## Future: zero-downtime
-
-To remove the build-window downtime later, run two services on `[::1]:3000` / `[::1]:3001`
-(blue-green): build the idle one, health-check it, then flip Caddy's `reverse_proxy` port with a
-graceful `systemctl reload caddy`. Not set up now — this simple single-version flow is the
-current design.
+References: [Caddy graceful reload](https://caddyserver.com/docs/command-line#caddy-reload),
+[Next.js self-hosting/version skew](https://nextjs.org/docs/app/guides/self-hosting).

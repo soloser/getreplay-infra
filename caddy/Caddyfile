@@ -31,12 +31,10 @@ getreplay.gg {
         file_server
     }
 
-    # --- SPA frontend (zone-map-ui, Next.js on [::1]:3000, IPv6-only) ---
+    # --- SPA frontend (zone-map-ui, Next.js on active loopback slot, IPv6-only) ---
     handle {
         encode zstd gzip
-        reverse_proxy [::1]:3000 {
-            header_up X-Forwarded-Host {host}
-        }
+        import /etc/caddy/frontend-upstream.caddy
     }
 
     # --- Security headers ---
@@ -121,9 +119,7 @@ app.getreplay.gg {
 
     # Everything outside the explicit Orchid/backend paths is the product app.
     handle {
-        reverse_proxy [::1]:3000 {
-            header_up X-Forwarded-Host {host}
-        }
+        import /etc/caddy/frontend-upstream.caddy
     }
 
     header {

@@ -1,0 +1,38 @@
+[Unit]
+Description=Next.js frontend slot %i
+After=network.target
+
+[Service]
+Type=simple
+User=solo
+WorkingDirectory=/home/solo/getreplay-front-slots/%i
+
+# Важно: слушать только localhost, иначе снова будет RCE и атаки.
+# Node 20 (изолированный /opt/node-20). PATH обязателен: npm запускается через
+# `#!/usr/bin/env node`, и без него подхватился бы системный Node 18 → sharp 0.35 упал бы.
+Environment=PATH=/opt/node-20/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/opt/node-20/bin/npm run start -- -p %i -H ::1
+
+Environment=NODE_ENV=production
+Environment=NEXT_PRIVATE_ORIGIN=http://[::1]:%i
+
+# Логи в /var/log
+StandardOutput=append:/var/log/nextjs-%i.log
+StandardError=append:/var/log/nextjs-%i.log
+
+# Автоперезапуск
+Restart=always
+RestartSec=3
+
+# Безопасные ограничения
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=false
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target
