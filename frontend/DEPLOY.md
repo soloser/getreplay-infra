@@ -2,7 +2,7 @@
 
 `deploy.sh` builds a separate checkout snapshot while the current Next.js process
 continues serving. It alternates `[::1]:3000` and `[::1]:3001`, starts the candidate,
-requires HTTP 200 from `/en`, then gracefully reloads Caddy for **both** domains.
+requires HTTP 200 from `/en`, then gracefully reloads Caddy for the configured frontend domains.
 After a 30-second drain it disables/stops the old service and removes its managed
 slot. There is no release archive or automatic rollback after a successful switch.
 
@@ -10,8 +10,10 @@ slot. There is no release archive or automatic rollback after a successful switc
 
 Keep the existing `nextjs.service` running. Review the diff against the actual
 `/etc/caddy/Caddyfile` before applying it; preserve any server-only changes.
-The only necessary Caddy change is replacing both frontend `reverse_proxy` blocks
+The only necessary Caddy change is replacing each existing frontend `reverse_proxy` block
 with `import /etc/caddy/frontend-upstream.caddy` (see the tracked Caddyfile).
+The tracked file has two frontend domains, but the server may have only one.
+Do not add a domain for this migration; update only existing frontend routes.
 Do not overwrite this upstream file on subsequent infrastructure updates: it
 records the active port. The initial value 3000 is only for legacy migration.
 
@@ -27,7 +29,7 @@ sudo caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
 sudo caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile
 ```
 
-At this stage both domains still use the legacy service on port 3000.
+At this stage the configured frontend domains still use the legacy service on port 3000.
 Install the updated trusted release adapter through the existing
 [`release/install-server.sh`](../release/install-server.sh) procedure if using
 GitHub release buttons. It copies `frontend/deploy.sh`; the template unit and Caddy

@@ -28,8 +28,12 @@ exec 9>"$LOCK_FILE"
 flock -n 9 || die "another frontend deployment is running"
 [ ! -e "$LOCK_FILE.recovery" ] || die "resolve previous Caddy reload failure: $LOCK_FILE.recovery"
 [ -f "$UPSTREAM" ] || die "install blue-green server setup first; see frontend/DEPLOY.md"
-[ "$(awk -v upstream="$UPSTREAM" '$1 == "import" && $2 == upstream && NF == 2 {n++} END {print n+0}' "$CADDY_CONFIG")" = 2 ] \
-  || die "both frontend routes must import $UPSTREAM; complete the Caddy migration first"
+[ "$(awk -v upstream="$UPSTREAM" '$1 == "import" && $2 == upstream && NF == 2 {n++} END {print n+0}' "$CADDY_CONFIG")" -ge 1 ] \
+  || die "frontend route must import $UPSTREAM; complete the Caddy migration first"
+# Reject a partial migration, without assuming how many domains exist.
+if awk '$1 == "reverse_proxy" {for (i=2; i<=NF; i++) {if ($i ~ /^#/) break; if ($i == "[::1]:3000" || $i == "[::1]:3001") found=1}} END {exit !found}' "$CADDY_CONFIG"; then
+  die "replace remaining hardcoded frontend reverse_proxy blocks with import $UPSTREAM"
+fi
 [[ "$DRAIN_SECONDS" =~ ^[0-9]+$ ]] || die "DRAIN_SECONDS must be an integer"
 [[ "$HEALTH_ATTEMPTS" =~ ^[1-9][0-9]*$ ]] || die "HEALTH_ATTEMPTS must be positive"
 old_config="$(cat "$UPSTREAM")"
