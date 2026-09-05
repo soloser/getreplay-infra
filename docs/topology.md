@@ -11,7 +11,10 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 | `getreplay.gg` `/api/*` | PHP-FPM (Laravel) `unix//run/php/php8.4-fpm.sock`, root `/var/www/fun-php/repo/src/public` | `/api` prefix stripped (`handle_path`) |
 | `getreplay.gg` (everything else) | **Next.js frontend** active `[::1]:3000` / `[::1]:3001` | IPv6 localhost only |
 | `www.getreplay.gg` | — | 308 redirect → `getreplay.gg` |
-| `app.getreplay.gg` | PHP-FPM (Laravel/Orchid admin), same root | `X-Frame-Options: SAMEORIGIN` |
+| `app.getreplay.gg` `/backend*`, `/vendor/orchid/*`, `/storage/*` | PHP-FPM/static (Laravel/Orchid), same root | Admin stays isolated under `/backend`; `X-Frame-Options: SAMEORIGIN` |
+| `app.getreplay.gg` `/api/*` | PHP-FPM (Laravel API), same root | Same routing contract as the main domain |
+| `app.getreplay.gg` `/srv/*` | Go backend `localhost:3006` | HTTP + WebSocket, same-origin for the product UI |
+| `app.getreplay.gg` (everything else) | **Next.js frontend** active `[::1]:3000` / `[::1]:3001` | Canonical authenticated product host; `X-Robots-Tag: noindex, nofollow` |
 | `storage.getreplay.gg` | static file_server | replays + Laravel public storage, CORS `*` |
 
 ### Frame/embed rule (main site)
@@ -19,6 +22,16 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 - `/admin/replay-embed*` (`@replay_embed`): drops `X-Frame-Options`, sets
   `Content-Security-Policy: frame-ancestors https://app.getreplay.gg` — so replay-embed
   pages can be iframed **only** by the admin app. Don't "simplify" this to a blanket DENY.
+
+### Auth handoff between public and app hosts
+
+- Laravel production config must set `FRONT_URL=https://app.getreplay.gg/token`.
+- The frontend build sets `NEXT_PUBLIC_APP_URL=https://app.getreplay.gg`.
+- OAuth starts on `getreplay.gg`, then Laravel sends a short-lived single-use handoff code
+  to the app token landing page in the URL fragment. The app exchanges it through its
+  same-origin `/api/auth/handoff/consume` route; JWT values are not placed in URLs.
+- An existing `getreplay.gg` localStorage session uses the same handoff before the old
+  origin-scoped token is removed.
 
 ## Services & ports
 
@@ -80,5 +93,4 @@ sudo caddy validate --config /etc/caddy/Caddyfile
 sudo systemctl reload caddy      # graceful
 ```
 
-Frontend slots apply after the migration in [`frontend/DEPLOY.md`](../frontend/DEPLOY.md).
-Until then `nextjs.service` serves port 3000. `app.getreplay.gg` remains Laravel/Orchid.
+This branch defers dashboard/app-domain activation; see [dashboard-deferred.md](dashboard-deferred.md).

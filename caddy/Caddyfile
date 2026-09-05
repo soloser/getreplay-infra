@@ -56,42 +56,84 @@ getreplay.gg {
     }
 }
 
-# Laravel / Orchid admin
+# Product app + Laravel / Orchid admin under /backend
 app.getreplay.gg {
     tls blackangelnk@gmail.com
     encode zstd gzip
 
-    root * /var/www/fun-php/repo/src/public
-
     @demo_upload {
         path /backend/demo-library/uploadSingleAction /backend/demo-library/uploadBulkAction
     }
-    @regular_admin_request {
-        not path /backend/demo-library/uploadSingleAction /backend/demo-library/uploadBulkAction
+    @orchid_dynamic {
+        path /backend /backend/* /up
+    }
+    @orchid_static {
+        path /vendor/orchid/* /storage/*
+    }
+    @orchid_frame {
+        path /backend /backend/* /vendor/orchid/* /storage/*
+    }
+    @not_orchid_frame {
+        not path /backend /backend/* /vendor/orchid/* /storage/*
     }
 
-    route {
-        # Demo archives can be large. Relax the limit only for the two admin
-        # upload actions and keep every other admin request on the normal limit.
-        request_body @demo_upload {
+    # Demo archives can be large. Relax the limit only for the two admin upload
+    # actions and keep every other Orchid request on the normal limit.
+    handle @demo_upload {
+        root * /var/www/fun-php/repo/src/public
+        request_body {
             max_size 8GiB
         }
-        request_body @regular_admin_request {
-            max_size 64MiB
-        }
-        php_fastcgi @demo_upload unix//run/php/php8.4-fpm.sock {
+        php_fastcgi unix//run/php/php8.4-fpm.sock {
             env PHP_VALUE "upload_max_filesize=2G"
             env PHP_ADMIN_VALUE "post_max_size=8G"
         }
+        file_server
+    }
+
+    handle @orchid_dynamic {
+        root * /var/www/fun-php/repo/src/public
+        request_body {
+            max_size 64MiB
+        }
         php_fastcgi unix//run/php/php8.4-fpm.sock
         file_server
+    }
+
+    handle @orchid_static {
+        root * /var/www/fun-php/repo/src/public
+        file_server
+    }
+
+    # Same-origin application backends. OAuth itself still starts on
+    # getreplay.gg so its host-scoped provider session survives the callback.
+    handle /srv/* {
+        reverse_proxy localhost:3006
+    }
+
+    handle_path /api/* {
+        root * /var/www/fun-php/repo/src/public
+        php_fastcgi unix//run/php/php8.4-fpm.sock
+        file_server
+    }
+
+    # Everything outside the explicit Orchid/backend paths is the product app.
+    handle {
+        import /var/lib/getreplay-frontend/upstream.caddy
     }
 
     header {
         Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
         X-Content-Type-Options "nosniff"
         Referrer-Policy "no-referrer-when-downgrade"
-        # Для админки часто лучше не DENY, если Orchid где-то использует iframe/встраивание — но обычно можно оставить
+        X-Robots-Tag "noindex, nofollow"
+    }
+
+    header @not_orchid_frame {
+        X-Frame-Options "DENY"
+    }
+
+    header @orchid_frame {
         X-Frame-Options "SAMEORIGIN"
     }
 }
