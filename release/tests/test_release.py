@@ -495,6 +495,8 @@ class GitHubWorkflowScopeTest(unittest.TestCase):
         self.assertIn("contents: write", source)
         self.assertIn("pull-requests: write", source)
         self.assertIn("secrets.RELEASE_CANDIDATE_SOURCE_TOKEN", source)
+        self.assertIn('migrations) source_repository="soloser/getreplay-migrations"', source)
+        self.assertIn("MIGRATION_DATABASE: ${{ inputs.database }}", source)
         self.assertIn("release/prepare_candidate.py", source)
         self.assertIn("merge-base --is-ancestor", source)
         self.assertIn('"$previous_revision" "$SOURCE_REVISION"', source)

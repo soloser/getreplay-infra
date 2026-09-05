@@ -13,11 +13,21 @@ on:
           - php
           - node
           - go
+          - migrations
       revision:
         description: Full commit SHA from the component main branch, or main for its latest commit
         required: true
         default: main
         type: string
+      database:
+        description: Database scope when component is migrations (ignored otherwise)
+        required: true
+        default: both
+        type: choice
+        options:
+          - both
+          - mysql
+          - clickhouse
       description:
         description: Optional note included in the candidate pull request
         required: false
@@ -41,6 +51,7 @@ jobs:
       CANDIDATE_DESCRIPTION: ${{ inputs.description }}
       COMPONENT_SCOPE: ${{ inputs.component }}
       INFRA_TOKEN: ${{ github.token }}
+      MIGRATION_DATABASE: ${{ inputs.database }}
       REQUESTED_REVISION: ${{ inputs.revision }}
       SOURCE_TOKEN: ${{ secrets.RELEASE_CANDIDATE_SOURCE_TOKEN }}
     steps:
@@ -58,6 +69,7 @@ jobs:
             php) source_repository="soloser/getreplay-php" ;;
             node) source_repository="soloser/getreplay-node" ;;
             go) source_repository="soloser/getreplay-go" ;;
+            migrations) source_repository="soloser/getreplay-migrations" ;;
             *) echo "Unsupported component scope: $COMPONENT_SCOPE" >&2; exit 1 ;;
           esac
 
@@ -90,6 +102,16 @@ jobs:
           fi
           git -C "$source_root" cat-file -e "$revision^{commit}"
           git -C "$source_root" merge-base --is-ancestor "$revision" FETCH_HEAD
+          if [[ "$COMPONENT_SCOPE" == migrations ]]; then
+            case "$MIGRATION_DATABASE" in
+              both) migration_databases=(mysql clickhouse) ;;
+              mysql|clickhouse) migration_databases=("$MIGRATION_DATABASE") ;;
+              *) echo "Unsupported migration database: $MIGRATION_DATABASE" >&2; exit 1 ;;
+            esac
+            for database in "${migration_databases[@]}"; do
+              git -C "$source_root" cat-file -e "$revision:migrations/$database"
+            done
+          fi
           artifact="sha256:$(git -C "$source_root" archive --format=tar "$revision" | sha256sum | awk '{print $1}')"
 
           printf 'repository=%s\n' "$source_repository" >> "$GITHUB_OUTPUT"
@@ -117,12 +139,17 @@ jobs:
           GIT_AUTH_TOKEN="$INFRA_TOKEN" git -C "$infra_root" fetch --no-tags origin main
           git -C "$infra_root" switch --create "$branch" FETCH_HEAD
 
+          database_args=()
+          if [[ "$COMPONENT_SCOPE" == migrations ]]; then
+            database_args=(--database "$MIGRATION_DATABASE")
+          fi
           update_summary="$(python3 "$infra_root/release/prepare_candidate.py" \
             --input "$infra_root/release/candidate.json" \
             --output "$infra_root/release/candidate.json" \
             --scope "$COMPONENT_SCOPE" \
             --revision "$SOURCE_REVISION" \
-            --artifact "$SOURCE_ARTIFACT")"
+            --artifact "$SOURCE_ARTIFACT" \
+            "${database_args[@]}")"
           source_root="$RUNNER_TEMP/component-source"
           while IFS= read -r previous_revision; do
             git -C "$source_root" cat-file -e "$previous_revision^{commit}"
@@ -177,13 +204,16 @@ jobs:
           printf 'header = "X-GitHub-Api-Version: 2022-11-28"\n' >> "$api_config"
 
           title="Pin $COMPONENT_SCOPE release candidate at $SOURCE_SHORT_REVISION"
-          body="$(printf '%s\n\n%s\n%s\n%s\n%s\n\n%s\n' \
+          body="$(printf '%s\n\n%s\n%s\n%s\n%s\n' \
             '## Automated release candidate' \
             "- Scope: \`$COMPONENT_SCOPE\`" \
             "- Source: \`$SOURCE_REPOSITORY\`" \
             "- Revision: \`$SOURCE_REVISION\`" \
-            "- Artifact: \`$SOURCE_ARTIFACT\`" \
-            "${CANDIDATE_DESCRIPTION:-No additional note.}")"
+            "- Artifact: \`$SOURCE_ARTIFACT\`")"
+          if [[ "$COMPONENT_SCOPE" == migrations ]]; then
+            body+=$'\n'"- Database: \`$MIGRATION_DATABASE\`"
+          fi
+          body+=$'\n\n'"${CANDIDATE_DESCRIPTION:-No additional note.}"
           create_payload="$(jq -n \
             --arg title "$title" \
             --arg head "$CANDIDATE_BRANCH" \
@@ -219,4 +249,7 @@ jobs:
             echo "- Scope: \`$COMPONENT_SCOPE\`"
             echo "- Revision: \`$SOURCE_REVISION\`"
             echo "- Artifact: \`$SOURCE_ARTIFACT\`"
+            if [[ "$COMPONENT_SCOPE" == migrations ]]; then
+              echo "- Database: \`$MIGRATION_DATABASE\`"
+            fi
           } >> "$GITHUB_STEP_SUMMARY"

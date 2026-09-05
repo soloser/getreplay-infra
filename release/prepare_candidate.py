@@ -14,7 +14,9 @@ from typing import Mapping, Sequence
 import broker
 
 
-SCOPES = ("frontend", "php", "node", "go")
+SCOPES = ("frontend", "php", "node", "go", "migrations")
+DATABASES = ("mysql", "clickhouse")
+DATABASE_CHOICES = ("both", *DATABASES)
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 DIGEST_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 
@@ -24,7 +26,7 @@ class CandidateError(RuntimeError):
 
 
 def _component_names(candidate: Mapping[str, object], scope: str) -> tuple[str, ...]:
-    if scope not in SCOPES:
+    if scope not in SCOPES or scope == "migrations":
         raise CandidateError(f"unsupported candidate scope: {scope}")
     components = candidate.get("components")
     if not isinstance(components, Mapping):
@@ -39,11 +41,18 @@ def _component_names(candidate: Mapping[str, object], scope: str) -> tuple[str, 
     return names
 
 
+def _migration_names(database: str | None) -> tuple[str, ...]:
+    if database not in DATABASE_CHOICES:
+        raise CandidateError("migrations require database: both, mysql or clickhouse")
+    return DATABASES if database == "both" else (database,)
+
+
 def update_candidate(
     payload: object,
     scope: str,
     revision: str,
     artifact: str,
+    database: str | None = None,
 ) -> tuple[dict[str, object], tuple[str, ...]]:
     """Return a validated candidate with only the selected source scope updated."""
     if not SHA_RE.fullmatch(revision):
@@ -56,11 +65,25 @@ def update_candidate(
         raise CandidateError(f"candidate manifest is invalid: {exc}") from exc
     assert isinstance(payload, Mapping)
     candidate = copy.deepcopy(dict(payload))
-    names = _component_names(candidate, scope)
-    components = candidate["components"]
-    assert isinstance(components, dict)
-    for name in names:
-        components[name] = {"revision": revision, "artifact": artifact}
+    if scope == "migrations":
+        names = _migration_names(database)
+        migrations = candidate["migrations"]
+        assert isinstance(migrations, dict)
+        migrations.clear()
+        for name in names:
+            migrations[name] = {
+                "revision": revision,
+                "artifact": artifact,
+                "migration": f"{name}-{revision[:12]}",
+            }
+    else:
+        if database is not None:
+            raise CandidateError("database can only be set for migrations")
+        names = _component_names(candidate, scope)
+        components = candidate["components"]
+        assert isinstance(components, dict)
+        for name in names:
+            components[name] = {"revision": revision, "artifact": artifact}
     broker._validate_manifest(candidate, "candidate")
     return candidate, names
 
@@ -88,15 +111,28 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--scope", choices=SCOPES, required=True)
     parser.add_argument("--revision", required=True)
     parser.add_argument("--artifact", required=True)
+    parser.add_argument("--database", choices=DATABASE_CHOICES)
     args = parser.parse_args(argv)
 
     try:
         payload = json.loads(args.input.read_text(encoding="utf-8"))
-        candidate, names = update_candidate(payload, args.scope, args.revision, args.artifact)
+        candidate, names = update_candidate(
+            payload,
+            args.scope,
+            args.revision,
+            args.artifact,
+            args.database,
+        )
         assert isinstance(payload, Mapping)
-        components = payload["components"]
-        assert isinstance(components, Mapping)
-        previous_revisions = sorted({str(components[name]["revision"]) for name in names})
+        entries = payload["migrations" if args.scope == "migrations" else "components"]
+        assert isinstance(entries, Mapping)
+        previous_revisions = sorted(
+            {
+                str(entries[name]["revision"])
+                for name in names
+                if name in entries and isinstance(entries[name], Mapping)
+            }
+        )
         _write_json(args.output, candidate)
     except (OSError, UnicodeDecodeError, json.JSONDecodeError, CandidateError) as exc:
         parser.error(str(exc))
