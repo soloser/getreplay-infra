@@ -59,6 +59,8 @@ fetch_reviewed_file() {
 
 fetch_reviewed_file release/candidate.json "$RUNNER_TEMP/candidate.json"
 fetch_reviewed_file release/select_scope.py "$RUNNER_TEMP/select_scope.py"
+fetch_reviewed_file release/release_notes.py "$RUNNER_TEMP/release_notes.py"
+fetch_reviewed_file release/candidate-notes.json "$RUNNER_TEMP/candidate-notes.json"
 
 if [ "$RELEASE_SCOPE" = all ]; then
   release_id=candidate
@@ -72,6 +74,15 @@ python3 "$RUNNER_TEMP/select_scope.py" \
   --input "$RUNNER_TEMP/candidate.json" \
   --output "$RUNNER_TEMP/selected-candidate.json"
 python3 -m json.tool "$RUNNER_TEMP/selected-candidate.json" >/dev/null
+
+python3 "$RUNNER_TEMP/release_notes.py" render \
+  --candidate "$RUNNER_TEMP/selected-candidate.json" \
+  --notes "$RUNNER_TEMP/candidate-notes.json" \
+  > "$RUNNER_TEMP/release-commits.md"
+cat "$RUNNER_TEMP/release-commits.md"
+if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+  cat "$RUNNER_TEMP/release-commits.md" >> "$GITHUB_STEP_SUMMARY"
+fi
 
 manifest="$(base64 < "$RUNNER_TEMP/selected-candidate.json" | tr -d '\n')"
 [[ "$manifest" =~ ^[A-Za-z0-9+/]+={0,2}$ ]]

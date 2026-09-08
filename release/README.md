@@ -130,6 +130,17 @@ Use **Deploy production** only when every component in the candidate should move
 Every button reads `candidate.json` from the exact infra commit running the workflow; the fixed
 scope selector cannot add components or migrations that were not reviewed there.
 
+The deployment log and Actions **Summary** show the selected source commit subjects,
+links, and changes recorded during candidate preparation. Go services sharing the same
+revision are grouped together. These changes are relative to the **previous candidate**,
+which may differ from the version running in production. Notes are printed before staging
+or promotion; the workflow result still determines whether deployment succeeded.
+
+[`candidate-notes.json`](candidate-notes.json) stores this reviewed display metadata separately
+from the deployment manifest. Each entry must match both the selected SHA and archive digest;
+missing or stale entries show an explicit unavailable message. Deployment reads notes from
+the same infra commit as the candidate and needs no source-repository token or server update.
+
 Inspect the last result:
 
 ```bash
@@ -151,8 +162,16 @@ already contained in source main. The workflow:
 2. verifies the requested commit is contained in its `main` branch;
 3. refuses to move the selected source behind the revision in the current candidate;
 4. calculates the deterministic `git archive` digest;
-5. updates only the selected scope, runs the release checks, and creates or updates an
+5. records the pinned commit subject and up to 50 newest commit subjects since each previous
+   candidate revision, with source links, total counts, and a full comparison link;
+6. updates only the selected scope, runs the release checks, and creates or updates an
    owner-reviewed candidate pull request.
+
+The generated PR, preparation log, and Actions **Summary** include the commit notes.
+If a selected entry has no previous candidate revision, only its pinned commit is shown
+and the missing baseline is stated. Merge commits and their included commits are retained.
+Subjects are escaped as display text. The initial notes for existing pins show only their
+pinned commits because no preparation baseline was recorded for them.
 
 The preparer has no `production` Environment and receives none of its secrets. Configure it once:
 

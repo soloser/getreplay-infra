@@ -143,6 +143,7 @@ jobs:
           if [[ "$COMPONENT_SCOPE" == migrations ]]; then
             database_args=(--database "$MIGRATION_DATABASE")
           fi
+          cp "$infra_root/release/candidate.json" "$RUNNER_TEMP/previous-candidate.json"
           update_summary="$(python3 "$infra_root/release/prepare_candidate.py" \
             --input "$infra_root/release/candidate.json" \
             --output "$infra_root/release/candidate.json" \
@@ -159,13 +160,25 @@ jobs:
               exit 1
             fi
           done < <(jq -r '.previous_revisions[]' <<<"$update_summary")
+          if git -C "$infra_root" diff --quiet -- release/candidate.json; then
+            echo "candidate.json already pins $COMPONENT_SCOPE at $SOURCE_REVISION" >&2
+            exit 1
+          fi
+          python3 "$infra_root/release/release_notes.py" update \
+            --previous "$RUNNER_TEMP/previous-candidate.json" \
+            --candidate "$infra_root/release/candidate.json" \
+            --scope "$COMPONENT_SCOPE" \
+            --source "$source_root" \
+            --notes "$infra_root/release/candidate-notes.json" \
+            --markdown "$RUNNER_TEMP/candidate-commits.md"
+          cat "$RUNNER_TEMP/candidate-commits.md"
           python3 -m unittest discover -s "$infra_root/release/tests" -v
           python3 "$infra_root/release/broker.py" check
           git -C "$infra_root" diff --check
 
           git -C "$infra_root" config user.name github-actions[bot]
           git -C "$infra_root" config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git -C "$infra_root" add release/candidate.json
+          git -C "$infra_root" add release/candidate.json release/candidate-notes.json
           if git -C "$infra_root" diff --cached --quiet; then
             echo "candidate.json already pins $COMPONENT_SCOPE at $SOURCE_REVISION" >&2
             exit 1
@@ -214,6 +227,7 @@ jobs:
             body+=$'\n'"- Database: \`$MIGRATION_DATABASE\`"
           fi
           body+=$'\n\n'"${CANDIDATE_DESCRIPTION:-No additional note.}"
+          body+=$'\n\n'"$(cat "$RUNNER_TEMP/candidate-commits.md")"
           create_payload="$(jq -n \
             --arg title "$title" \
             --arg head "$CANDIDATE_BRANCH" \
@@ -252,4 +266,6 @@ jobs:
             if [[ "$COMPONENT_SCOPE" == migrations ]]; then
               echo "- Database: \`$MIGRATION_DATABASE\`"
             fi
+            echo
+            cat "$RUNNER_TEMP/candidate-commits.md"
           } >> "$GITHUB_STEP_SUMMARY"

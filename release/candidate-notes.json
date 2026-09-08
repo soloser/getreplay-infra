@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "components": {
+    "frontend": {
+      "revision": "550a9b7d1d5b2acb39a18bc82f61f1ed062d02b2",
+      "artifact": "sha256:f9c115debbf37f4a91ab07a493bdeddc41a4778e5d399a740b2db0edc8be2533",
+      "subject": "Merge pull request #10 from soloser/codex/demo-upload-progress",
+      "previous_revision": null,
+      "total_commits": 0,
+      "commits": []
+    },
+    "php": {
+      "revision": "33c42e42ab534f3b28987970a53842013585ea19",
+      "artifact": "sha256:8a35b905a5de91b660df0f5fc371128fce3564614887eb0d0130a5e36bdd2336",
+      "subject": "Merge pull request #3 from soloser/codex/match-team-rosters",
+      "previous_revision": null,
+      "total_commits": 0,
+      "commits": []
+    },
+    "node": {
+      "revision": "45549df0dc5fd0d51976ed1239b95bd3f8edf16d",
+      "artifact": "sha256:b9500412c2313d4c04be53e6862d9b1bf9ac92660f823296419b0e75746a9523",
+      "subject": "Harden production Steam GC request handling",
+      "previous_revision": null,
+      "total_commits": 0,
+      "commits": []
+    },
+    "go-match-updater": {
+      "revision": "bd69cce196c463669a36611b99d32b223dd6ff0b",
+      "artifact": "sha256:f32ff02f3a873979765b8283d94cfe91b1d517ac5307f86969aad772d8f1fbc1",
+      "subject": "Merge pull request #13 from soloser/codex/replay-player-motion",
+      "previous_revision": null,
+      "total_commits": 0,
+      "commits": []
+    },
+    "go-demo-uploader": {
+      "revision": "bd69cce196c463669a36611b99d32b223dd6ff0b",
+      "artifact": "sha256:f32ff02f3a873979765b8283d94cfe91b1d517ac5307f86969aad772d8f1fbc1",
+      "subject": "Merge pull request #13 from soloser/codex/replay-player-motion",
+      "previous_revision": null,
+      "total_commits": 0,
+      "commits": []
+    },
+    "go-highlight-extractor": {
+      "revision": "bd69cce196c463669a36611b99d32b223dd6ff0b",
+      "artifact": "sha256:f32ff02f3a873979765b8283d94cfe91b1d517ac5307f86969aad772d8f1fbc1",
+      "subject": "Merge pull request #13 from soloser/codex/replay-player-motion",
+      "previous_revision": null,
+      "total_commits": 0,
+      "commits": []
+    },
+    "go-replay-converter": {
+      "revision": "bd69cce196c463669a36611b99d32b223dd6ff0b",
+      "artifact": "sha256:f32ff02f3a873979765b8283d94cfe91b1d517ac5307f86969aad772d8f1fbc1",
+      "subject": "Merge pull request #13 from soloser/codex/replay-player-motion",
+      "previous_revision": null,
+      "total_commits": 0,
+      "commits": []
+    },
+    "go-stats-extractor": {
+      "revision": "bd69cce196c463669a36611b99d32b223dd6ff0b",
+      "artifact": "sha256:f32ff02f3a873979765b8283d94cfe91b1d517ac5307f86969aad772d8f1fbc1",
+      "subject": "Merge pull request #13 from soloser/codex/replay-player-motion",
+      "previous_revision": null,
+      "total_commits": 0,
+      "commits": []
+    }
+  },
+  "migrations": {}
+}
