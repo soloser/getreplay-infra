@@ -2,12 +2,29 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "550a9b7d1d5b2acb39a18bc82f61f1ed062d02b2",
-      "artifact": "sha256:f9c115debbf37f4a91ab07a493bdeddc41a4778e5d399a740b2db0edc8be2533",
-      "subject": "Merge pull request #10 from soloser/codex/demo-upload-progress",
-      "previous_revision": null,
-      "total_commits": 0,
-      "commits": []
+      "revision": "2a5a3f217cef0e30598a66edc25da025f87ff444",
+      "artifact": "sha256:1d32419834ee41cb888f42bc351968e1c305ae3c480e04a60f9571641c7e0205",
+      "subject": "Merge pull request #12 from soloser/codex/legal-pages",
+      "previous_revision": "550a9b7d1d5b2acb39a18bc82f61f1ed062d02b2",
+      "total_commits": 4,
+      "commits": [
+        {
+          "revision": "2a5a3f217cef0e30598a66edc25da025f87ff444",
+          "subject": "Merge pull request #12 from soloser/codex/legal-pages"
+        },
+        {
+          "revision": "6a0466c62ef64e497eeb0d8d0f175be47dc29af0",
+          "subject": "Add English privacy policy and terms pages"
+        },
+        {
+          "revision": "5b54348bc3f4fcef4ecff6ac4f523225f84071f9",
+          "subject": "Merge pull request #11 from soloser/codex/replay-player-motion"
+        },
+        {
+          "revision": "200ba2519882e1574580c45c2609c5177f011f2a",
+          "subject": "Fix replay marker rotation across 360 degrees"
+        }
+      ]
     },
     "php": {
       "revision": "33c42e42ab534f3b28987970a53842013585ea19",
