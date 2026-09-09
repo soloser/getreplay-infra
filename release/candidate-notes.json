@@ -2,27 +2,23 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "2a5a3f217cef0e30598a66edc25da025f87ff444",
-      "artifact": "sha256:1d32419834ee41cb888f42bc351968e1c305ae3c480e04a60f9571641c7e0205",
-      "subject": "Merge pull request #12 from soloser/codex/legal-pages",
-      "previous_revision": "550a9b7d1d5b2acb39a18bc82f61f1ed062d02b2",
-      "total_commits": 4,
+      "revision": "9ec9da7c2d1c661e44e18d95b76ce566b54f25ce",
+      "artifact": "sha256:d537b43d252e8ff5c6ee0c4eaba3772457fef0bda94488d5836912ff217d6f37",
+      "subject": "Merge pull request #13 from soloser/codex/seo-crawlable-catalog",
+      "previous_revision": "2a5a3f217cef0e30598a66edc25da025f87ff444",
+      "total_commits": 3,
       "commits": [
         {
-          "revision": "2a5a3f217cef0e30598a66edc25da025f87ff444",
-          "subject": "Merge pull request #12 from soloser/codex/legal-pages"
+          "revision": "9ec9da7c2d1c661e44e18d95b76ce566b54f25ce",
+          "subject": "Merge pull request #13 from soloser/codex/seo-crawlable-catalog"
         },
         {
-          "revision": "6a0466c62ef64e497eeb0d8d0f175be47dc29af0",
-          "subject": "Add English privacy policy and terms pages"
+          "revision": "f7436a4fe95d93329ae335baf7a4d8cd7b9d4124",
+          "subject": "Move utility list link into breadcrumb navigation"
         },
         {
-          "revision": "5b54348bc3f4fcef4ecff6ac4f523225f84071f9",
-          "subject": "Merge pull request #11 from soloser/codex/replay-player-motion"
-        },
-        {
-          "revision": "200ba2519882e1574580c45c2609c5177f011f2a",
-          "subject": "Fix replay marker rotation across 360 degrees"
+          "revision": "ac4fc91dfa847844758c68aec5f239e208c6d303",
+          "subject": "fix(seo): add crawlable utility catalogue and canonical URLs"
         }
       ]
     },
