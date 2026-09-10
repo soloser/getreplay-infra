@@ -35,5 +35,11 @@
       "artifact": "sha256:f32ff02f3a873979765b8283d94cfe91b1d517ac5307f86969aad772d8f1fbc1"
     }
   },
-  "migrations": {}
+  "migrations": {
+    "mysql": {
+      "revision": "911f074c8df3c30642738ba1ac16b4ed6b2cc31e",
+      "artifact": "sha256:cde69b23e335dae4fe67f963defb4485b83d9d5c1870e313c92e63fdfe29feb1",
+      "migration": "mysql-911f074c8df3"
+    }
+  }
 }

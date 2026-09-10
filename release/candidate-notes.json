@@ -79,5 +79,14 @@
       "commits": []
     }
   },
-  "migrations": {}
+  "migrations": {
+    "mysql": {
+      "revision": "911f074c8df3c30642738ba1ac16b4ed6b2cc31e",
+      "artifact": "sha256:cde69b23e335dae4fe67f963defb4485b83d9d5c1870e313c92e63fdfe29feb1",
+      "subject": "Merge pull request #4 from soloser/codex/fix-duplicate-titles",
+      "previous_revision": null,
+      "total_commits": 0,
+      "commits": []
+    }
+  }
 }
