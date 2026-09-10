@@ -2,23 +2,19 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "9ec9da7c2d1c661e44e18d95b76ce566b54f25ce",
-      "artifact": "sha256:d537b43d252e8ff5c6ee0c4eaba3772457fef0bda94488d5836912ff217d6f37",
-      "subject": "Merge pull request #13 from soloser/codex/seo-crawlable-catalog",
-      "previous_revision": "2a5a3f217cef0e30598a66edc25da025f87ff444",
-      "total_commits": 3,
+      "revision": "32ccc13ea58911750de8287cfb803df89b5baf0c",
+      "artifact": "sha256:c97ed4d0da0243d230d3a062ce0644d6b54812114125e87966b29c177785bb92",
+      "subject": "Merge pull request #14 from soloser/codex/fix-duplicate-titles",
+      "previous_revision": "9ec9da7c2d1c661e44e18d95b76ce566b54f25ce",
+      "total_commits": 2,
       "commits": [
         {
-          "revision": "9ec9da7c2d1c661e44e18d95b76ce566b54f25ce",
-          "subject": "Merge pull request #13 from soloser/codex/seo-crawlable-catalog"
+          "revision": "32ccc13ea58911750de8287cfb803df89b5baf0c",
+          "subject": "Merge pull request #14 from soloser/codex/fix-duplicate-titles"
         },
         {
-          "revision": "f7436a4fe95d93329ae335baf7a4d8cd7b9d4124",
-          "subject": "Move utility list link into breadcrumb navigation"
-        },
-        {
-          "revision": "ac4fc91dfa847844758c68aec5f239e208c6d303",
-          "subject": "fix(seo): add crawlable utility catalogue and canonical URLs"
+          "revision": "95d51ccc7203a8edf398937d435fd992fc3000f9",
+          "subject": "fix(seo): localize utility hub titles"
         }
       ]
     },
