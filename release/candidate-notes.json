@@ -68,44 +68,89 @@
       "commits": []
     },
     "go-match-updater": {
-      "revision": "bd69cce196c463669a36611b99d32b223dd6ff0b",
-      "artifact": "sha256:f32ff02f3a873979765b8283d94cfe91b1d517ac5307f86969aad772d8f1fbc1",
-      "subject": "Merge pull request #13 from soloser/codex/replay-player-motion",
-      "previous_revision": null,
-      "total_commits": 0,
-      "commits": []
+      "revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
+      "artifact": "sha256:dda3873f2815bf913da78bdd6dd452c03263f032b22c1648cae48b41e1a15871",
+      "subject": "Merge pull request #14 from soloser/codex/highlight-quality-rules",
+      "previous_revision": "bd69cce196c463669a36611b99d32b223dd6ff0b",
+      "total_commits": 2,
+      "commits": [
+        {
+          "revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
+          "subject": "Merge pull request #14 from soloser/codex/highlight-quality-rules"
+        },
+        {
+          "revision": "5aeccb78480c186b40bc9f2ce226c5478517625e",
+          "subject": "Fix highlight quality rules and add replay audit"
+        }
+      ]
     },
     "go-demo-uploader": {
-      "revision": "bd69cce196c463669a36611b99d32b223dd6ff0b",
-      "artifact": "sha256:f32ff02f3a873979765b8283d94cfe91b1d517ac5307f86969aad772d8f1fbc1",
-      "subject": "Merge pull request #13 from soloser/codex/replay-player-motion",
-      "previous_revision": null,
-      "total_commits": 0,
-      "commits": []
+      "revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
+      "artifact": "sha256:dda3873f2815bf913da78bdd6dd452c03263f032b22c1648cae48b41e1a15871",
+      "subject": "Merge pull request #14 from soloser/codex/highlight-quality-rules",
+      "previous_revision": "bd69cce196c463669a36611b99d32b223dd6ff0b",
+      "total_commits": 2,
+      "commits": [
+        {
+          "revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
+          "subject": "Merge pull request #14 from soloser/codex/highlight-quality-rules"
+        },
+        {
+          "revision": "5aeccb78480c186b40bc9f2ce226c5478517625e",
+          "subject": "Fix highlight quality rules and add replay audit"
+        }
+      ]
     },
     "go-highlight-extractor": {
-      "revision": "bd69cce196c463669a36611b99d32b223dd6ff0b",
-      "artifact": "sha256:f32ff02f3a873979765b8283d94cfe91b1d517ac5307f86969aad772d8f1fbc1",
-      "subject": "Merge pull request #13 from soloser/codex/replay-player-motion",
-      "previous_revision": null,
-      "total_commits": 0,
-      "commits": []
+      "revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
+      "artifact": "sha256:dda3873f2815bf913da78bdd6dd452c03263f032b22c1648cae48b41e1a15871",
+      "subject": "Merge pull request #14 from soloser/codex/highlight-quality-rules",
+      "previous_revision": "bd69cce196c463669a36611b99d32b223dd6ff0b",
+      "total_commits": 2,
+      "commits": [
+        {
+          "revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
+          "subject": "Merge pull request #14 from soloser/codex/highlight-quality-rules"
+        },
+        {
+          "revision": "5aeccb78480c186b40bc9f2ce226c5478517625e",
+          "subject": "Fix highlight quality rules and add replay audit"
+        }
+      ]
     },
     "go-replay-converter": {
-      "revision": "bd69cce196c463669a36611b99d32b223dd6ff0b",
-      "artifact": "sha256:f32ff02f3a873979765b8283d94cfe91b1d517ac5307f86969aad772d8f1fbc1",
-      "subject": "Merge pull request #13 from soloser/codex/replay-player-motion",
-      "previous_revision": null,
-      "total_commits": 0,
-      "commits": []
+      "revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
+      "artifact": "sha256:dda3873f2815bf913da78bdd6dd452c03263f032b22c1648cae48b41e1a15871",
+      "subject": "Merge pull request #14 from soloser/codex/highlight-quality-rules",
+      "previous_revision": "bd69cce196c463669a36611b99d32b223dd6ff0b",
+      "total_commits": 2,
+      "commits": [
+        {
+          "revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
+          "subject": "Merge pull request #14 from soloser/codex/highlight-quality-rules"
+        },
+        {
+          "revision": "5aeccb78480c186b40bc9f2ce226c5478517625e",
+          "subject": "Fix highlight quality rules and add replay audit"
+        }
+      ]
     },
     "go-stats-extractor": {
-      "revision": "bd69cce196c463669a36611b99d32b223dd6ff0b",
-      "artifact": "sha256:f32ff02f3a873979765b8283d94cfe91b1d517ac5307f86969aad772d8f1fbc1",
-      "subject": "Merge pull request #13 from soloser/codex/replay-player-motion",
-      "previous_revision": null,
-      "total_commits": 0,
-      "commits": []
+      "revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
+      "artifact": "sha256:dda3873f2815bf913da78bdd6dd452c03263f032b22c1648cae48b41e1a15871",
+      "subject": "Merge pull request #14 from soloser/codex/highlight-quality-rules",
+      "previous_revision": "bd69cce196c463669a36611b99d32b223dd6ff0b",
+      "total_commits": 2,
+      "commits": [
+        {
+          "revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
+          "subject": "Merge pull request #14 from soloser/codex/highlight-quality-rules"
+        },
+        {
+          "revision": "5aeccb78480c186b40bc9f2ce226c5478517625e",
+          "subject": "Fix highlight quality rules and add replay audit"
+        }
+      ]
     }
   },
   "migrations": {
