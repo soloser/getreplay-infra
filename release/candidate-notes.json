@@ -19,12 +19,21 @@
       ]
     },
     "php": {
-      "revision": "33c42e42ab534f3b28987970a53842013585ea19",
-      "artifact": "sha256:8a35b905a5de91b660df0f5fc371128fce3564614887eb0d0130a5e36bdd2336",
-      "subject": "Merge pull request #3 from soloser/codex/match-team-rosters",
-      "previous_revision": null,
-      "total_commits": 0,
-      "commits": []
+      "revision": "c18657dee71620c439124cf1e3dcedc490fd7483",
+      "artifact": "sha256:2b7629dd632317cae380ef8abdf42a168a79bed3cc47140970be2731cba8c606",
+      "subject": "Merge pull request #4 from soloser/codex/jwt-auth-error-handling",
+      "previous_revision": "33c42e42ab534f3b28987970a53842013585ea19",
+      "total_commits": 2,
+      "commits": [
+        {
+          "revision": "c18657dee71620c439124cf1e3dcedc490fd7483",
+          "subject": "Merge pull request #4 from soloser/codex/jwt-auth-error-handling"
+        },
+        {
+          "revision": "8e8702be30d14aabe8e65180ebce6063d1240473",
+          "subject": "Keep internal failures out of JWT authentication responses"
+        }
+      ]
     },
     "node": {
       "revision": "45549df0dc5fd0d51976ed1239b95bd3f8edf16d",
