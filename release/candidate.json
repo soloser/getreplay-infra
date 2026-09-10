@@ -37,9 +37,9 @@
   },
   "migrations": {
     "mysql": {
-      "revision": "911f074c8df3c30642738ba1ac16b4ed6b2cc31e",
-      "artifact": "sha256:cde69b23e335dae4fe67f963defb4485b83d9d5c1870e313c92e63fdfe29feb1",
-      "migration": "mysql-911f074c8df3"
+      "revision": "b08f63f4821bd67558d16be821fb3d2d5f7321b0",
+      "artifact": "sha256:fa3aba85a37fe69dd40f6759dcb3c879b7887dcc6d5db32d907684e4b65a1471",
+      "migration": "mysql-b08f63f4821b"
     }
   }
 }
