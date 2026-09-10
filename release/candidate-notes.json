@@ -2,19 +2,43 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "32ccc13ea58911750de8287cfb803df89b5baf0c",
-      "artifact": "sha256:c97ed4d0da0243d230d3a062ce0644d6b54812114125e87966b29c177785bb92",
-      "subject": "Merge pull request #14 from soloser/codex/fix-duplicate-titles",
-      "previous_revision": "9ec9da7c2d1c661e44e18d95b76ce566b54f25ce",
-      "total_commits": 2,
+      "revision": "3dd2322ee87df47616429b9e1a48eb992554358b",
+      "artifact": "sha256:79758ccfacd666ba9b1428a290c23500463c3cc0faf0834afd11cdc627d9a448",
+      "subject": "Merge pull request #15 from soloser/codex/bing-intent-auth-copy",
+      "previous_revision": "32ccc13ea58911750de8287cfb803df89b5baf0c",
+      "total_commits": 8,
       "commits": [
         {
-          "revision": "32ccc13ea58911750de8287cfb803df89b5baf0c",
-          "subject": "Merge pull request #14 from soloser/codex/fix-duplicate-titles"
+          "revision": "3dd2322ee87df47616429b9e1a48eb992554358b",
+          "subject": "Merge pull request #15 from soloser/codex/bing-intent-auth-copy"
         },
         {
-          "revision": "95d51ccc7203a8edf398937d435fd992fc3000f9",
-          "subject": "fix(seo): localize utility hub titles"
+          "revision": "39579764e92363dc6ccf0620deac86392af055c4",
+          "subject": "Refine demo entry actions and require auth for training links"
+        },
+        {
+          "revision": "b38cd167344ff8a41870f8b2e5096208a1d14446",
+          "subject": "Turn search landing pages into demo and training entry points"
+        },
+        {
+          "revision": "72377f3963f4495ea62419cbf9f52eaa9c18dacf",
+          "subject": "fix(content): require sign-in in FACEIT demo guide"
+        },
+        {
+          "revision": "3c98c7962ef61d6f547ceb34b611511fa48ee909",
+          "subject": "Merge branch 'codex/seo-crawlable-catalog' into codex/local-seo-and-auth"
+        },
+        {
+          "revision": "6554d892a309a91d888559c356fd1f0934a26ba9",
+          "subject": "Merge SEO catalogue for local development"
+        },
+        {
+          "revision": "4a0385663871fea1305922781ebef60c6526c5f1",
+          "subject": "Merge saved auth fix for local development"
+        },
+        {
+          "revision": "cc45ff4db63177ecdaa6c2fc4187aeed20482136",
+          "subject": "Confirm authentication failures before clearing sessions"
         }
       ]
     },
