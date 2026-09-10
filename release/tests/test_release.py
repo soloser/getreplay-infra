@@ -16,6 +16,7 @@ RELEASE_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(RELEASE_DIR))
 
 import broker  # noqa: E402
+import prepare_candidate  # noqa: E402
 import promote_release  # noqa: E402
 import release_protocol  # noqa: E402
 import select_scope  # noqa: E402
@@ -382,6 +383,33 @@ class PromotionPlanTest(unittest.TestCase):
     def test_committed_candidate_is_valid_and_has_baseline(self) -> None:
         payload = json.loads((RELEASE_DIR / "candidate.json").read_text(encoding="utf-8"))
 
+        self._assert_candidate_has_baseline(payload)
+
+    def test_prepared_migrations_preserve_candidate_baseline(self) -> None:
+        payload = json.loads((RELEASE_DIR / "candidate.json").read_text(encoding="utf-8"))
+        without_migrations = {**payload, "migrations": {}}
+        self._assert_candidate_has_baseline(without_migrations)
+
+        for database, expected in (
+            ("mysql", ("mysql",)),
+            ("clickhouse", ("clickhouse",)),
+            ("both", ("mysql", "clickhouse")),
+        ):
+            with self.subTest(database=database):
+                candidate, names = prepare_candidate.update_candidate(
+                    without_migrations,
+                    "migrations",
+                    "a" * 40,
+                    "sha256:" + "b" * 64,
+                    database,
+                )
+
+                self.assertEqual(expected, names)
+                self.assertEqual(set(expected), set(candidate["migrations"]))
+                self.assertEqual(payload["components"], candidate["components"])
+                self._assert_candidate_has_baseline(candidate)
+
+    def _assert_candidate_has_baseline(self, payload: object) -> None:
         manifest = broker._validate_manifest(payload, "candidate")
 
         queue_workers = {
@@ -392,9 +420,14 @@ class PromotionPlanTest(unittest.TestCase):
         baseline_components = set(release_protocol.COMPONENTS) - queue_workers
         self.assertEqual(baseline_components, set(manifest["components"]))
         self.assertTrue(queue_workers.isdisjoint(manifest["components"]))
-        self.assertEqual({}, manifest["migrations"])
+        migration_order = [
+            f"migration:{name}"
+            for name in ("mysql", "clickhouse")
+            if name in manifest["migrations"]
+        ]
         self.assertEqual(
-            [
+            migration_order
+            + [
                 "component:php",
                 "component:node",
                 "component:go-match-updater",
