@@ -43,19 +43,19 @@
       ]
     },
     "php": {
-      "revision": "c18657dee71620c439124cf1e3dcedc490fd7483",
-      "artifact": "sha256:2b7629dd632317cae380ef8abdf42a168a79bed3cc47140970be2731cba8c606",
-      "subject": "Merge pull request #4 from soloser/codex/jwt-auth-error-handling",
-      "previous_revision": "33c42e42ab534f3b28987970a53842013585ea19",
+      "revision": "29101a34c3cd4d8ab989a202e305ab56e1150aab",
+      "artifact": "sha256:bcf4c1ce8dc762e8e65ed98c7c13473a9132efd8051a783988556b0a7b286d49",
+      "subject": "Merge pull request #5 from soloser/codex/heatmap-zone-moments",
+      "previous_revision": "c18657dee71620c439124cf1e3dcedc490fd7483",
       "total_commits": 2,
       "commits": [
         {
-          "revision": "c18657dee71620c439124cf1e3dcedc490fd7483",
-          "subject": "Merge pull request #4 from soloser/codex/jwt-auth-error-handling"
+          "revision": "29101a34c3cd4d8ab989a202e305ab56e1150aab",
+          "subject": "Merge pull request #5 from soloser/codex/heatmap-zone-moments"
         },
         {
-          "revision": "8e8702be30d14aabe8e65180ebce6063d1240473",
-          "subject": "Keep internal failures out of JWT authentication responses"
+          "revision": "3c218729599d75f56bd7ba3a161c442266cb28da",
+          "subject": "Add heatmap zone events, map selection and replay metadata API"
         }
       ]
     },
