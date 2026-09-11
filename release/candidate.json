@@ -7,32 +7,32 @@
       "artifact": "sha256:0769c19c9d6c114bbccc60f48dc80767e9aec980c9184f525d5b73cea83bb48d"
     },
     "php": {
-      "revision": "29101a34c3cd4d8ab989a202e305ab56e1150aab",
-      "artifact": "sha256:bcf4c1ce8dc762e8e65ed98c7c13473a9132efd8051a783988556b0a7b286d49"
+      "revision": "5fa65680109c7b8c171a6c9cfb772c69b4202ed7",
+      "artifact": "sha256:dbcde9825a2bac6ffe3da58344d0690c9c12a92795784c3f6d74f866a1e12e4b"
     },
     "node": {
-      "revision": "45549df0dc5fd0d51976ed1239b95bd3f8edf16d",
-      "artifact": "sha256:b9500412c2313d4c04be53e6862d9b1bf9ac92660f823296419b0e75746a9523"
+      "revision": "77acf6775011ba182ae028aff0d50c706fa5282c",
+      "artifact": "sha256:aec359f8eb9858fd498b2bb9347948378d3477bbcbc9012188876f7d2ceb0432"
     },
     "go-match-updater": {
-      "revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
-      "artifact": "sha256:dda3873f2815bf913da78bdd6dd452c03263f032b22c1648cae48b41e1a15871"
+      "revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
+      "artifact": "sha256:1632f6a5c3cd231fd02423cc6af70733d4d4c8f905bc95c228b3b31551ff43c1"
     },
     "go-demo-uploader": {
-      "revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
-      "artifact": "sha256:dda3873f2815bf913da78bdd6dd452c03263f032b22c1648cae48b41e1a15871"
+      "revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
+      "artifact": "sha256:1632f6a5c3cd231fd02423cc6af70733d4d4c8f905bc95c228b3b31551ff43c1"
     },
     "go-highlight-extractor": {
-      "revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
-      "artifact": "sha256:dda3873f2815bf913da78bdd6dd452c03263f032b22c1648cae48b41e1a15871"
+      "revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
+      "artifact": "sha256:1632f6a5c3cd231fd02423cc6af70733d4d4c8f905bc95c228b3b31551ff43c1"
     },
     "go-replay-converter": {
-      "revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
-      "artifact": "sha256:dda3873f2815bf913da78bdd6dd452c03263f032b22c1648cae48b41e1a15871"
+      "revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
+      "artifact": "sha256:1632f6a5c3cd231fd02423cc6af70733d4d4c8f905bc95c228b3b31551ff43c1"
     },
     "go-stats-extractor": {
-      "revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
-      "artifact": "sha256:dda3873f2815bf913da78bdd6dd452c03263f032b22c1648cae48b41e1a15871"
+      "revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
+      "artifact": "sha256:1632f6a5c3cd231fd02423cc6af70733d4d4c8f905bc95c228b3b31551ff43c1"
     }
   },
   "migrations": {
