@@ -2,27 +2,91 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "a969e652be7ed1ea2e99e43121d55a4b8c3a9043",
-      "artifact": "sha256:0769c19c9d6c114bbccc60f48dc80767e9aec980c9184f525d5b73cea83bb48d",
-      "subject": "Merge pull request #16 from soloser/codex/heatmap-zone-moments",
-      "previous_revision": "3dd2322ee87df47616429b9e1a48eb992554358b",
-      "total_commits": 4,
+      "revision": "ce9f5db02b0755c23b30f11dc3dd69986a7bd99f",
+      "artifact": "sha256:157f8779d0d2c641bf50df36be666a198744c8cd21af1480230c8d28c5546192",
+      "subject": "Merge pull request #18 from soloser/codex/production-sentry-resilience",
+      "previous_revision": "a969e652be7ed1ea2e99e43121d55a4b8c3a9043",
+      "total_commits": 20,
       "commits": [
         {
-          "revision": "a969e652be7ed1ea2e99e43121d55a4b8c3a9043",
-          "subject": "Merge pull request #16 from soloser/codex/heatmap-zone-moments"
+          "revision": "ce9f5db02b0755c23b30f11dc3dd69986a7bd99f",
+          "subject": "Merge pull request #18 from soloser/codex/production-sentry-resilience"
         },
         {
-          "revision": "fc54d68ce171fd81e9b07b01035ffb96c453e2fe",
+          "revision": "f7c4488dccc804f039113985b884131182b2fb87",
+          "subject": "Merge branch 'main' into codex/production-sentry-resilience"
+        },
+        {
+          "revision": "8d36cce7b1a5011899ae1f97b9ff2d959b1a6c1b",
+          "subject": "Fix production crashes in match pages and moment playback"
+        },
+        {
+          "revision": "8a7694930c3790bf9b5272ef20c355ebdbb21129",
+          "subject": "Merge pull request #20 from soloser/codex/heatmap-zone-moments"
+        },
+        {
+          "revision": "912100ae4d665b81d97891684c51f5f440405ab9",
+          "subject": "Merge main into heatmap and preserve shared moment overlay fixes"
+        },
+        {
+          "revision": "2d3a59236e2dc01b542ee6b740deb1d41314bc4c",
+          "subject": "Merge pull request #19 from soloser/codex/local-lan-support"
+        },
+        {
+          "revision": "9c525464560b4bc135f3825645e3cea6bcc82749",
+          "subject": "Keep local network support isolated to development"
+        },
+        {
+          "revision": "f38ea1bdef0c1a1d4a819b4bf23e1f82f3b65917",
+          "subject": "Merge pull request #17 from soloser/codex/content-training-and-replay"
+        },
+        {
+          "revision": "e58dabddae5802fd8511b0e401e7994ce409b7c5",
+          "subject": "Merge main while preserving verified frontend changes"
+        },
+        {
+          "revision": "a485644c356477f482a234d10fcc3514afb04b64",
+          "subject": "Add grenade guides and demo tools, refine training and replay UX"
+        },
+        {
+          "revision": "787f719a068e044d2aedf82c4201713833198635",
+          "subject": "Improve heatmap moment navigation, playback and event details"
+        },
+        {
+          "revision": "b10237c0a7fae732172d2dcb197170a0d7748965",
           "subject": "Restore desktop heatmap period buttons and inset select arrows"
         },
         {
-          "revision": "379daf8b77a0e7caee4abc48dab3780fe2c0bd4f",
+          "revision": "1df104ad840b07d3ef5bb3346f7d81f79beef9fd",
           "subject": "Make heatmap filters readable on mobile"
         },
         {
-          "revision": "a3fa9219f3579ba366cd705381d9db9686ad311c",
-          "subject": "Add heatmap zone moments and on-demand round playback"
+          "revision": "4a642e4d5b89850082b252ff4c19f9ac253b2865",
+          "subject": "Refine heatmap entry and available maps"
+        },
+        {
+          "revision": "f85a2c00788f7c73791b1b3b252c32ee8d55a8c6",
+          "subject": "Merge remote-tracking branch 'origin/main' of /Users/solo/projects/getreplay-workplace/zone-map-ui into codex/local-heatmap-review"
+        },
+        {
+          "revision": "1c28ce4fe85e7b097c3471cadc51881698fb4435",
+          "subject": "Merge remote-tracking branch 'origin/codex/heatmap-zone-moments' into codex/local-heatmap-review"
+        },
+        {
+          "revision": "7c14101f5c3fc3b7dcf92e6ff1f331403c51f74e",
+          "subject": "Add heatmap zone moments and on-demand replay"
+        },
+        {
+          "revision": "89af5706e5f5481a9e6c908e1eb1809d7bf851b7",
+          "subject": "Preserve local utility title translations"
+        },
+        {
+          "revision": "1638f8c95ac7fe91f60d74f0583e2d87cf084c06",
+          "subject": "Fix heatmap action toasts and reuse the mobile moment overlay"
+        },
+        {
+          "revision": "f72d9377e11cb8e2b86ad1e7d4663e1209fa4b04",
+          "subject": "Improve heatmap moment navigation, playback and event details"
         }
       ]
     },
