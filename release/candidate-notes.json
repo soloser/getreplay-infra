@@ -27,15 +27,19 @@
       ]
     },
     "php": {
-      "revision": "5fa65680109c7b8c171a6c9cfb772c69b4202ed7",
-      "artifact": "sha256:dbcde9825a2bac6ffe3da58344d0690c9c12a92795784c3f6d74f866a1e12e4b",
-      "subject": "Report Laravel exceptions and error logs to Sentry (#6)",
-      "previous_revision": "29101a34c3cd4d8ab989a202e305ab56e1150aab",
-      "total_commits": 1,
+      "revision": "0ff808905d2fed868ba44669f78afd1485d474dd",
+      "artifact": "sha256:08e6fb69487dbdd3c7f7f6ea6efefa7e7cf6c9eecf0235b75b5934dac29c0fe9",
+      "subject": "Include precise event participants and flash effects in heatmap zones (#8)",
+      "previous_revision": "5fa65680109c7b8c171a6c9cfb772c69b4202ed7",
+      "total_commits": 2,
       "commits": [
         {
-          "revision": "5fa65680109c7b8c171a6c9cfb772c69b4202ed7",
-          "subject": "Report Laravel exceptions and error logs to Sentry (#6)"
+          "revision": "0ff808905d2fed868ba44669f78afd1485d474dd",
+          "subject": "Include precise event participants and flash effects in heatmap zones (#8)"
+        },
+        {
+          "revision": "8ed9b5613194734d2ecff5bf909ece52d3584bd7",
+          "subject": "Include precise event participants and flash effects in heatmap zones (#7)"
         }
       ]
     },
