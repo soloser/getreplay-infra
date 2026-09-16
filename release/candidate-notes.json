@@ -2,27 +2,19 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "e65373ab341d57568d6f6bb9d8dc798e20235f62",
-      "artifact": "sha256:cc6a0be956ec10c2bb2b4fd02fbbd21bb3da7cad7b6a312dd9a953517e061d11",
-      "subject": "Merge pull request #23 from soloser/codex/wide-screen-layout",
-      "previous_revision": "3b1fb0969295bf70a7e795f9b97947a778163656",
-      "total_commits": 4,
+      "revision": "cf58929f1b5063ffb145a75b56241de31f6ccb3c",
+      "artifact": "sha256:3cde8fc720d9b3e1479d6740627db2ebb8a14138c6fe1af52c7dca805678699e",
+      "subject": "Merge pull request #24 from soloser/codex/remove-internal-analytics-copy",
+      "previous_revision": "e65373ab341d57568d6f6bb9d8dc798e20235f62",
+      "total_commits": 2,
       "commits": [
         {
-          "revision": "e65373ab341d57568d6f6bb9d8dc798e20235f62",
-          "subject": "Merge pull request #23 from soloser/codex/wide-screen-layout"
+          "revision": "cf58929f1b5063ffb145a75b56241de31f6ccb3c",
+          "subject": "Merge pull request #24 from soloser/codex/remove-internal-analytics-copy"
         },
         {
-          "revision": "2b671c7f8768f20c2963054bbb8888eb452ef05e",
-          "subject": "Adapt replay and content layouts to wide screens"
-        },
-        {
-          "revision": "d684e333e281e5397d3e28a81d20654f73fe0b6c",
-          "subject": "Merge pull request #22 from soloser/codex/demo-file-picker-localization"
-        },
-        {
-          "revision": "9c5a05001f62e62bb2c5bf1ecef7d4f782d9605a",
-          "subject": "Localize demo unpacker file selection"
+          "revision": "be49ded367a34c879bd950b0bb94e50dc319ecfc",
+          "subject": "Remove internal analytics tooling copy from public pages"
         }
       ]
     },
