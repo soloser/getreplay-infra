@@ -19,19 +19,15 @@
       ]
     },
     "php": {
-      "revision": "0ff808905d2fed868ba44669f78afd1485d474dd",
-      "artifact": "sha256:08e6fb69487dbdd3c7f7f6ea6efefa7e7cf6c9eecf0235b75b5934dac29c0fe9",
-      "subject": "Include precise event participants and flash effects in heatmap zones (#8)",
-      "previous_revision": "5fa65680109c7b8c171a6c9cfb772c69b4202ed7",
-      "total_commits": 2,
+      "revision": "f42e05d6f7d35e59d9bd0d6a473667ab38265099",
+      "artifact": "sha256:fc535d28aa8f18401595f8254f34214b01b1d40cb79ed830dc1d4676cf1c3eb9",
+      "subject": "Honor explicit lineup selection across supported training maps (#9)",
+      "previous_revision": "0ff808905d2fed868ba44669f78afd1485d474dd",
+      "total_commits": 1,
       "commits": [
         {
-          "revision": "0ff808905d2fed868ba44669f78afd1485d474dd",
-          "subject": "Include precise event participants and flash effects in heatmap zones (#8)"
-        },
-        {
-          "revision": "8ed9b5613194734d2ecff5bf909ece52d3584bd7",
-          "subject": "Include precise event participants and flash effects in heatmap zones (#7)"
+          "revision": "f42e05d6f7d35e59d9bd0d6a473667ab38265099",
+          "subject": "Honor explicit lineup selection across supported training maps (#9)"
         }
       ]
     },
