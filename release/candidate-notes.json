@@ -53,67 +53,67 @@
       ]
     },
     "go-match-updater": {
-      "revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
-      "artifact": "sha256:1632f6a5c3cd231fd02423cc6af70733d4d4c8f905bc95c228b3b31551ff43c1",
-      "subject": "Report Go service and processor errors to Sentry (#15)",
-      "previous_revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
+      "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
+      "artifact": "sha256:eb93180ae11c6a3e30ffd7e01e03b634e5112983da271e879207dcdb5f159960",
+      "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)",
+      "previous_revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
-          "subject": "Report Go service and processor errors to Sentry (#15)"
+          "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
+          "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)"
         }
       ]
     },
     "go-demo-uploader": {
-      "revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
-      "artifact": "sha256:1632f6a5c3cd231fd02423cc6af70733d4d4c8f905bc95c228b3b31551ff43c1",
-      "subject": "Report Go service and processor errors to Sentry (#15)",
-      "previous_revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
+      "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
+      "artifact": "sha256:eb93180ae11c6a3e30ffd7e01e03b634e5112983da271e879207dcdb5f159960",
+      "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)",
+      "previous_revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
-          "subject": "Report Go service and processor errors to Sentry (#15)"
+          "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
+          "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)"
         }
       ]
     },
     "go-highlight-extractor": {
-      "revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
-      "artifact": "sha256:1632f6a5c3cd231fd02423cc6af70733d4d4c8f905bc95c228b3b31551ff43c1",
-      "subject": "Report Go service and processor errors to Sentry (#15)",
-      "previous_revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
+      "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
+      "artifact": "sha256:eb93180ae11c6a3e30ffd7e01e03b634e5112983da271e879207dcdb5f159960",
+      "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)",
+      "previous_revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
-          "subject": "Report Go service and processor errors to Sentry (#15)"
+          "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
+          "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)"
         }
       ]
     },
     "go-replay-converter": {
-      "revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
-      "artifact": "sha256:1632f6a5c3cd231fd02423cc6af70733d4d4c8f905bc95c228b3b31551ff43c1",
-      "subject": "Report Go service and processor errors to Sentry (#15)",
-      "previous_revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
+      "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
+      "artifact": "sha256:eb93180ae11c6a3e30ffd7e01e03b634e5112983da271e879207dcdb5f159960",
+      "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)",
+      "previous_revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
-          "subject": "Report Go service and processor errors to Sentry (#15)"
+          "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
+          "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)"
         }
       ]
     },
     "go-stats-extractor": {
-      "revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
-      "artifact": "sha256:1632f6a5c3cd231fd02423cc6af70733d4d4c8f905bc95c228b3b31551ff43c1",
-      "subject": "Report Go service and processor errors to Sentry (#15)",
-      "previous_revision": "9927e6a443334a1cf98b89cd0ae5d0c4d55465db",
+      "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
+      "artifact": "sha256:eb93180ae11c6a3e30ffd7e01e03b634e5112983da271e879207dcdb5f159960",
+      "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)",
+      "previous_revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
-          "subject": "Report Go service and processor errors to Sentry (#15)"
+          "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
+          "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)"
         }
       ]
     }
