@@ -116,19 +116,19 @@
   },
   "migrations": {
     "mysql": {
-      "revision": "b08f63f4821bd67558d16be821fb3d2d5f7321b0",
-      "artifact": "sha256:fa3aba85a37fe69dd40f6759dcb3c879b7887dcc6d5db32d907684e4b65a1471",
-      "subject": "Merge pull request #5 from soloser/codex/reset-highlights-reextraction",
-      "previous_revision": "911f074c8df3c30642738ba1ac16b4ed6b2cc31e",
+      "revision": "57c8862efe3a5a5a87d1bb02fc819b2dc0a01226",
+      "artifact": "sha256:68ccf7c8dc546232e00d506ab0320c1ac150bb4f78b6cfb771ed14915fe8d56a",
+      "subject": "Merge pull request #6 from soloser/codex/faceit-owner-index",
+      "previous_revision": "b08f63f4821bd67558d16be821fb3d2d5f7321b0",
       "total_commits": 2,
       "commits": [
         {
-          "revision": "b08f63f4821bd67558d16be821fb3d2d5f7321b0",
-          "subject": "Merge pull request #5 from soloser/codex/reset-highlights-reextraction"
+          "revision": "57c8862efe3a5a5a87d1bb02fc819b2dc0a01226",
+          "subject": "Merge pull request #6 from soloser/codex/faceit-owner-index"
         },
         {
-          "revision": "ad8dee9dfa73f91a757dd213ea932d0aed426199",
-          "subject": "Reset generated highlights for extraction with updated rules"
+          "revision": "3992d64e2428a07812a9ea35b1a90d61ab7de29f",
+          "subject": "Index FACEIT match lookups by owner without enforcing uniqueness"
         }
       ]
     }
