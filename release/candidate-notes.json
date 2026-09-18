@@ -2,19 +2,19 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "cf58929f1b5063ffb145a75b56241de31f6ccb3c",
-      "artifact": "sha256:3cde8fc720d9b3e1479d6740627db2ebb8a14138c6fe1af52c7dca805678699e",
-      "subject": "Merge pull request #24 from soloser/codex/remove-internal-analytics-copy",
-      "previous_revision": "e65373ab341d57568d6f6bb9d8dc798e20235f62",
+      "revision": "1f11583e760eecdeabe8ca40329aae39a0e4715c",
+      "artifact": "sha256:cff47d84e8f84a7c8b9517a452f74711223d5c837c86f2225f5a2f624deff68e",
+      "subject": "Merge pull request #25 from soloser/codex/faceit-room-link",
+      "previous_revision": "cf58929f1b5063ffb145a75b56241de31f6ccb3c",
       "total_commits": 2,
       "commits": [
         {
-          "revision": "cf58929f1b5063ffb145a75b56241de31f6ccb3c",
-          "subject": "Merge pull request #24 from soloser/codex/remove-internal-analytics-copy"
+          "revision": "1f11583e760eecdeabe8ca40329aae39a0e4715c",
+          "subject": "Merge pull request #25 from soloser/codex/faceit-room-link"
         },
         {
-          "revision": "be49ded367a34c879bd950b0bb94e50dc319ecfc",
-          "subject": "Remove internal analytics tooling copy from public pages"
+          "revision": "7ab6077b2f2a0ca75ceea1fbc4209de92f63adc1",
+          "subject": "Link imported FACEIT matches to their match rooms"
         }
       ]
     },
