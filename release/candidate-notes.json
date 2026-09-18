@@ -49,67 +49,67 @@
       ]
     },
     "go-match-updater": {
-      "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
-      "artifact": "sha256:eb93180ae11c6a3e30ffd7e01e03b634e5112983da271e879207dcdb5f159960",
-      "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)",
-      "previous_revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
+      "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
+      "artifact": "sha256:775c77d8e596d014f1b1da325968e21702732130af8a7495eadc8d8877a2d4da",
+      "subject": "Import FACEIT demos server-side with owner-scoped status (#18)",
+      "previous_revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
-          "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)"
+          "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
+          "subject": "Import FACEIT demos server-side with owner-scoped status (#18)"
         }
       ]
     },
     "go-demo-uploader": {
-      "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
-      "artifact": "sha256:eb93180ae11c6a3e30ffd7e01e03b634e5112983da271e879207dcdb5f159960",
-      "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)",
-      "previous_revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
+      "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
+      "artifact": "sha256:775c77d8e596d014f1b1da325968e21702732130af8a7495eadc8d8877a2d4da",
+      "subject": "Import FACEIT demos server-side with owner-scoped status (#18)",
+      "previous_revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
-          "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)"
+          "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
+          "subject": "Import FACEIT demos server-side with owner-scoped status (#18)"
         }
       ]
     },
     "go-highlight-extractor": {
-      "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
-      "artifact": "sha256:eb93180ae11c6a3e30ffd7e01e03b634e5112983da271e879207dcdb5f159960",
-      "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)",
-      "previous_revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
+      "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
+      "artifact": "sha256:775c77d8e596d014f1b1da325968e21702732130af8a7495eadc8d8877a2d4da",
+      "subject": "Import FACEIT demos server-side with owner-scoped status (#18)",
+      "previous_revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
-          "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)"
+          "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
+          "subject": "Import FACEIT demos server-side with owner-scoped status (#18)"
         }
       ]
     },
     "go-replay-converter": {
-      "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
-      "artifact": "sha256:eb93180ae11c6a3e30ffd7e01e03b634e5112983da271e879207dcdb5f159960",
-      "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)",
-      "previous_revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
+      "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
+      "artifact": "sha256:775c77d8e596d014f1b1da325968e21702732130af8a7495eadc8d8877a2d4da",
+      "subject": "Import FACEIT demos server-side with owner-scoped status (#18)",
+      "previous_revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
-          "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)"
+          "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
+          "subject": "Import FACEIT demos server-side with owner-scoped status (#18)"
         }
       ]
     },
     "go-stats-extractor": {
-      "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
-      "artifact": "sha256:eb93180ae11c6a3e30ffd7e01e03b634e5112983da271e879207dcdb5f159960",
-      "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)",
-      "previous_revision": "aeee6b538f1454f786248ef697b4bccfb6f393e2",
+      "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
+      "artifact": "sha256:775c77d8e596d014f1b1da325968e21702732130af8a7495eadc8d8877a2d4da",
+      "subject": "Import FACEIT demos server-side with owner-scoped status (#18)",
+      "previous_revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
-          "subject": "Add demo pipeline logging and encrypted chat bookmarks (#17)"
+          "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
+          "subject": "Import FACEIT demos server-side with owner-scoped status (#18)"
         }
       ]
     }
