@@ -4,6 +4,13 @@ This is a coordinated source-release checklist, not authorization to deploy.
 The complete acceptance and rollback guide lives in the extension repository:
 [RELEASE-0.2.1.md](https://github.com/soloser/getreplay-faceit-extension/blob/codex/faceit-history-release/docs/RELEASE-0.2.1.md).
 
+Source PRs: [migrations #7](https://github.com/soloser/getreplay-migrations/pull/7),
+[Go #19](https://github.com/soloser/getreplay-go/pull/19),
+[PHP #10](https://github.com/soloser/getreplay-php/pull/10),
+[frontend #26](https://github.com/soloser/getreplay-front/pull/26),
+[extension #2](https://github.com/soloser/getreplay-faceit-extension/pull/2).
+This checklist/configuration change is [infra #53](https://github.com/soloser/getreplay-infra/pull/53).
+
 ## Before pressing deploy
 
 1. Merge the reviewed migrations, Go, PHP, frontend and extension source PRs.
