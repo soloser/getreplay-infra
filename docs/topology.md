@@ -1,6 +1,6 @@
 # Production topology
 
-Single host. **Caddy** terminates TLS (automatic, ACME email `blackangelnk@gmail.com`)
+Single host. **Caddy** terminates TLS (automatic, ACME email `admin@getreplay.gg`)
 and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](../caddy/Caddyfile).
 
 ## Domains → services
@@ -63,6 +63,13 @@ and reverse-proxies to the services below. Full config: [`../caddy/Caddyfile`](.
 | Caddyfile | `/etc/caddy/Caddyfile` |
 
 ## Deploying config changes
+
+The public support/privacy contact and Caddy ACME contact is `admin@getreplay.gg`.
+For application mail, set `MAIL_FROM_ADDRESS=admin@getreplay.gg` in the production
+Laravel environment and rebuild its config cache during the normal PHP deploy.
+Existing environment values override repository defaults. This does not configure
+SMTP delivery or change mail credentials. Update and verify the Chrome Web Store
+publisher contact separately in its dashboard; a code deployment cannot do that.
 
 Application deployment entrypoints:
 

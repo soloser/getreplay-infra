@@ -14,7 +14,7 @@ www.getreplay.gg {
 
 # Main site
 getreplay.gg {
-    tls blackangelnk@gmail.com
+    tls admin@getreplay.gg
 
     @replay_embed path /admin/replay-embed /admin/replay-embed/*
     @not_replay_embed not path /admin/replay-embed /admin/replay-embed/*
@@ -58,7 +58,7 @@ getreplay.gg {
 
 # Laravel / Orchid admin
 app.getreplay.gg {
-    tls blackangelnk@gmail.com
+    tls admin@getreplay.gg
     encode zstd gzip
 
     root * /var/www/fun-php/repo/src/public
@@ -99,7 +99,7 @@ app.getreplay.gg {
 # Storage subdomain (replays + Laravel public storage)
 storage.getreplay.gg {
     encode zstd gzip
-    tls blackangelnk@gmail.com
+    tls admin@getreplay.gg
 
     @cors_preflight method OPTIONS
     handle @cors_preflight {
