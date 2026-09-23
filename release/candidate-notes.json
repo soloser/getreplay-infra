@@ -2,19 +2,19 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "df6c23ef07734f474674b3c0c44e16be8144c5d6",
-      "artifact": "sha256:002a2b80eb05eda519d4e4282492ce09786f09a89e2c12c273576051f2a41912",
-      "subject": "Merge pull request #28 from soloser/codex/matches-active-date",
-      "previous_revision": "a863b5e91b989e0b8e1c255588d316207e361ed0",
+      "revision": "252a1741989a660fee78d44f02fe45f75e9ff107",
+      "artifact": "sha256:c9135cd1c8985dd29e66731cd0c258383b9b54d9632e9c8500cf9b769146b047",
+      "subject": "Merge pull request #29 from soloser/codex/matches-refresh-ux",
+      "previous_revision": "df6c23ef07734f474674b3c0c44e16be8144c5d6",
       "total_commits": 2,
       "commits": [
         {
-          "revision": "df6c23ef07734f474674b3c0c44e16be8144c5d6",
-          "subject": "Merge pull request #28 from soloser/codex/matches-active-date"
+          "revision": "252a1741989a660fee78d44f02fe45f75e9ff107",
+          "subject": "Merge pull request #29 from soloser/codex/matches-refresh-ux"
         },
         {
-          "revision": "169aabfc07eb5ecd01cce4676014d30a7612cc7b",
-          "subject": "fix(matches): align card time with active date sort"
+          "revision": "ea192c33cc6f70a1be92c44689792f9c4a860e58",
+          "subject": "fix(matches): refresh stored data during sync cooldown"
         }
       ]
     },
