@@ -40,67 +40,87 @@
       "commits": []
     },
     "go-match-updater": {
-      "revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
-      "artifact": "sha256:742df2359644e78e3b133248ec68f0aaaca92adb3917f7b2106f2732a0ae2a99",
-      "subject": "Track demo upload recency across FACEIT match reuse (#20)",
-      "previous_revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
-      "total_commits": 1,
+      "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+      "artifact": "sha256:51862e8dd7a7cc9783012e8b3362947966485c9bd04f933d5483a74682aab29a",
+      "subject": "Add precise FACEIT upload matching diagnostics (#22)",
+      "previous_revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
+      "total_commits": 2,
       "commits": [
         {
-          "revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
-          "subject": "Track demo upload recency across FACEIT match reuse (#20)"
+          "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+          "subject": "Add precise FACEIT upload matching diagnostics (#22)"
+        },
+        {
+          "revision": "7ae34d75e7be4e4450d6ea2e36dcd7bca2e1b546",
+          "subject": "Remove verbose demo chat logging (#21)"
         }
       ]
     },
     "go-demo-uploader": {
-      "revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
-      "artifact": "sha256:742df2359644e78e3b133248ec68f0aaaca92adb3917f7b2106f2732a0ae2a99",
-      "subject": "Track demo upload recency across FACEIT match reuse (#20)",
-      "previous_revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
-      "total_commits": 1,
+      "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+      "artifact": "sha256:51862e8dd7a7cc9783012e8b3362947966485c9bd04f933d5483a74682aab29a",
+      "subject": "Add precise FACEIT upload matching diagnostics (#22)",
+      "previous_revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
+      "total_commits": 2,
       "commits": [
         {
-          "revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
-          "subject": "Track demo upload recency across FACEIT match reuse (#20)"
+          "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+          "subject": "Add precise FACEIT upload matching diagnostics (#22)"
+        },
+        {
+          "revision": "7ae34d75e7be4e4450d6ea2e36dcd7bca2e1b546",
+          "subject": "Remove verbose demo chat logging (#21)"
         }
       ]
     },
     "go-highlight-extractor": {
-      "revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
-      "artifact": "sha256:742df2359644e78e3b133248ec68f0aaaca92adb3917f7b2106f2732a0ae2a99",
-      "subject": "Track demo upload recency across FACEIT match reuse (#20)",
-      "previous_revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
-      "total_commits": 1,
+      "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+      "artifact": "sha256:51862e8dd7a7cc9783012e8b3362947966485c9bd04f933d5483a74682aab29a",
+      "subject": "Add precise FACEIT upload matching diagnostics (#22)",
+      "previous_revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
+      "total_commits": 2,
       "commits": [
         {
-          "revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
-          "subject": "Track demo upload recency across FACEIT match reuse (#20)"
+          "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+          "subject": "Add precise FACEIT upload matching diagnostics (#22)"
+        },
+        {
+          "revision": "7ae34d75e7be4e4450d6ea2e36dcd7bca2e1b546",
+          "subject": "Remove verbose demo chat logging (#21)"
         }
       ]
     },
     "go-replay-converter": {
-      "revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
-      "artifact": "sha256:742df2359644e78e3b133248ec68f0aaaca92adb3917f7b2106f2732a0ae2a99",
-      "subject": "Track demo upload recency across FACEIT match reuse (#20)",
-      "previous_revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
-      "total_commits": 1,
+      "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+      "artifact": "sha256:51862e8dd7a7cc9783012e8b3362947966485c9bd04f933d5483a74682aab29a",
+      "subject": "Add precise FACEIT upload matching diagnostics (#22)",
+      "previous_revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
+      "total_commits": 2,
       "commits": [
         {
-          "revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
-          "subject": "Track demo upload recency across FACEIT match reuse (#20)"
+          "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+          "subject": "Add precise FACEIT upload matching diagnostics (#22)"
+        },
+        {
+          "revision": "7ae34d75e7be4e4450d6ea2e36dcd7bca2e1b546",
+          "subject": "Remove verbose demo chat logging (#21)"
         }
       ]
     },
     "go-stats-extractor": {
-      "revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
-      "artifact": "sha256:742df2359644e78e3b133248ec68f0aaaca92adb3917f7b2106f2732a0ae2a99",
-      "subject": "Track demo upload recency across FACEIT match reuse (#20)",
-      "previous_revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
-      "total_commits": 1,
+      "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+      "artifact": "sha256:51862e8dd7a7cc9783012e8b3362947966485c9bd04f933d5483a74682aab29a",
+      "subject": "Add precise FACEIT upload matching diagnostics (#22)",
+      "previous_revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
+      "total_commits": 2,
       "commits": [
         {
-          "revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
-          "subject": "Track demo upload recency across FACEIT match reuse (#20)"
+          "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+          "subject": "Add precise FACEIT upload matching diagnostics (#22)"
+        },
+        {
+          "revision": "7ae34d75e7be4e4450d6ea2e36dcd7bca2e1b546",
+          "subject": "Remove verbose demo chat logging (#21)"
         }
       ]
     }
