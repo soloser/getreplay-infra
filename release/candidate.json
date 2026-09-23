@@ -3,43 +3,43 @@
   "release_id": "candidate",
   "components": {
     "frontend": {
-      "revision": "c17bbd148beff5aa79329907eeb38360053ac847",
-      "artifact": "sha256:d0d50dc2a8ac4956b5fb0fb9c9a0cdf62af2f17756d1fb3f1881857a0c0f9ae5"
+      "revision": "a863b5e91b989e0b8e1c255588d316207e361ed0",
+      "artifact": "sha256:a89a1e5dd44e27d7a7fc6c3bc70e5eb2d93fb68da2cf2b022d41572e886511d9"
     },
     "php": {
-      "revision": "1fe2645972dd4a511a2fdbaad3e06193655b831b",
-      "artifact": "sha256:074002f0ba6afb8733b9803a6a15262e30158818afa20bd0f7dc81636632c0ee"
+      "revision": "a47b76db37ae0b95d30bacae102e14172746c3de",
+      "artifact": "sha256:53eee745cfec1f7bc37387b18d46600aeb3e2bc6a8b2840d5c5ea573fcd102bf"
     },
     "node": {
       "revision": "77acf6775011ba182ae028aff0d50c706fa5282c",
       "artifact": "sha256:aec359f8eb9858fd498b2bb9347948378d3477bbcbc9012188876f7d2ceb0432"
     },
     "go-match-updater": {
-      "revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
-      "artifact": "sha256:83d5f7084d6e43d0e5589bd861d4b99c61b0d2255d2ad7fb2b0220abecb12a13"
+      "revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
+      "artifact": "sha256:742df2359644e78e3b133248ec68f0aaaca92adb3917f7b2106f2732a0ae2a99"
     },
     "go-demo-uploader": {
-      "revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
-      "artifact": "sha256:83d5f7084d6e43d0e5589bd861d4b99c61b0d2255d2ad7fb2b0220abecb12a13"
+      "revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
+      "artifact": "sha256:742df2359644e78e3b133248ec68f0aaaca92adb3917f7b2106f2732a0ae2a99"
     },
     "go-highlight-extractor": {
-      "revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
-      "artifact": "sha256:83d5f7084d6e43d0e5589bd861d4b99c61b0d2255d2ad7fb2b0220abecb12a13"
+      "revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
+      "artifact": "sha256:742df2359644e78e3b133248ec68f0aaaca92adb3917f7b2106f2732a0ae2a99"
     },
     "go-replay-converter": {
-      "revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
-      "artifact": "sha256:83d5f7084d6e43d0e5589bd861d4b99c61b0d2255d2ad7fb2b0220abecb12a13"
+      "revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
+      "artifact": "sha256:742df2359644e78e3b133248ec68f0aaaca92adb3917f7b2106f2732a0ae2a99"
     },
     "go-stats-extractor": {
-      "revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
-      "artifact": "sha256:83d5f7084d6e43d0e5589bd861d4b99c61b0d2255d2ad7fb2b0220abecb12a13"
+      "revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
+      "artifact": "sha256:742df2359644e78e3b133248ec68f0aaaca92adb3917f7b2106f2732a0ae2a99"
     }
   },
   "migrations": {
     "mysql": {
-      "revision": "5d81acc210cad650c48530ef8d27df98d001b7af",
-      "artifact": "sha256:708b03994498d4b3df59b81fbf742909bbac7f86a162150f597be84a74006440",
-      "migration": "mysql-5d81acc210ca"
+      "revision": "5d1e18b7930332c65cd10622432759526e09c44b",
+      "artifact": "sha256:3e7ef6c59f1c259ce0d6c7276ae016884098412a5aa8b6ef455c335a3fae3a18",
+      "migration": "mysql-5d1e18b79303"
     }
   }
 }
