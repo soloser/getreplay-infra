@@ -2,19 +2,19 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "1f11583e760eecdeabe8ca40329aae39a0e4715c",
-      "artifact": "sha256:cff47d84e8f84a7c8b9517a452f74711223d5c837c86f2225f5a2f624deff68e",
-      "subject": "Merge pull request #25 from soloser/codex/faceit-room-link",
-      "previous_revision": "cf58929f1b5063ffb145a75b56241de31f6ccb3c",
+      "revision": "c17bbd148beff5aa79329907eeb38360053ac847",
+      "artifact": "sha256:d0d50dc2a8ac4956b5fb0fb9c9a0cdf62af2f17756d1fb3f1881857a0c0f9ae5",
+      "subject": "Merge pull request #26 from soloser/codex/faceit-history-release",
+      "previous_revision": "1f11583e760eecdeabe8ca40329aae39a0e4715c",
       "total_commits": 2,
       "commits": [
         {
-          "revision": "1f11583e760eecdeabe8ca40329aae39a0e4715c",
-          "subject": "Merge pull request #25 from soloser/codex/faceit-room-link"
+          "revision": "c17bbd148beff5aa79329907eeb38360053ac847",
+          "subject": "Merge pull request #26 from soloser/codex/faceit-history-release"
         },
         {
-          "revision": "7ab6077b2f2a0ca75ceea1fbc4209de92f63adc1",
-          "subject": "Link imported FACEIT matches to their match rooms"
+          "revision": "f8a64edff60d88a6d313a918bc77ac570780a2d9",
+          "subject": "Add FACEIT history import, metadata ranks and processing states"
         }
       ]
     },
