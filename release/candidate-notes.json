@@ -49,67 +49,67 @@
       ]
     },
     "go-match-updater": {
-      "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
-      "artifact": "sha256:775c77d8e596d014f1b1da325968e21702732130af8a7495eadc8d8877a2d4da",
-      "subject": "Import FACEIT demos server-side with owner-scoped status (#18)",
-      "previous_revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
+      "revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
+      "artifact": "sha256:83d5f7084d6e43d0e5589bd861d4b99c61b0d2255d2ad7fb2b0220abecb12a13",
+      "subject": "Sync FACEIT history and verify manual demo identity before matching (#19)",
+      "previous_revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
-          "subject": "Import FACEIT demos server-side with owner-scoped status (#18)"
+          "revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
+          "subject": "Sync FACEIT history and verify manual demo identity before matching (#19)"
         }
       ]
     },
     "go-demo-uploader": {
-      "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
-      "artifact": "sha256:775c77d8e596d014f1b1da325968e21702732130af8a7495eadc8d8877a2d4da",
-      "subject": "Import FACEIT demos server-side with owner-scoped status (#18)",
-      "previous_revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
+      "revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
+      "artifact": "sha256:83d5f7084d6e43d0e5589bd861d4b99c61b0d2255d2ad7fb2b0220abecb12a13",
+      "subject": "Sync FACEIT history and verify manual demo identity before matching (#19)",
+      "previous_revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
-          "subject": "Import FACEIT demos server-side with owner-scoped status (#18)"
+          "revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
+          "subject": "Sync FACEIT history and verify manual demo identity before matching (#19)"
         }
       ]
     },
     "go-highlight-extractor": {
-      "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
-      "artifact": "sha256:775c77d8e596d014f1b1da325968e21702732130af8a7495eadc8d8877a2d4da",
-      "subject": "Import FACEIT demos server-side with owner-scoped status (#18)",
-      "previous_revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
+      "revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
+      "artifact": "sha256:83d5f7084d6e43d0e5589bd861d4b99c61b0d2255d2ad7fb2b0220abecb12a13",
+      "subject": "Sync FACEIT history and verify manual demo identity before matching (#19)",
+      "previous_revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
-          "subject": "Import FACEIT demos server-side with owner-scoped status (#18)"
+          "revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
+          "subject": "Sync FACEIT history and verify manual demo identity before matching (#19)"
         }
       ]
     },
     "go-replay-converter": {
-      "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
-      "artifact": "sha256:775c77d8e596d014f1b1da325968e21702732130af8a7495eadc8d8877a2d4da",
-      "subject": "Import FACEIT demos server-side with owner-scoped status (#18)",
-      "previous_revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
+      "revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
+      "artifact": "sha256:83d5f7084d6e43d0e5589bd861d4b99c61b0d2255d2ad7fb2b0220abecb12a13",
+      "subject": "Sync FACEIT history and verify manual demo identity before matching (#19)",
+      "previous_revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
-          "subject": "Import FACEIT demos server-side with owner-scoped status (#18)"
+          "revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
+          "subject": "Sync FACEIT history and verify manual demo identity before matching (#19)"
         }
       ]
     },
     "go-stats-extractor": {
-      "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
-      "artifact": "sha256:775c77d8e596d014f1b1da325968e21702732130af8a7495eadc8d8877a2d4da",
-      "subject": "Import FACEIT demos server-side with owner-scoped status (#18)",
-      "previous_revision": "d4c2ef6551e4f9478ca6007c886b348e5b01b63f",
+      "revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
+      "artifact": "sha256:83d5f7084d6e43d0e5589bd861d4b99c61b0d2255d2ad7fb2b0220abecb12a13",
+      "subject": "Sync FACEIT history and verify manual demo identity before matching (#19)",
+      "previous_revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "35c8a91ead95a21e8436481836bea3988d763eb9",
-          "subject": "Import FACEIT demos server-side with owner-scoped status (#18)"
+          "revision": "d8f7a4dcaf23f9d66ff1cda4c8e225d4600fc46c",
+          "subject": "Sync FACEIT history and verify manual demo identity before matching (#19)"
         }
       ]
     }
