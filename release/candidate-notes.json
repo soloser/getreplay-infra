@@ -2,19 +2,19 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "a863b5e91b989e0b8e1c255588d316207e361ed0",
-      "artifact": "sha256:a89a1e5dd44e27d7a7fc6c3bc70e5eb2d93fb68da2cf2b022d41572e886511d9",
-      "subject": "Merge pull request #27 from soloser/codex/demo-upload-recency",
-      "previous_revision": "c17bbd148beff5aa79329907eeb38360053ac847",
+      "revision": "df6c23ef07734f474674b3c0c44e16be8144c5d6",
+      "artifact": "sha256:002a2b80eb05eda519d4e4282492ce09786f09a89e2c12c273576051f2a41912",
+      "subject": "Merge pull request #28 from soloser/codex/matches-active-date",
+      "previous_revision": "a863b5e91b989e0b8e1c255588d316207e361ed0",
       "total_commits": 2,
       "commits": [
         {
-          "revision": "a863b5e91b989e0b8e1c255588d316207e361ed0",
-          "subject": "Merge pull request #27 from soloser/codex/demo-upload-recency"
+          "revision": "df6c23ef07734f474674b3c0c44e16be8144c5d6",
+          "subject": "Merge pull request #28 from soloser/codex/matches-active-date"
         },
         {
-          "revision": "c663e73e0b3223616e8e2f4efcaf3413c04ba90a",
-          "subject": "Show recent manual demo uploads and track replay readiness"
+          "revision": "169aabfc07eb5ecd01cce4676014d30a7612cc7b",
+          "subject": "fix(matches): align card time with active date sort"
         }
       ]
     },
