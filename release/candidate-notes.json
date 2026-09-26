@@ -40,87 +40,67 @@
       "commits": []
     },
     "go-match-updater": {
-      "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
-      "artifact": "sha256:51862e8dd7a7cc9783012e8b3362947966485c9bd04f933d5483a74682aab29a",
-      "subject": "Add precise FACEIT upload matching diagnostics (#22)",
-      "previous_revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
-      "total_commits": 2,
+      "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
+      "artifact": "sha256:dc16716852cb8868c47b47fc92d74ad36b482b0d734a110896bc260437dac5a9",
+      "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)",
+      "previous_revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+      "total_commits": 1,
       "commits": [
         {
-          "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
-          "subject": "Add precise FACEIT upload matching diagnostics (#22)"
-        },
-        {
-          "revision": "7ae34d75e7be4e4450d6ea2e36dcd7bca2e1b546",
-          "subject": "Remove verbose demo chat logging (#21)"
+          "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
+          "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)"
         }
       ]
     },
     "go-demo-uploader": {
-      "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
-      "artifact": "sha256:51862e8dd7a7cc9783012e8b3362947966485c9bd04f933d5483a74682aab29a",
-      "subject": "Add precise FACEIT upload matching diagnostics (#22)",
-      "previous_revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
-      "total_commits": 2,
+      "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
+      "artifact": "sha256:dc16716852cb8868c47b47fc92d74ad36b482b0d734a110896bc260437dac5a9",
+      "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)",
+      "previous_revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+      "total_commits": 1,
       "commits": [
         {
-          "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
-          "subject": "Add precise FACEIT upload matching diagnostics (#22)"
-        },
-        {
-          "revision": "7ae34d75e7be4e4450d6ea2e36dcd7bca2e1b546",
-          "subject": "Remove verbose demo chat logging (#21)"
+          "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
+          "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)"
         }
       ]
     },
     "go-highlight-extractor": {
-      "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
-      "artifact": "sha256:51862e8dd7a7cc9783012e8b3362947966485c9bd04f933d5483a74682aab29a",
-      "subject": "Add precise FACEIT upload matching diagnostics (#22)",
-      "previous_revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
-      "total_commits": 2,
+      "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
+      "artifact": "sha256:dc16716852cb8868c47b47fc92d74ad36b482b0d734a110896bc260437dac5a9",
+      "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)",
+      "previous_revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+      "total_commits": 1,
       "commits": [
         {
-          "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
-          "subject": "Add precise FACEIT upload matching diagnostics (#22)"
-        },
-        {
-          "revision": "7ae34d75e7be4e4450d6ea2e36dcd7bca2e1b546",
-          "subject": "Remove verbose demo chat logging (#21)"
+          "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
+          "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)"
         }
       ]
     },
     "go-replay-converter": {
-      "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
-      "artifact": "sha256:51862e8dd7a7cc9783012e8b3362947966485c9bd04f933d5483a74682aab29a",
-      "subject": "Add precise FACEIT upload matching diagnostics (#22)",
-      "previous_revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
-      "total_commits": 2,
+      "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
+      "artifact": "sha256:dc16716852cb8868c47b47fc92d74ad36b482b0d734a110896bc260437dac5a9",
+      "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)",
+      "previous_revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+      "total_commits": 1,
       "commits": [
         {
-          "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
-          "subject": "Add precise FACEIT upload matching diagnostics (#22)"
-        },
-        {
-          "revision": "7ae34d75e7be4e4450d6ea2e36dcd7bca2e1b546",
-          "subject": "Remove verbose demo chat logging (#21)"
+          "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
+          "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)"
         }
       ]
     },
     "go-stats-extractor": {
-      "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
-      "artifact": "sha256:51862e8dd7a7cc9783012e8b3362947966485c9bd04f933d5483a74682aab29a",
-      "subject": "Add precise FACEIT upload matching diagnostics (#22)",
-      "previous_revision": "fe9e64c10fa10a2f88cf37998b8913f9eacb3b76",
-      "total_commits": 2,
+      "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
+      "artifact": "sha256:dc16716852cb8868c47b47fc92d74ad36b482b0d734a110896bc260437dac5a9",
+      "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)",
+      "previous_revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+      "total_commits": 1,
       "commits": [
         {
-          "revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
-          "subject": "Add precise FACEIT upload matching diagnostics (#22)"
-        },
-        {
-          "revision": "7ae34d75e7be4e4450d6ea2e36dcd7bca2e1b546",
-          "subject": "Remove verbose demo chat logging (#21)"
+          "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
+          "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)"
         }
       ]
     }
