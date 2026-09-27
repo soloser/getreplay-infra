@@ -2,31 +2,31 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "c9e1758788bf0252a27af4d8e60855ade1b78581",
-      "artifact": "sha256:ae53130813920eb14c867d85341dd791e040da19609fd8cdce9b086069c4c6bc",
-      "subject": "Merge pull request #31 from soloser/codex/killfeed-icons",
-      "previous_revision": "252a1741989a660fee78d44f02fe45f75e9ff107",
+      "revision": "037a67dd972d4ed51afc4a4448f98eeb963bb83c",
+      "artifact": "sha256:c30c2a6baec0b7e2dad8bfeedadc86d49e3ca5b3457e1bf832f56ed68fd51580",
+      "subject": "Merge pull request #32 from soloser/codex/utility-map-click",
+      "previous_revision": "c9e1758788bf0252a27af4d8e60855ade1b78581",
       "total_commits": 5,
       "commits": [
         {
-          "revision": "c9e1758788bf0252a27af4d8e60855ade1b78581",
-          "subject": "Merge pull request #31 from soloser/codex/killfeed-icons"
+          "revision": "037a67dd972d4ed51afc4a4448f98eeb963bb83c",
+          "subject": "Merge pull request #32 from soloser/codex/utility-map-click"
         },
         {
-          "revision": "63fcaa0d9039940d27e45d120648e43f21e80d43",
-          "subject": "fix: use CS2 killfeed icons and show airborne kills"
+          "revision": "5eb0e3e034abcb711255bb6492518799638f4062",
+          "subject": "feat: make utility map groups compact and touch-friendly"
         },
         {
-          "revision": "86088c33eb071e9809a2a8be9225a86313416dcc",
-          "subject": "Merge pull request #30 from soloser/codex/faceit-extension-promotion"
+          "revision": "2dd16633ed145b9e5fabd12184b2fc578798f7e6",
+          "subject": "feat: move utility grenade picker outside the map"
         },
         {
-          "revision": "02ccfabd54a23f5e3a5c263d7bb2e07bb5830ef3",
-          "subject": "feat(faceit): adapt extension install copy to visitor browser"
+          "revision": "c4bd935a71b0cf1f8b16996cee0320dcefa18990",
+          "subject": "fix: restore compact utility grenade picker"
         },
         {
-          "revision": "b5d851af821998a8b481d5c9579263ff38d867c8",
-          "subject": "feat(faceit): promote published demo import extension"
+          "revision": "dd6afc9cd5e3c0f20e043014a12d16c2d32cbfa4",
+          "subject": "fix: keep utility map grenade lists open on click"
         }
       ]
     },
