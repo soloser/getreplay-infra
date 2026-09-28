@@ -2,31 +2,23 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "e4d29121bb7c257554df596857e7ec0c78326a62",
-      "artifact": "sha256:fce20b009f02daf9f04b8d207bba64870285fb25260b4054ddd3cc91a991be17",
-      "subject": "Merge pull request #39 from soloser/codex/mobile-replay-stability",
-      "previous_revision": "037a67dd972d4ed51afc4a4448f98eeb963bb83c",
-      "total_commits": 5,
+      "revision": "9b7ca28a2fbf91c3aca72d5b31bf1087ffbef12b",
+      "artifact": "sha256:b17d086837acde0adbf41dbc769ebc805341dabac25e8d2bace61dce115b8b99",
+      "subject": "Merge pull request #40 from soloser/codex/overlay-progress-seek",
+      "previous_revision": "e4d29121bb7c257554df596857e7ec0c78326a62",
+      "total_commits": 3,
       "commits": [
         {
-          "revision": "e4d29121bb7c257554df596857e7ec0c78326a62",
-          "subject": "Merge pull request #39 from soloser/codex/mobile-replay-stability"
+          "revision": "9b7ca28a2fbf91c3aca72d5b31bf1087ffbef12b",
+          "subject": "Merge pull request #40 from soloser/codex/overlay-progress-seek"
         },
         {
-          "revision": "62b51a2502a3bf8e4f206f7a89b68b380415814f",
-          "subject": "Keep iOS fullscreen free of toolbar gaps"
+          "revision": "60d4654b7f7e32841b453fee7fdfa9bbb994dd5f",
+          "subject": "feat: add seeking to match moment overlay and reuse iOS-safe scroll lock"
         },
         {
-          "revision": "ea2c4609e9fbad9086741994d13992416aa3f0e5",
-          "subject": "Fix mobile replay gestures and fullscreen layout"
-        },
-        {
-          "revision": "664e33a4e2b7671cd60b9f4eb341fe5bbec77d5c",
-          "subject": "Merge pull request #33 from soloser/codex/utility-single-nade"
-        },
-        {
-          "revision": "7bd3f8626ad33f4bd22cdf7d80110fab1dabb2d8",
-          "subject": "fix: open singleton utility grenades directly"
+          "revision": "543ef1af07dfe380d6be9a7804584b6ea0b2f235",
+          "subject": "feat: add touch seeking to overlay player"
         }
       ]
     },
