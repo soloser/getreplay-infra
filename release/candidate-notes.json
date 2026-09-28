@@ -118,30 +118,22 @@
     }
   },
   "migrations": {
-    "mysql": {
-      "revision": "c312f323fa243de8b55c93e03586340e83cf8ef2",
-      "artifact": "sha256:bb70daac257f7d650f9227ac3b7fae4ba1c8165592a282bc48457fb50e177df6",
-      "subject": "Merge pull request #11 from soloser/codex/server-performance-indexes-main",
-      "previous_revision": "5d1e18b7930332c65cd10622432759526e09c44b",
+    "clickhouse": {
+      "revision": "bbeb06b50ba3858faa3782a3edd138083c53427a",
+      "artifact": "sha256:486c7740d9cde2252abb4a259ed3dab19d70dedc126252d861dd97c0112f937e",
+      "subject": "Merge pull request #12 from soloser/codex/split-clickhouse-player-indexes",
+      "previous_revision": "c312f323fa243de8b55c93e03586340e83cf8ef2",
       "total_commits": 2,
       "commits": [
         {
-          "revision": "c312f323fa243de8b55c93e03586340e83cf8ef2",
-          "subject": "Merge pull request #11 from soloser/codex/server-performance-indexes-main"
+          "revision": "bbeb06b50ba3858faa3782a3edd138083c53427a",
+          "subject": "Merge pull request #12 from soloser/codex/split-clickhouse-player-indexes"
         },
         {
-          "revision": "2e8986f930bc01a47a45c857e4fe8a32fcda5057",
-          "subject": "perf: index match navigation and player analytics"
+          "revision": "552d37e64f5fc9b0196b6befa97a008717e2201d",
+          "subject": "fix: split ClickHouse player lookup indexes into single-statement migrations"
         }
       ]
-    },
-    "clickhouse": {
-      "revision": "c312f323fa243de8b55c93e03586340e83cf8ef2",
-      "artifact": "sha256:bb70daac257f7d650f9227ac3b7fae4ba1c8165592a282bc48457fb50e177df6",
-      "subject": "Merge pull request #11 from soloser/codex/server-performance-indexes-main",
-      "previous_revision": null,
-      "total_commits": 0,
-      "commits": []
     }
   }
 }
