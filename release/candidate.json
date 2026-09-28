@@ -37,9 +37,14 @@
   },
   "migrations": {
     "mysql": {
-      "revision": "5d1e18b7930332c65cd10622432759526e09c44b",
-      "artifact": "sha256:3e7ef6c59f1c259ce0d6c7276ae016884098412a5aa8b6ef455c335a3fae3a18",
-      "migration": "mysql-5d1e18b79303"
+      "revision": "c312f323fa243de8b55c93e03586340e83cf8ef2",
+      "artifact": "sha256:bb70daac257f7d650f9227ac3b7fae4ba1c8165592a282bc48457fb50e177df6",
+      "migration": "mysql-c312f323fa24"
+    },
+    "clickhouse": {
+      "revision": "c312f323fa243de8b55c93e03586340e83cf8ef2",
+      "artifact": "sha256:bb70daac257f7d650f9227ac3b7fae4ba1c8165592a282bc48457fb50e177df6",
+      "migration": "clickhouse-c312f323fa24"
     }
   }
 }

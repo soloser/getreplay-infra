@@ -119,21 +119,29 @@
   },
   "migrations": {
     "mysql": {
-      "revision": "5d1e18b7930332c65cd10622432759526e09c44b",
-      "artifact": "sha256:3e7ef6c59f1c259ce0d6c7276ae016884098412a5aa8b6ef455c335a3fae3a18",
-      "subject": "Merge pull request #8 from soloser/codex/demo-upload-recency",
-      "previous_revision": "5d81acc210cad650c48530ef8d27df98d001b7af",
+      "revision": "c312f323fa243de8b55c93e03586340e83cf8ef2",
+      "artifact": "sha256:bb70daac257f7d650f9227ac3b7fae4ba1c8165592a282bc48457fb50e177df6",
+      "subject": "Merge pull request #11 from soloser/codex/server-performance-indexes-main",
+      "previous_revision": "5d1e18b7930332c65cd10622432759526e09c44b",
       "total_commits": 2,
       "commits": [
         {
-          "revision": "5d1e18b7930332c65cd10622432759526e09c44b",
-          "subject": "Merge pull request #8 from soloser/codex/demo-upload-recency"
+          "revision": "c312f323fa243de8b55c93e03586340e83cf8ef2",
+          "subject": "Merge pull request #11 from soloser/codex/server-performance-indexes-main"
         },
         {
-          "revision": "a5ac3f1a8f5146a46fed8008459114bd7f459db8",
-          "subject": "Add demo upload timestamps and safe historical backfill"
+          "revision": "2e8986f930bc01a47a45c857e4fe8a32fcda5057",
+          "subject": "perf: index match navigation and player analytics"
         }
       ]
+    },
+    "clickhouse": {
+      "revision": "c312f323fa243de8b55c93e03586340e83cf8ef2",
+      "artifact": "sha256:bb70daac257f7d650f9227ac3b7fae4ba1c8165592a282bc48457fb50e177df6",
+      "subject": "Merge pull request #11 from soloser/codex/server-performance-indexes-main",
+      "previous_revision": null,
+      "total_commits": 0,
+      "commits": []
     }
   }
 }
