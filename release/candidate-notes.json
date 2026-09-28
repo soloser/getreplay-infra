@@ -52,67 +52,67 @@
       "commits": []
     },
     "go-match-updater": {
-      "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
-      "artifact": "sha256:dc16716852cb8868c47b47fc92d74ad36b482b0d734a110896bc260437dac5a9",
-      "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)",
-      "previous_revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+      "revision": "97d4a0c1a39dc12391382769fa555325a275dc8a",
+      "artifact": "sha256:7c1e2a83fa9bfd8fc9d2427f8d2a90fc527bc9fe493af5fe1a1c6663de83f1a8",
+      "subject": "perf: scope grenade statistics by match map and month (#28)",
+      "previous_revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
-          "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)"
+          "revision": "97d4a0c1a39dc12391382769fa555325a275dc8a",
+          "subject": "perf: scope grenade statistics by match map and month (#28)"
         }
       ]
     },
     "go-demo-uploader": {
-      "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
-      "artifact": "sha256:dc16716852cb8868c47b47fc92d74ad36b482b0d734a110896bc260437dac5a9",
-      "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)",
-      "previous_revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+      "revision": "97d4a0c1a39dc12391382769fa555325a275dc8a",
+      "artifact": "sha256:7c1e2a83fa9bfd8fc9d2427f8d2a90fc527bc9fe493af5fe1a1c6663de83f1a8",
+      "subject": "perf: scope grenade statistics by match map and month (#28)",
+      "previous_revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
-          "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)"
+          "revision": "97d4a0c1a39dc12391382769fa555325a275dc8a",
+          "subject": "perf: scope grenade statistics by match map and month (#28)"
         }
       ]
     },
     "go-highlight-extractor": {
-      "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
-      "artifact": "sha256:dc16716852cb8868c47b47fc92d74ad36b482b0d734a110896bc260437dac5a9",
-      "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)",
-      "previous_revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+      "revision": "97d4a0c1a39dc12391382769fa555325a275dc8a",
+      "artifact": "sha256:7c1e2a83fa9bfd8fc9d2427f8d2a90fc527bc9fe493af5fe1a1c6663de83f1a8",
+      "subject": "perf: scope grenade statistics by match map and month (#28)",
+      "previous_revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
-          "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)"
+          "revision": "97d4a0c1a39dc12391382769fa555325a275dc8a",
+          "subject": "perf: scope grenade statistics by match map and month (#28)"
         }
       ]
     },
     "go-replay-converter": {
-      "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
-      "artifact": "sha256:dc16716852cb8868c47b47fc92d74ad36b482b0d734a110896bc260437dac5a9",
-      "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)",
-      "previous_revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+      "revision": "97d4a0c1a39dc12391382769fa555325a275dc8a",
+      "artifact": "sha256:7c1e2a83fa9bfd8fc9d2427f8d2a90fc527bc9fe493af5fe1a1c6663de83f1a8",
+      "subject": "perf: scope grenade statistics by match map and month (#28)",
+      "previous_revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
-          "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)"
+          "revision": "97d4a0c1a39dc12391382769fa555325a275dc8a",
+          "subject": "perf: scope grenade statistics by match map and month (#28)"
         }
       ]
     },
     "go-stats-extractor": {
-      "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
-      "artifact": "sha256:dc16716852cb8868c47b47fc92d74ad36b482b0d734a110896bc260437dac5a9",
-      "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)",
-      "previous_revision": "495d3733959b86f9ae627f875a6ab4efb8cda50f",
+      "revision": "97d4a0c1a39dc12391382769fa555325a275dc8a",
+      "artifact": "sha256:7c1e2a83fa9bfd8fc9d2427f8d2a90fc527bc9fe493af5fe1a1c6663de83f1a8",
+      "subject": "perf: scope grenade statistics by match map and month (#28)",
+      "previous_revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "8b14f0d7b90c60f71d116f29ddf0599956b7c4d9",
-          "subject": "Avoid redundant FACEIT refresh writes and API requests (#23)"
+          "revision": "97d4a0c1a39dc12391382769fa555325a275dc8a",
+          "subject": "perf: scope grenade statistics by match map and month (#28)"
         }
       ]
     }
