@@ -2,31 +2,31 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "037a67dd972d4ed51afc4a4448f98eeb963bb83c",
-      "artifact": "sha256:c30c2a6baec0b7e2dad8bfeedadc86d49e3ca5b3457e1bf832f56ed68fd51580",
-      "subject": "Merge pull request #32 from soloser/codex/utility-map-click",
-      "previous_revision": "c9e1758788bf0252a27af4d8e60855ade1b78581",
+      "revision": "e4d29121bb7c257554df596857e7ec0c78326a62",
+      "artifact": "sha256:fce20b009f02daf9f04b8d207bba64870285fb25260b4054ddd3cc91a991be17",
+      "subject": "Merge pull request #39 from soloser/codex/mobile-replay-stability",
+      "previous_revision": "037a67dd972d4ed51afc4a4448f98eeb963bb83c",
       "total_commits": 5,
       "commits": [
         {
-          "revision": "037a67dd972d4ed51afc4a4448f98eeb963bb83c",
-          "subject": "Merge pull request #32 from soloser/codex/utility-map-click"
+          "revision": "e4d29121bb7c257554df596857e7ec0c78326a62",
+          "subject": "Merge pull request #39 from soloser/codex/mobile-replay-stability"
         },
         {
-          "revision": "5eb0e3e034abcb711255bb6492518799638f4062",
-          "subject": "feat: make utility map groups compact and touch-friendly"
+          "revision": "62b51a2502a3bf8e4f206f7a89b68b380415814f",
+          "subject": "Keep iOS fullscreen free of toolbar gaps"
         },
         {
-          "revision": "2dd16633ed145b9e5fabd12184b2fc578798f7e6",
-          "subject": "feat: move utility grenade picker outside the map"
+          "revision": "ea2c4609e9fbad9086741994d13992416aa3f0e5",
+          "subject": "Fix mobile replay gestures and fullscreen layout"
         },
         {
-          "revision": "c4bd935a71b0cf1f8b16996cee0320dcefa18990",
-          "subject": "fix: restore compact utility grenade picker"
+          "revision": "664e33a4e2b7671cd60b9f4eb341fe5bbec77d5c",
+          "subject": "Merge pull request #33 from soloser/codex/utility-single-nade"
         },
         {
-          "revision": "dd6afc9cd5e3c0f20e043014a12d16c2d32cbfa4",
-          "subject": "fix: keep utility map grenade lists open on click"
+          "revision": "7bd3f8626ad33f4bd22cdf7d80110fab1dabb2d8",
+          "subject": "fix: open singleton utility grenades directly"
         }
       ]
     },
