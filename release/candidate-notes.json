@@ -2,23 +2,27 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "774672db6eeb64513439a1d6f6da7306e172ae5e",
-      "artifact": "sha256:8b7e0497774ac742658aad5ace83a3816126f52fc29380912ccce6d216661303",
-      "subject": "Merge pull request #42 from soloser/codex/match-sharing",
-      "previous_revision": "9b7ca28a2fbf91c3aca72d5b31bf1087ffbef12b",
-      "total_commits": 3,
+      "revision": "3e61bf3d5ab1df957623b89d8752b5a5babecb12",
+      "artifact": "sha256:be87a269546069b639675a8bd73ec74b23f150b88ae189c6e217d1e511989a15",
+      "subject": "Merge pull request #44 from soloser/codex/heatmap-round-loading",
+      "previous_revision": "774672db6eeb64513439a1d6f6da7306e172ae5e",
+      "total_commits": 4,
       "commits": [
         {
-          "revision": "774672db6eeb64513439a1d6f6da7306e172ae5e",
-          "subject": "Merge pull request #42 from soloser/codex/match-sharing"
+          "revision": "3e61bf3d5ab1df957623b89d8752b5a5babecb12",
+          "subject": "Merge pull request #44 from soloser/codex/heatmap-round-loading"
         },
         {
-          "revision": "2174e89c70e3a6ae635fe1026078293ed113a45e",
-          "subject": "fix: copy the share link inside the modal dialog and turn the button green"
+          "revision": "c3084accd4b48543db38c6e6fd84d12f607d8197",
+          "subject": "fix: load heatmap rounds with bot players and stop playing unmatched moments"
         },
         {
-          "revision": "6d4c4f5e4810b0f6dbfbce5b8e066d02d6d363a1",
-          "subject": "feat: add public match pages and moment sharing"
+          "revision": "5cc441f1d5eaf87372ad2dc65aeb8f01c4b7b9f3",
+          "subject": "Merge pull request #43 from soloser/claude/html-notranslate"
+        },
+        {
+          "revision": "dd367e143239288ef8cb12d054e9f19d55aa28c2",
+          "subject": "fix: disable browser translation for the whole document"
         }
       ]
     },
