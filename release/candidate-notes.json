@@ -2,23 +2,23 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "9b7ca28a2fbf91c3aca72d5b31bf1087ffbef12b",
-      "artifact": "sha256:b17d086837acde0adbf41dbc769ebc805341dabac25e8d2bace61dce115b8b99",
-      "subject": "Merge pull request #40 from soloser/codex/overlay-progress-seek",
-      "previous_revision": "e4d29121bb7c257554df596857e7ec0c78326a62",
+      "revision": "774672db6eeb64513439a1d6f6da7306e172ae5e",
+      "artifact": "sha256:8b7e0497774ac742658aad5ace83a3816126f52fc29380912ccce6d216661303",
+      "subject": "Merge pull request #42 from soloser/codex/match-sharing",
+      "previous_revision": "9b7ca28a2fbf91c3aca72d5b31bf1087ffbef12b",
       "total_commits": 3,
       "commits": [
         {
-          "revision": "9b7ca28a2fbf91c3aca72d5b31bf1087ffbef12b",
-          "subject": "Merge pull request #40 from soloser/codex/overlay-progress-seek"
+          "revision": "774672db6eeb64513439a1d6f6da7306e172ae5e",
+          "subject": "Merge pull request #42 from soloser/codex/match-sharing"
         },
         {
-          "revision": "60d4654b7f7e32841b453fee7fdfa9bbb994dd5f",
-          "subject": "feat: add seeking to match moment overlay and reuse iOS-safe scroll lock"
+          "revision": "2174e89c70e3a6ae635fe1026078293ed113a45e",
+          "subject": "fix: copy the share link inside the modal dialog and turn the button green"
         },
         {
-          "revision": "543ef1af07dfe380d6be9a7804584b6ea0b2f235",
-          "subject": "feat: add touch seeking to overlay player"
+          "revision": "6d4c4f5e4810b0f6dbfbce5b8e066d02d6d363a1",
+          "subject": "feat: add public match pages and moment sharing"
         }
       ]
     },
