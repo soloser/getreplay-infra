@@ -23,15 +23,15 @@
       ]
     },
     "php": {
-      "revision": "0fe71eff4b60eaa15ce0e7543b74e88359ef6216",
-      "artifact": "sha256:c864484aa4f7bec7323f12e98d849f5e4395761748f4a8d86dc5dc88ac77d52b",
-      "subject": "perf: optimize match queries and lesson home (#16)",
-      "previous_revision": "a47b76db37ae0b95d30bacae102e14172746c3de",
+      "revision": "0ead237e62c85585fc6c63595d92dd107c7b3282",
+      "artifact": "sha256:af33095c424a959a0fbb4c7f172bbd6c1cf6c28bb534884c4115b78bc25b5f03",
+      "subject": "feat: add signed public match sharing API (#18)",
+      "previous_revision": "0fe71eff4b60eaa15ce0e7543b74e88359ef6216",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "0fe71eff4b60eaa15ce0e7543b74e88359ef6216",
-          "subject": "perf: optimize match queries and lesson home (#16)"
+          "revision": "0ead237e62c85585fc6c63595d92dd107c7b3282",
+          "subject": "feat: add signed public match sharing API (#18)"
         }
       ]
     },
