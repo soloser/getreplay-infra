@@ -40,12 +40,17 @@
       ]
     },
     "node": {
-      "revision": "77acf6775011ba182ae028aff0d50c706fa5282c",
-      "artifact": "sha256:aec359f8eb9858fd498b2bb9347948378d3477bbcbc9012188876f7d2ceb0432",
-      "subject": "Report Express and Steam GC errors to Sentry (#2)",
+      "revision": "dda676dd533d38d6291bba6b4ed3fd6abb2884df",
+      "artifact": "sha256:8532915b91dec4493f7b25f442bdcfc119090137ae8c575dfdd2c346a732509b",
+      "subject": "Release 2026-10-27: Steam API reliability and credential redaction (#4)",
       "previous_revision": "77acf6775011ba182ae028aff0d50c706fa5282c",
-      "total_commits": 0,
-      "commits": []
+      "total_commits": 1,
+      "commits": [
+        {
+          "revision": "dda676dd533d38d6291bba6b4ed3fd6abb2884df",
+          "subject": "Release 2026-10-27: Steam API reliability and credential redaction (#4)"
+        }
+      ]
     },
     "go-match-updater": {
       "revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
