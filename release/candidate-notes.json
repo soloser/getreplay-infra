@@ -53,67 +53,67 @@
       ]
     },
     "go-match-updater": {
-      "revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
-      "artifact": "sha256:3e672e849ee9d25088ec1582bd7ffd102d3c8617fbf98ffc5d03c8b922b50c7e",
-      "subject": "fix: skip knife-round events in match statistics (#29)",
-      "previous_revision": "97d4a0c1a39dc12391382769fa555325a275dc8a",
+      "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
+      "artifact": "sha256:4a58b8ec0bdca607ca57925a3e9a208211397bc23cbdc7d6026c5a0a74fa6536",
+      "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)",
+      "previous_revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
-          "subject": "fix: skip knife-round events in match statistics (#29)"
+          "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
+          "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)"
         }
       ]
     },
     "go-demo-uploader": {
-      "revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
-      "artifact": "sha256:3e672e849ee9d25088ec1582bd7ffd102d3c8617fbf98ffc5d03c8b922b50c7e",
-      "subject": "fix: skip knife-round events in match statistics (#29)",
-      "previous_revision": "97d4a0c1a39dc12391382769fa555325a275dc8a",
+      "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
+      "artifact": "sha256:4a58b8ec0bdca607ca57925a3e9a208211397bc23cbdc7d6026c5a0a74fa6536",
+      "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)",
+      "previous_revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
-          "subject": "fix: skip knife-round events in match statistics (#29)"
+          "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
+          "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)"
         }
       ]
     },
     "go-highlight-extractor": {
-      "revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
-      "artifact": "sha256:3e672e849ee9d25088ec1582bd7ffd102d3c8617fbf98ffc5d03c8b922b50c7e",
-      "subject": "fix: skip knife-round events in match statistics (#29)",
-      "previous_revision": "97d4a0c1a39dc12391382769fa555325a275dc8a",
+      "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
+      "artifact": "sha256:4a58b8ec0bdca607ca57925a3e9a208211397bc23cbdc7d6026c5a0a74fa6536",
+      "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)",
+      "previous_revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
-          "subject": "fix: skip knife-round events in match statistics (#29)"
+          "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
+          "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)"
         }
       ]
     },
     "go-replay-converter": {
-      "revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
-      "artifact": "sha256:3e672e849ee9d25088ec1582bd7ffd102d3c8617fbf98ffc5d03c8b922b50c7e",
-      "subject": "fix: skip knife-round events in match statistics (#29)",
-      "previous_revision": "97d4a0c1a39dc12391382769fa555325a275dc8a",
+      "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
+      "artifact": "sha256:4a58b8ec0bdca607ca57925a3e9a208211397bc23cbdc7d6026c5a0a74fa6536",
+      "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)",
+      "previous_revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
-          "subject": "fix: skip knife-round events in match statistics (#29)"
+          "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
+          "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)"
         }
       ]
     },
     "go-stats-extractor": {
-      "revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
-      "artifact": "sha256:3e672e849ee9d25088ec1582bd7ffd102d3c8617fbf98ffc5d03c8b922b50c7e",
-      "subject": "fix: skip knife-round events in match statistics (#29)",
-      "previous_revision": "97d4a0c1a39dc12391382769fa555325a275dc8a",
+      "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
+      "artifact": "sha256:4a58b8ec0bdca607ca57925a3e9a208211397bc23cbdc7d6026c5a0a74fa6536",
+      "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)",
+      "previous_revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
-          "subject": "fix: skip knife-round events in match statistics (#29)"
+          "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
+          "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)"
         }
       ]
     }
