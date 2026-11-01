@@ -2,27 +2,123 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "3e61bf3d5ab1df957623b89d8752b5a5babecb12",
-      "artifact": "sha256:be87a269546069b639675a8bd73ec74b23f150b88ae189c6e217d1e511989a15",
-      "subject": "Merge pull request #44 from soloser/codex/heatmap-round-loading",
-      "previous_revision": "774672db6eeb64513439a1d6f6da7306e172ae5e",
-      "total_commits": 4,
+      "revision": "887a5de0aa6a6043808490c187a08ae1ef25814b",
+      "artifact": "sha256:a8fc184851cc494268014d99f660774918de8dc3dc61f0b98ec9df2599972b1a",
+      "subject": "Merge pull request #46 from soloser/codex/release-20261027",
+      "previous_revision": "3e61bf3d5ab1df957623b89d8752b5a5babecb12",
+      "total_commits": 28,
       "commits": [
         {
-          "revision": "3e61bf3d5ab1df957623b89d8752b5a5babecb12",
-          "subject": "Merge pull request #44 from soloser/codex/heatmap-round-loading"
+          "revision": "887a5de0aa6a6043808490c187a08ae1ef25814b",
+          "subject": "Merge pull request #46 from soloser/codex/release-20261027"
         },
         {
-          "revision": "c3084accd4b48543db38c6e6fd84d12f607d8197",
-          "subject": "fix: load heatmap rounds with bot players and stop playing unmatched moments"
+          "revision": "d63af90033cf395b247ff49c063f001515bdc4e4",
+          "subject": "fix: открывать опен-фраги в плеере тепловой карты"
         },
         {
-          "revision": "5cc441f1d5eaf87372ad2dc65aeb8f01c4b7b9f3",
-          "subject": "Merge pull request #43 from soloser/claude/html-notranslate"
+          "revision": "16e990c70b4ebaa0af8d2e7faa33d2b5ea505848",
+          "subject": "Keep signed-in users on the site domain without an app domain"
         },
         {
-          "revision": "dd367e143239288ef8cb12d054e9f19d55aa28c2",
-          "subject": "fix: disable browser translation for the whole document"
+          "revision": "3c511b8c2016c3614df96c1f66c7ced2c693e84a",
+          "subject": "Add app sidebar navigation and tidy match pages and dashboard"
+        },
+        {
+          "revision": "380a2099a582f0eadc0c9aba745195e142461281",
+          "subject": "Unify heatmap and bookmark moment lists and add opening duels"
+        },
+        {
+          "revision": "5b910beb94975e355c7c5533160ffc9bdec192f9",
+          "subject": "Show Smart mode fast-forward over the replay map"
+        },
+        {
+          "revision": "ec7c3ae363ea71fc2af7b1490148b0fc2a8ac49d",
+          "subject": "Streamline dashboard and play heatmap moments directly inline"
+        },
+        {
+          "revision": "dabbad6a885e1292e472f15bb2ef8b89a065c4d9",
+          "subject": "Fix dashboard result badges and add Cache map emblem"
+        },
+        {
+          "revision": "1934a4fc7228da2e87a824a8a6c31bf5ad654680",
+          "subject": "Prepare release preflight and update vulnerable frontend dependencies"
+        },
+        {
+          "revision": "df02e76f44ff2052e6ee316089413477dcca6194",
+          "subject": "Document release scope, preserved work and local testing checklist"
+        },
+        {
+          "revision": "fd8e3c204926f09c4dc2db63db9975f5a088d2d0",
+          "subject": "Complete local release integration, admin board access and scoped exclusions"
+        },
+        {
+          "revision": "a3ef971b8fcee9e9ec0ebf2b38cc41b434a26010",
+          "subject": "test: repair heatmap overlay fixtures and document production failures"
+        },
+        {
+          "revision": "fa33b32923592ffe7144d9f30da6be751d0e2efb",
+          "subject": "feat: serve frontend assets and media through Timeweb CDN"
+        },
+        {
+          "revision": "7a4456ccb15bfe8468eea7879ef6bb518eb19f25",
+          "subject": "feat: add hover preview experiment and product analytics"
+        },
+        {
+          "revision": "82511b11ed8fa7c0f85648102967f85e35ef8530",
+          "subject": "Add product dashboard and app-domain auth handoff"
+        },
+        {
+          "revision": "62fa7e69dc0567e501893e1f81681288a1ca5e53",
+          "subject": "perf: trim /replay critical payload and fix PageSpeed findings"
+        },
+        {
+          "revision": "817a5af9750b58d0a7711bb442c665cc8d7f2c77",
+          "subject": "Add collaborative tactical board and similar round search"
+        },
+        {
+          "revision": "fe9dbb410aa12cb5d36a0e7a63dfef95869283a6",
+          "subject": "feat: read replay format v3 rounds"
+        },
+        {
+          "revision": "871caa0bf5299443eea4faf7b9553bcfdc8bd0b0",
+          "subject": "fix(replay): preserve rounds metrics and user navigation across async updates"
+        },
+        {
+          "revision": "dea358cb678db2602abdeb0c0986694027d2fec2",
+          "subject": "fix(auth): isolate callback credentials and initialize route analytics safely"
+        },
+        {
+          "revision": "7000266954d89b946d631bbd128fd5b29c3d5a38",
+          "subject": "test(frontend): restore framework linting and run complete regression suites"
+        },
+        {
+          "revision": "91adb730c8e3af311411234b7efa5eb15ec9be73",
+          "subject": "fix(matches): handle cold failures and count enemy combat statistics"
+        },
+        {
+          "revision": "1f0f5b525b2d970ff9aa7d8be823570a196d00e1",
+          "subject": "Integrate heatmap changes with current match layouts"
+        },
+        {
+          "revision": "c6bab9ced858cb2820942255354ec8d80c9cdfc4",
+          "subject": "Hide empty event types in match heatmap filters"
+        },
+        {
+          "revision": "ec64515f76444efd9eb8fb5ab5e40d8b23735a7e",
+          "subject": "Unify heatmap event cards and fit replay dialog to content"
+        },
+        {
+          "revision": "1c21335db9887d7b0eadce7ecf670efeb6cec1c8",
+          "subject": "Hide named heatmap zones behind an opt-in layer"
+        },
+        {
+          "revision": "7fd0b90419e4e0c3a711c037ab3b787cf9c62fc5",
+          "subject": "feat: add grenade-in-hand death filter to heatmaps"
+        },
+        {
+          "revision": "dd6aac39449630ce39d974abb1b08a761fc07e1b",
+          "subject": "feat: unify heatmaps with named zones and broader moment selection"
         }
       ]
     },
