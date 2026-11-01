@@ -149,67 +149,67 @@
       ]
     },
     "go-match-updater": {
-      "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
-      "artifact": "sha256:4a58b8ec0bdca607ca57925a3e9a208211397bc23cbdc7d6026c5a0a74fa6536",
-      "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)",
-      "previous_revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
+      "revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
+      "artifact": "sha256:c6beeaa0fef1147b396fcc7495af151f84fe4af82c3d9ce355fd848c923c08b6",
+      "subject": "fix: stop a failing refresh source from blocking its Kafka partition (#31)",
+      "previous_revision": "b14f09656afd856e8e6edb421f1acca59033600c",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
-          "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)"
+          "revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
+          "subject": "fix: stop a failing refresh source from blocking its Kafka partition (#31)"
         }
       ]
     },
     "go-demo-uploader": {
-      "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
-      "artifact": "sha256:4a58b8ec0bdca607ca57925a3e9a208211397bc23cbdc7d6026c5a0a74fa6536",
-      "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)",
-      "previous_revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
+      "revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
+      "artifact": "sha256:c6beeaa0fef1147b396fcc7495af151f84fe4af82c3d9ce355fd848c923c08b6",
+      "subject": "fix: stop a failing refresh source from blocking its Kafka partition (#31)",
+      "previous_revision": "b14f09656afd856e8e6edb421f1acca59033600c",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
-          "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)"
+          "revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
+          "subject": "fix: stop a failing refresh source from blocking its Kafka partition (#31)"
         }
       ]
     },
     "go-highlight-extractor": {
-      "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
-      "artifact": "sha256:4a58b8ec0bdca607ca57925a3e9a208211397bc23cbdc7d6026c5a0a74fa6536",
-      "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)",
-      "previous_revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
+      "revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
+      "artifact": "sha256:c6beeaa0fef1147b396fcc7495af151f84fe4af82c3d9ce355fd848c923c08b6",
+      "subject": "fix: stop a failing refresh source from blocking its Kafka partition (#31)",
+      "previous_revision": "b14f09656afd856e8e6edb421f1acca59033600c",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
-          "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)"
+          "revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
+          "subject": "fix: stop a failing refresh source from blocking its Kafka partition (#31)"
         }
       ]
     },
     "go-replay-converter": {
-      "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
-      "artifact": "sha256:4a58b8ec0bdca607ca57925a3e9a208211397bc23cbdc7d6026c5a0a74fa6536",
-      "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)",
-      "previous_revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
+      "revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
+      "artifact": "sha256:c6beeaa0fef1147b396fcc7495af151f84fe4af82c3d9ce355fd848c923c08b6",
+      "subject": "fix: stop a failing refresh source from blocking its Kafka partition (#31)",
+      "previous_revision": "b14f09656afd856e8e6edb421f1acca59033600c",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
-          "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)"
+          "revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
+          "subject": "fix: stop a failing refresh source from blocking its Kafka partition (#31)"
         }
       ]
     },
     "go-stats-extractor": {
-      "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
-      "artifact": "sha256:4a58b8ec0bdca607ca57925a3e9a208211397bc23cbdc7d6026c5a0a74fa6536",
-      "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)",
-      "previous_revision": "f9e9d15a18c73d994a254d863793f76c8d8b8a3c",
+      "revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
+      "artifact": "sha256:c6beeaa0fef1147b396fcc7495af151f84fe4af82c3d9ce355fd848c923c08b6",
+      "subject": "fix: stop a failing refresh source from blocking its Kafka partition (#31)",
+      "previous_revision": "b14f09656afd856e8e6edb421f1acca59033600c",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "b14f09656afd856e8e6edb421f1acca59033600c",
-          "subject": "Release 2026-10-27: reliability reviews, replay v3, tactics and FACEIT ingestion (#30)"
+          "revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
+          "subject": "fix: stop a failing refresh source from blocking its Kafka partition (#31)"
         }
       ]
     }
