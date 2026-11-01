@@ -36,10 +36,15 @@
     }
   },
   "migrations": {
+    "mysql": {
+      "revision": "b0cef970b8cb77b907c65808b91c5587134ddbd6",
+      "artifact": "sha256:c8d17a31e04aa87c512f312e23a132f7c9c20b90c3c26f16f7c35b5ac25dfd12",
+      "migration": "mysql-b0cef970b8cb"
+    },
     "clickhouse": {
-      "revision": "bbeb06b50ba3858faa3782a3edd138083c53427a",
-      "artifact": "sha256:486c7740d9cde2252abb4a259ed3dab19d70dedc126252d861dd97c0112f937e",
-      "migration": "clickhouse-bbeb06b50ba3"
+      "revision": "b0cef970b8cb77b907c65808b91c5587134ddbd6",
+      "artifact": "sha256:c8d17a31e04aa87c512f312e23a132f7c9c20b90c3c26f16f7c35b5ac25dfd12",
+      "migration": "clickhouse-b0cef970b8cb"
     }
   }
 }
