@@ -114,20 +114,44 @@
     }
   },
   "migrations": {
+    "mysql": {
+      "revision": "b0cef970b8cb77b907c65808b91c5587134ddbd6",
+      "artifact": "sha256:c8d17a31e04aa87c512f312e23a132f7c9c20b90c3c26f16f7c35b5ac25dfd12",
+      "subject": "Merge pull request #13 from soloser/codex/release-20261027",
+      "previous_revision": null,
+      "total_commits": 0,
+      "commits": []
+    },
     "clickhouse": {
-      "revision": "bbeb06b50ba3858faa3782a3edd138083c53427a",
-      "artifact": "sha256:486c7740d9cde2252abb4a259ed3dab19d70dedc126252d861dd97c0112f937e",
-      "subject": "Merge pull request #12 from soloser/codex/split-clickhouse-player-indexes",
-      "previous_revision": "c312f323fa243de8b55c93e03586340e83cf8ef2",
-      "total_commits": 2,
+      "revision": "b0cef970b8cb77b907c65808b91c5587134ddbd6",
+      "artifact": "sha256:c8d17a31e04aa87c512f312e23a132f7c9c20b90c3c26f16f7c35b5ac25dfd12",
+      "subject": "Merge pull request #13 from soloser/codex/release-20261027",
+      "previous_revision": "bbeb06b50ba3858faa3782a3edd138083c53427a",
+      "total_commits": 6,
       "commits": [
         {
-          "revision": "bbeb06b50ba3858faa3782a3edd138083c53427a",
-          "subject": "Merge pull request #12 from soloser/codex/split-clickhouse-player-indexes"
+          "revision": "b0cef970b8cb77b907c65808b91c5587134ddbd6",
+          "subject": "Merge pull request #13 from soloser/codex/release-20261027"
         },
         {
-          "revision": "552d37e64f5fc9b0196b6befa97a008717e2201d",
-          "subject": "fix: split ClickHouse player lookup indexes into single-statement migrations"
+          "revision": "528bb47820dba8cc3909c611732ae1e228b22bc2",
+          "subject": "Add nonunique demo fingerprint column for independent uploads"
+        },
+        {
+          "revision": "3b7321fe2b1c5aad42077910c0152bcf66c67818",
+          "subject": "Complete local release integration, admin board access and scoped exclusions"
+        },
+        {
+          "revision": "28c6af55a4d815b2a1798a5465196923d1fd3fb6",
+          "subject": "Number release migrations sequentially without historical knife repair"
+        },
+        {
+          "revision": "0120f8f33893031e3b3538041409193f1ef9cf05",
+          "subject": "Add ClickHouse tactical snapshot search index"
+        },
+        {
+          "revision": "cf27e809dc6c17cc8c8808d1a01824e50c41fe68",
+          "subject": "feat: add victim weapon column to ClickHouse kills"
         }
       ]
     }
