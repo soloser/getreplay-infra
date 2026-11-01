@@ -27,15 +27,15 @@
       ]
     },
     "php": {
-      "revision": "0ead237e62c85585fc6c63595d92dd107c7b3282",
-      "artifact": "sha256:af33095c424a959a0fbb4c7f172bbd6c1cf6c28bb534884c4115b78bc25b5f03",
-      "subject": "feat: add signed public match sharing API (#18)",
-      "previous_revision": "0fe71eff4b60eaa15ce0e7543b74e88359ef6216",
+      "revision": "9086f9c0dd002d07e6ab49effb4740f1debb844f",
+      "artifact": "sha256:0210a8e39d84eb52dac0aa3109aaf2b9c5a360b4d544fac95038e2802c2069f4",
+      "subject": "Release 2026-10-27: heatmap, security, learning and match API changes (#19)",
+      "previous_revision": "0ead237e62c85585fc6c63595d92dd107c7b3282",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "0ead237e62c85585fc6c63595d92dd107c7b3282",
-          "subject": "feat: add signed public match sharing API (#18)"
+          "revision": "9086f9c0dd002d07e6ab49effb4740f1debb844f",
+          "subject": "Release 2026-10-27: heatmap, security, learning and match API changes (#19)"
         }
       ]
     },
