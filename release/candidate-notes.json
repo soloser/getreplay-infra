@@ -2,19 +2,31 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "f8bf174ad4a8f559544f17298f641c815b8a3241",
-      "artifact": "sha256:56d75780ab18e2b526c5318f676fa8c4c0effddd8da59d7fc8910e7a0bc5dac1",
-      "subject": "Merge pull request #47 from soloser/codex/dashboard-auto-sync",
-      "previous_revision": "887a5de0aa6a6043808490c187a08ae1ef25814b",
-      "total_commits": 2,
+      "revision": "2423b42dd1cc7287b04100ef6fb415be54e37161",
+      "artifact": "sha256:c9f2b54a757fc1053d1f9cb0b1a79a04f25e0a6d6d159616304835b6dee38d3e",
+      "subject": "Merge pull request #49 from soloser/codex/example-match-experiment",
+      "previous_revision": "f8bf174ad4a8f559544f17298f641c815b8a3241",
+      "total_commits": 5,
       "commits": [
         {
-          "revision": "f8bf174ad4a8f559544f17298f641c815b8a3241",
-          "subject": "Merge pull request #47 from soloser/codex/dashboard-auto-sync"
+          "revision": "2423b42dd1cc7287b04100ef6fb415be54e37161",
+          "subject": "Merge pull request #49 from soloser/codex/example-match-experiment"
         },
         {
-          "revision": "2c5c801626ab68a43bf206fe879a7a75b090cf14",
-          "subject": "feat: run match sync from the dashboard and remove new-user stalls"
+          "revision": "e5abaa6716ece660d7cffd4403c7f22194bd17a3",
+          "subject": "feat: show the example match like a real one and split visitors between examples"
+        },
+        {
+          "revision": "a51104fd7efc80b14bd352ed10815dd22ec40274",
+          "subject": "fix: show won matches as wins in the dashboard's recent matches"
+        },
+        {
+          "revision": "23daf94478eb104294610e15885a724a34bf7f50",
+          "subject": "fix: explain match cards that cannot be opened and other Clarity drop-offs"
+        },
+        {
+          "revision": "a3c3f5d3c5341dc0dbc4599965b67dff4f37bff9",
+          "subject": "feat: count short visits in GA4 and measure time per product section"
         }
       ]
     },
