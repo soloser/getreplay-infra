@@ -2,27 +2,19 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "224b14886610038b7d3579a712c31e83531548e5",
-      "artifact": "sha256:d9db6f3b23ae4de6ca71adf4f9781efeb9ed1a46598aa85026b10a493cad217c",
-      "subject": "Merge pull request #52 from soloser/codex/seo-striking-distance",
-      "previous_revision": "149bf3c1d671397e7a793eef72469db76954568d",
-      "total_commits": 4,
+      "revision": "4332f9fa9d582bdae6ebc216c056545ad428254f",
+      "artifact": "sha256:00886b3acd134b7ec3917db816451d9a67f62cf625acf5b23b9cc24dcafad95b",
+      "subject": "Merge pull request #53 from soloser/codex/heatmap-widget-width",
+      "previous_revision": "224b14886610038b7d3579a712c31e83531548e5",
+      "total_commits": 2,
       "commits": [
         {
-          "revision": "224b14886610038b7d3579a712c31e83531548e5",
-          "subject": "Merge pull request #52 from soloser/codex/seo-striking-distance"
+          "revision": "4332f9fa9d582bdae6ebc216c056545ad428254f",
+          "subject": "Merge pull request #53 from soloser/codex/heatmap-widget-width"
         },
         {
-          "revision": "d4e6d17a4fef5a50b978980ee78df466c729b56a",
-          "subject": "fix: open the brightest zone first in the match heatmap"
-        },
-        {
-          "revision": "ef2e3bc7efdfb737fcf3442e80eb93218eaabff1",
-          "subject": "feat: replace /heatmaps landing with a heatmap article and live example widget"
-        },
-        {
-          "revision": "06859ae6b9a7541a75a54305221ea827b254de24",
-          "subject": "content: target striking-distance queries in FACEIT, stats and grenade articles"
+          "revision": "49c2de55b42945b6a133a9a78d62c1535c0fcbe0",
+          "subject": "fix: widen the article heatmap widget and keep prose margins off its map"
         }
       ]
     },
