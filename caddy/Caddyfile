@@ -96,55 +96,99 @@ app.getreplay.gg {
     }
 }
 
-# Storage subdomain (replays + Laravel public storage)
-storage.getreplay.gg {
-    encode zstd gzip
-    tls admin@getreplay.gg
-
+# Public file origins for Timeweb pull CDN. HTML/API/auth stay on getreplay.gg.
+# CORS also permits fonts, canvas exports and replay byte ranges through CDN.
+(cdn_public_headers) {
+    header {
+        Access-Control-Allow-Origin "*"
+        Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+        Access-Control-Allow-Headers "Range, Content-Type"
+        Access-Control-Expose-Headers "Accept-Ranges, Content-Range, Content-Length, Content-Type, ETag"
+        X-Content-Type-Options "nosniff"
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    }
+    header {
+        Cache-Control "no-store"
+        match status 4xx 5xx
+    }
     @cors_preflight method OPTIONS
     handle @cors_preflight {
-        header Access-Control-Allow-Origin "*"
-        header Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
-        header Access-Control-Allow-Headers "Range, Content-Type"
-        header Access-Control-Expose-Headers "Accept-Ranges, Content-Range, Content-Length, Content-Type"
+        header Cache-Control "no-store"
         respond "" 204
     }
+    @unsupported_method not method GET HEAD OPTIONS
+    handle @unsupported_method {
+        header Cache-Control "no-store"
+        respond "Method not allowed" 405
+    }
+    handle_errors {
+        header Access-Control-Allow-Origin "*"
+        header Cache-Control "no-store"
+        header -Content-Encoding
+        respond "{err.status_code} {err.status_text}" {err.status_code}
+    }
+}
 
-    # Uncompressed .replay2 blobs
+# DNS A/AAAA points here; CDN domain is static.getreplay.gg.
+assets-origin.getreplay.gg {
+    tls blackangelnk@gmail.com
+    import cdn_public_headers
+
+    # Keep Next's image optimization. Every query parameter is part of the CDN
+    # cache key. A stable Accept avoids mixed WebP/AVIF cache entries.
+    @optimized_image path_regexp optimized ^/releases/[a-zA-Z0-9][a-zA-Z0-9_-]{0,95}/_next/image$
+    handle @optimized_image {
+        rewrite * /_next/image
+        request_header Accept image/webp
+        request_header -Cookie
+        request_header -Authorization
+        import /var/lib/getreplay-frontend/upstream.caddy
+    }
+
+    @release_file path_regexp release ^/releases/[a-zA-Z0-9][a-zA-Z0-9_-]{0,95}/(_next/static|public)/.+$
+    handle @release_file {
+        root * /var/lib/getreplay-frontend/assets
+        header Cache-Control "public, max-age=31536000, immutable" {
+            match status 2xx 304
+        }
+        encode zstd gzip
+        file_server {
+            hide *.map .*
+        }
+    }
+    handle {
+        header Cache-Control "no-store"
+        respond "Not found" 404
+    }
+}
+
+# DNS points here; CDN domain is media.getreplay.gg.
+storage.getreplay.gg {
+    tls blackangelnk@gmail.com
+    import cdn_public_headers
+
+    # Storage names can be reused during reprocessing. Keep a bounded TTL.
+    header Cache-Control "public, max-age=3600" {
+        match status 200 206 304
+    }
+
+    # Do not dynamically compress range-addressed replay files.
     @replay2 path /replays/*.replay2
     handle @replay2 {
         root * /var/www/getreplay-storage
-        header Access-Control-Allow-Origin "*"
-        header Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
-        header Access-Control-Allow-Headers "Range, Content-Type"
-        header Access-Control-Expose-Headers "Accept-Ranges, Content-Range, Content-Length, Content-Type"
         header Content-Type application/octet-stream
         header -Content-Encoding
         file_server
     }
-
-    # gzip-encoded replays
+    # Existing legacy replay objects contain gzip bytes.
     handle_path /replays/* {
         root * /var/www/getreplay-storage/replays
-        header Access-Control-Allow-Origin "*"
-        header Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
-        header Access-Control-Allow-Headers "Range, Content-Type"
-        header Access-Control-Expose-Headers "Accept-Ranges, Content-Range, Content-Length, Content-Type"
         header Content-Encoding gzip
         header Content-Type application/octet-stream
         file_server
     }
-
-    # Laravel public storage (images, etc.)
     handle {
         root * /var/www/fun-php/repo/src/storage/app/public
-        header Access-Control-Allow-Origin "*"
-        header Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
-        header Access-Control-Allow-Headers "Range, Content-Type"
-        header Access-Control-Expose-Headers "Accept-Ranges, Content-Range, Content-Length, Content-Type"
-        header Cache-Control "public, max-age=31536000, immutable"
-        header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-        header X-Content-Type-Options "nosniff"
         file_server
     }
 }

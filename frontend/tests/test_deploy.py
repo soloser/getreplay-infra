@@ -48,6 +48,8 @@ elif name=='npm':
  if fail=='build' and args==['run','build']: sys.exit(1)
  if args==['run','build']:
   pathlib.Path('.next').mkdir();pathlib.Path('.next/BUILD_ID').write_text('new')
+  pathlib.Path('.next/required-server-files.json').write_text(json.dumps({'config':{'assetPrefix':''}}))
+  if fail=='publish': pathlib.Path('.next/required-server-files.json').write_text('{}')
   pathlib.Path('.next/static').mkdir();pathlib.Path('.next/static/new.js').write_text('new')
 elif name=='systemctl':
  if args[0]=='is-active':
@@ -128,7 +130,7 @@ class DeployTest(unittest.TestCase):
         self.assertIn(['systemctl','disable','--now','nextjs@3001.service'],calls)
 
     def test_failures_preserve_old_service_and_route(self):
-        for failure in ['lock','build','start','health','inactive','validate','reload']:
+        for failure in ['lock','build','publish','start','health','inactive','validate','reload']:
             with self.subTest(failure=failure):
                 result,calls,upstream,old,_=self.run_deploy(failure)
                 self.assertNotEqual(0,result.returncode)
@@ -164,6 +166,7 @@ class InstallTest(unittest.TestCase):
                 self.assertIn(old,script);script=script.replace(old,new)
             (source/'frontend/install-server.sh').write_text(script)
             (source/'frontend/deploy.sh').write_text('new adapter')
+            (source/'frontend/publish-assets.py').write_text('new publisher')
             (source/'systemd/nextjs@.service').write_text('template unit')
             (source/'caddy/frontend-upstream.caddy').write_text('should not replace legacy port')
             env={'PATH':str(bin_dir)+':/usr/bin:/bin','HOME':str(root),'TEST_ROOT':str(root)}

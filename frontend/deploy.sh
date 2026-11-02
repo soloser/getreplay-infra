@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Build an isolated inactive slot, check readiness, gracefully switch Caddy.
 set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ---- config (override via env) --------------------------------------------
 APP_ROOT="${APP_ROOT:-/home/solo/getreplay-front}"   # source checkout; never built in place
@@ -11,6 +12,7 @@ SERVICE="${SERVICE:-nextjs.service}"
 NODE_BIN="${NODE_BIN:-/opt/node-20/bin}"             # isolated Node install
 SLOTS_ROOT="${SLOTS_ROOT:-/home/solo/getreplay-front-slots}"
 UPSTREAM="${UPSTREAM:-/var/lib/getreplay-frontend/upstream.caddy}"
+ASSETS_ROOT="${ASSETS_ROOT:-$(dirname "$UPSTREAM")/assets}"
 CADDY_CONFIG="${CADDY_CONFIG:-/etc/caddy/Caddyfile}"
 LOCK_FILE="${LOCK_FILE:-/var/lib/getreplay-frontend/deploy.lock}"
 HEALTH_PATH="${HEALTH_PATH:-/en}"
@@ -145,10 +147,16 @@ if [ -f .nvmrc ]; then
 fi
 log "using $(node -v) from $NODE_BIN"
 
+# Unique even when the same commit is rebuilt with new environment settings.
+python3 -c 'import uuid; print(uuid.uuid4().hex)' > .cdn-release
+chmod 644 .cdn-release
 log "build $revision in inactive slot $idle; $previous keeps serving"
 run_build npm ci
 run_build npm run build
 [ -s .next/BUILD_ID ] || die "build did not produce .next/BUILD_ID"
+# Publish from this build before merging legacy chunks or switching traffic.
+# A failed CDN probe leaves the old service and its assets live.
+python3 "$SCRIPT_DIR/publish-assets.py" --slot "$slot" --root "$ASSETS_ROOT"
 
 # Keep the previous build's static chunks for tabs already open during deploy.
 # Only current build chunks are copied, avoiding unbounded history accumulation.

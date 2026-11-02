@@ -68,6 +68,14 @@ sudo caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile &&
 Теперь можно запускать **Deploy frontend** из main после слияния нового PR.
 Сам факт установки файлов не выкатывает новую версию приложения.
 
+## CDN
+
+Настройка Timeweb для frontend-файлов и медиа: [TIMEWEB-CDN.md](TIMEWEB-CDN.md).
+При включённом CDN адаптер публикует файлы и проверяет их через CDN до переключения
+версии. Удаление старого Next-слота не удаляет его CDN-файлы. Существующий GitHub
+Actions workflow сохраняется. Установщик должен обновить оба доверенных файла:
+`deploy.sh` и `publish-assets.py`.
+
 ## Поведение деплоя
 
 1. Git-снимок выбранной ревизии и `.env`, `.env.local`, `.env.production`,
@@ -96,7 +104,7 @@ Lock не допускает два одновременных запуска а
 ## Настройки и проверки
 
 `APP_ROOT`, `BRANCH`, `REVISION`, `SOURCE_PREPARED`, `BUILD_USER`, `NODE_BIN`,
-`SLOTS_ROOT`, `UPSTREAM`, `CADDY_CONFIG`, `LOCK_FILE`, `HEALTH_PATH`,
+`SLOTS_ROOT`, `UPSTREAM`, `ASSETS_ROOT`, `CADDY_CONFIG`, `LOCK_FILE`, `HEALTH_PATH`,
 `HEALTH_ATTEMPTS`, `DRAIN_SECONDS` переопределяются через env. `SERVICE` — имя
 старого сервиса. Изменения путей, пользователя и Node необходимо согласовать
 с systemd-шаблоном и sandbox broker; штатная установка использует defaults.

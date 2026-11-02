@@ -10,7 +10,7 @@ DEPLOY_ROOT=/usr/local/libexec/getreplay-release/deploy/frontend
 LEGACY_UPSTREAM=/etc/caddy/frontend-upstream.caddy
 
 # Parents must exist before systemd constructs the executor mount sandbox.
-install -d -o root -g root -m 755 "$STATE_ROOT" "$DEPLOY_ROOT"
+install -d -o root -g root -m 755 "$STATE_ROOT" "$STATE_ROOT/assets" "$DEPLOY_ROOT"
 exec 9>"$STATE_ROOT/deploy.lock"
 flock -n 9 || { echo 'frontend deployment is running' >&2; exit 1; }
 # Also coordinate with the first version of the deployment adapter.
@@ -30,5 +30,6 @@ if [ ! -e "$STATE_ROOT/upstream.caddy" ]; then
 fi
 install -o root -g root -m 644 "$INFRA_ROOT/systemd/nextjs@.service" /etc/systemd/system/nextjs@.service
 install -o root -g root -m 755 "$SCRIPT_DIR/deploy.sh" "$DEPLOY_ROOT/deploy.sh"
+install -o root -g root -m 755 "$SCRIPT_DIR/publish-assets.py" "$DEPLOY_ROOT/publish-assets.py"
 systemctl daemon-reload
 printf '%s\n' 'Frontend assets installed. Update the release broker and the existing frontend Caddy import as described in frontend/DEPLOY.md.'
