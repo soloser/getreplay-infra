@@ -15,24 +15,24 @@
       "artifact": "sha256:8532915b91dec4493f7b25f442bdcfc119090137ae8c575dfdd2c346a732509b"
     },
     "go-match-updater": {
-      "revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
-      "artifact": "sha256:c6beeaa0fef1147b396fcc7495af151f84fe4af82c3d9ce355fd848c923c08b6"
+      "revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
+      "artifact": "sha256:926b950b8be70d63f310a12cffa30956282044d651a5c9fe3f1eb4a511311230"
     },
     "go-demo-uploader": {
-      "revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
-      "artifact": "sha256:c6beeaa0fef1147b396fcc7495af151f84fe4af82c3d9ce355fd848c923c08b6"
+      "revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
+      "artifact": "sha256:926b950b8be70d63f310a12cffa30956282044d651a5c9fe3f1eb4a511311230"
     },
     "go-highlight-extractor": {
-      "revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
-      "artifact": "sha256:c6beeaa0fef1147b396fcc7495af151f84fe4af82c3d9ce355fd848c923c08b6"
+      "revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
+      "artifact": "sha256:926b950b8be70d63f310a12cffa30956282044d651a5c9fe3f1eb4a511311230"
     },
     "go-replay-converter": {
-      "revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
-      "artifact": "sha256:c6beeaa0fef1147b396fcc7495af151f84fe4af82c3d9ce355fd848c923c08b6"
+      "revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
+      "artifact": "sha256:926b950b8be70d63f310a12cffa30956282044d651a5c9fe3f1eb4a511311230"
     },
     "go-stats-extractor": {
-      "revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
-      "artifact": "sha256:c6beeaa0fef1147b396fcc7495af151f84fe4af82c3d9ce355fd848c923c08b6"
+      "revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
+      "artifact": "sha256:926b950b8be70d63f310a12cffa30956282044d651a5c9fe3f1eb4a511311230"
     }
   },
   "migrations": {
