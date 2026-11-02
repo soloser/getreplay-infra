@@ -2,19 +2,27 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "149bf3c1d671397e7a793eef72469db76954568d",
-      "artifact": "sha256:cc0083c0131b0ca0cfc76f173c325b2a05e54e94747f21cd1df5b15ef46becc5",
-      "subject": "Merge pull request #51 from soloser/codex/steam-link-nudge",
-      "previous_revision": "df00f672f2eac2222313b745ebcc7cd0420339e0",
-      "total_commits": 2,
+      "revision": "224b14886610038b7d3579a712c31e83531548e5",
+      "artifact": "sha256:d9db6f3b23ae4de6ca71adf4f9781efeb9ed1a46598aa85026b10a493cad217c",
+      "subject": "Merge pull request #52 from soloser/codex/seo-striking-distance",
+      "previous_revision": "149bf3c1d671397e7a793eef72469db76954568d",
+      "total_commits": 4,
       "commits": [
         {
-          "revision": "149bf3c1d671397e7a793eef72469db76954568d",
-          "subject": "Merge pull request #51 from soloser/codex/steam-link-nudge"
+          "revision": "224b14886610038b7d3579a712c31e83531548e5",
+          "subject": "Merge pull request #52 from soloser/codex/seo-striking-distance"
         },
         {
-          "revision": "99a738b99857534f760fcc6019468c65a1605f48",
-          "subject": "feat: offer Steam linking after manual uploads and open the picker from the dashboard"
+          "revision": "d4e6d17a4fef5a50b978980ee78df466c729b56a",
+          "subject": "fix: open the brightest zone first in the match heatmap"
+        },
+        {
+          "revision": "ef2e3bc7efdfb737fcf3442e80eb93218eaabff1",
+          "subject": "feat: replace /heatmaps landing with a heatmap article and live example widget"
+        },
+        {
+          "revision": "06859ae6b9a7541a75a54305221ea827b254de24",
+          "subject": "content: target striking-distance queries in FACEIT, stats and grenade articles"
         }
       ]
     },
