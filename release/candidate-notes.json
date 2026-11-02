@@ -45,67 +45,67 @@
       ]
     },
     "go-match-updater": {
-      "revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
-      "artifact": "sha256:926b950b8be70d63f310a12cffa30956282044d651a5c9fe3f1eb4a511311230",
-      "subject": "feat: open example grenade stats to guests and cache them in Redis (#32)",
-      "previous_revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
+      "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
+      "artifact": "sha256:cdd9fd67b023a0978bf741a3ac7fcbea5164a32d68574b959aa371d5f0359eb5",
+      "subject": "fix: skip refresh requests that a later run already covers (#33)",
+      "previous_revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
-          "subject": "feat: open example grenade stats to guests and cache them in Redis (#32)"
+          "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
+          "subject": "fix: skip refresh requests that a later run already covers (#33)"
         }
       ]
     },
     "go-demo-uploader": {
-      "revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
-      "artifact": "sha256:926b950b8be70d63f310a12cffa30956282044d651a5c9fe3f1eb4a511311230",
-      "subject": "feat: open example grenade stats to guests and cache them in Redis (#32)",
-      "previous_revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
+      "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
+      "artifact": "sha256:cdd9fd67b023a0978bf741a3ac7fcbea5164a32d68574b959aa371d5f0359eb5",
+      "subject": "fix: skip refresh requests that a later run already covers (#33)",
+      "previous_revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
-          "subject": "feat: open example grenade stats to guests and cache them in Redis (#32)"
+          "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
+          "subject": "fix: skip refresh requests that a later run already covers (#33)"
         }
       ]
     },
     "go-highlight-extractor": {
-      "revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
-      "artifact": "sha256:926b950b8be70d63f310a12cffa30956282044d651a5c9fe3f1eb4a511311230",
-      "subject": "feat: open example grenade stats to guests and cache them in Redis (#32)",
-      "previous_revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
+      "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
+      "artifact": "sha256:cdd9fd67b023a0978bf741a3ac7fcbea5164a32d68574b959aa371d5f0359eb5",
+      "subject": "fix: skip refresh requests that a later run already covers (#33)",
+      "previous_revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
-          "subject": "feat: open example grenade stats to guests and cache them in Redis (#32)"
+          "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
+          "subject": "fix: skip refresh requests that a later run already covers (#33)"
         }
       ]
     },
     "go-replay-converter": {
-      "revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
-      "artifact": "sha256:926b950b8be70d63f310a12cffa30956282044d651a5c9fe3f1eb4a511311230",
-      "subject": "feat: open example grenade stats to guests and cache them in Redis (#32)",
-      "previous_revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
+      "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
+      "artifact": "sha256:cdd9fd67b023a0978bf741a3ac7fcbea5164a32d68574b959aa371d5f0359eb5",
+      "subject": "fix: skip refresh requests that a later run already covers (#33)",
+      "previous_revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
-          "subject": "feat: open example grenade stats to guests and cache them in Redis (#32)"
+          "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
+          "subject": "fix: skip refresh requests that a later run already covers (#33)"
         }
       ]
     },
     "go-stats-extractor": {
-      "revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
-      "artifact": "sha256:926b950b8be70d63f310a12cffa30956282044d651a5c9fe3f1eb4a511311230",
-      "subject": "feat: open example grenade stats to guests and cache them in Redis (#32)",
-      "previous_revision": "b15809eee9e57df38bcb18a396fb1cca44643415",
+      "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
+      "artifact": "sha256:cdd9fd67b023a0978bf741a3ac7fcbea5164a32d68574b959aa371d5f0359eb5",
+      "subject": "fix: skip refresh requests that a later run already covers (#33)",
+      "previous_revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
-          "subject": "feat: open example grenade stats to guests and cache them in Redis (#32)"
+          "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
+          "subject": "fix: skip refresh requests that a later run already covers (#33)"
         }
       ]
     }
