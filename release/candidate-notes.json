@@ -2,31 +2,19 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "2423b42dd1cc7287b04100ef6fb415be54e37161",
-      "artifact": "sha256:c9f2b54a757fc1053d1f9cb0b1a79a04f25e0a6d6d159616304835b6dee38d3e",
-      "subject": "Merge pull request #49 from soloser/codex/example-match-experiment",
-      "previous_revision": "f8bf174ad4a8f559544f17298f641c815b8a3241",
-      "total_commits": 5,
+      "revision": "df00f672f2eac2222313b745ebcc7cd0420339e0",
+      "artifact": "sha256:693b96c781986d59e0c236a525c99bd2d692ae4b90ab3daf2aa896d256909d91",
+      "subject": "Merge pull request #50 from soloser/codex/cache-map-background",
+      "previous_revision": "2423b42dd1cc7287b04100ef6fb415be54e37161",
+      "total_commits": 2,
       "commits": [
         {
-          "revision": "2423b42dd1cc7287b04100ef6fb415be54e37161",
-          "subject": "Merge pull request #49 from soloser/codex/example-match-experiment"
+          "revision": "df00f672f2eac2222313b745ebcc7cd0420339e0",
+          "subject": "Merge pull request #50 from soloser/codex/cache-map-background"
         },
         {
-          "revision": "e5abaa6716ece660d7cffd4403c7f22194bd17a3",
-          "subject": "feat: show the example match like a real one and split visitors between examples"
-        },
-        {
-          "revision": "a51104fd7efc80b14bd352ed10815dd22ec40274",
-          "subject": "fix: show won matches as wins in the dashboard's recent matches"
-        },
-        {
-          "revision": "23daf94478eb104294610e15885a724a34bf7f50",
-          "subject": "fix: explain match cards that cannot be opened and other Clarity drop-offs"
-        },
-        {
-          "revision": "a3c3f5d3c5341dc0dbc4599965b67dff4f37bff9",
-          "subject": "feat: count short visits in GA4 and measure time per product section"
+          "revision": "18dafd135e9f7e5f9a3bc63b7c6564df06734f05",
+          "subject": "feat: add Cache map background"
         }
       ]
     },
