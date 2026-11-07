@@ -2,19 +2,19 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "4332f9fa9d582bdae6ebc216c056545ad428254f",
-      "artifact": "sha256:00886b3acd134b7ec3917db816451d9a67f62cf625acf5b23b9cc24dcafad95b",
-      "subject": "Merge pull request #53 from soloser/codex/heatmap-widget-width",
-      "previous_revision": "224b14886610038b7d3579a712c31e83531548e5",
+      "revision": "2cc1063464cf14b85545f0deda382252962160f2",
+      "artifact": "sha256:cc8a36332c7dc8a3e6d169382089a5d5330211b48a419467f15d77b8ae77792e",
+      "subject": "Merge pull request #54 from soloser/codex/heatmap-slow-pages",
+      "previous_revision": "4332f9fa9d582bdae6ebc216c056545ad428254f",
       "total_commits": 2,
       "commits": [
         {
-          "revision": "4332f9fa9d582bdae6ebc216c056545ad428254f",
-          "subject": "Merge pull request #53 from soloser/codex/heatmap-widget-width"
+          "revision": "2cc1063464cf14b85545f0deda382252962160f2",
+          "subject": "Merge pull request #54 from soloser/codex/heatmap-slow-pages"
         },
         {
-          "revision": "49c2de55b42945b6a133a9a78d62c1535c0fcbe0",
-          "subject": "fix: widen the article heatmap widget and keep prose margins off its map"
+          "revision": "404c26b6e70ec3fea4287c186a890da7c4d9b353",
+          "subject": "feat: mobile match redesign, unified moment rows, sharper highlight rules and player analytics"
         }
       ]
     },
