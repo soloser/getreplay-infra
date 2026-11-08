@@ -3,8 +3,8 @@
   "release_id": "candidate",
   "components": {
     "frontend": {
-      "revision": "2cc1063464cf14b85545f0deda382252962160f2",
-      "artifact": "sha256:cc8a36332c7dc8a3e6d169382089a5d5330211b48a419467f15d77b8ae77792e"
+      "revision": "e48d4a0ff11c9f9a15f7d74f609dd0f7566a89c6",
+      "artifact": "sha256:f1b37200ac0d9ee6bd103952d3af86c39086d58a366c0272b2118bbecca7385e"
     },
     "php": {
       "revision": "ad2d5899464cfc75c7689d685755aeb1097274f2",
