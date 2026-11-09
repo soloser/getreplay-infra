@@ -2,55 +2,19 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "0a5db51598ed315d651d8b33042d82b0aa8a8470",
-      "artifact": "sha256:35bbd007dbfe9af810589edd8488ba56af416ccacc3169b719b50830228c4fc7",
-      "subject": "Merge pull request #56 from soloser/replay-pitch-arrow",
-      "previous_revision": "e48d4a0ff11c9f9a15f7d74f609dd0f7566a89c6",
-      "total_commits": 11,
+      "revision": "f0ea7f665771c3a22785efb0315931113519eed4",
+      "artifact": "sha256:e97b5522945621bbd4983cc59de71f65f47d35390179255fe5591a34ef6ab3eb",
+      "subject": "Merge pull request #57 from soloser/wheel-zoom",
+      "previous_revision": "0a5db51598ed315d651d8b33042d82b0aa8a8470",
+      "total_commits": 2,
       "commits": [
         {
-          "revision": "0a5db51598ed315d651d8b33042d82b0aa8a8470",
-          "subject": "Merge pull request #56 from soloser/replay-pitch-arrow"
+          "revision": "f0ea7f665771c3a22785efb0315931113519eed4",
+          "subject": "Merge pull request #57 from soloser/wheel-zoom"
         },
         {
-          "revision": "c15c3cbdd32e5f4dc071b275fdda38d66d064463",
-          "subject": "feat: narrow the coloured contour segment with the pitch arrow"
-        },
-        {
-          "revision": "0ca78e3d8e6809c3ed793fe9d53c8762e46255fb",
-          "subject": "feat: paint the contour segment under the gaze in the arrow's colour"
-        },
-        {
-          "revision": "35015c11fc60eea4ed3fae6ee4455db4feead1d4",
-          "subject": "feat: shade the contour segment under the gaze when looking up"
-        },
-        {
-          "revision": "475d4eceb345d00d403101bcb3c0ae0bec95a76d",
-          "subject": "feat: let the pitch arrow shape respond a bit more near level gaze"
-        },
-        {
-          "revision": "42e971c09c6c7ef0688f4098c5e4363079ec1971",
-          "subject": "feat: show small pitch tilts in the arrow colour"
-        },
-        {
-          "revision": "f24e30ef4467afa398f3c03d65fb7e49b9d9c00f",
-          "subject": "fix: keep the pitch arrow mounted when pitch crosses zero"
-        },
-        {
-          "revision": "595fb390ee087e029c03ff53ae28d0b73365f87e",
-          "subject": "docs: describe the replay pitch arrow"
-        },
-        {
-          "revision": "94762742d1cd073566033dfccf30987ecda9e312",
-          "subject": "feat: show the vertical view angle on the replay gaze arrow"
-        },
-        {
-          "revision": "73e5024f95d8689000c23a9a10c63dcb331fd517",
-          "subject": "feat: decode player pitch from replays, including replay3 adaptive pitch frames"
-        },
-        {
-          "revision": "4f3c5a5f1d02a05c80d5296388bacb2a3ca07bdc",
-          "subject": "chore: regenerate the replay proto client with the pitch fields"
+          "revision": "c5c3680138db9b66a740456c6a66c3d8e36d22e1",
+          "subject": "Зум карты в плеере колесом без зажатия кнопки"
         }
       ]
     },
