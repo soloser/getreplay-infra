@@ -68,15 +68,15 @@
       ]
     },
     "node": {
-      "revision": "dda676dd533d38d6291bba6b4ed3fd6abb2884df",
-      "artifact": "sha256:8532915b91dec4493f7b25f442bdcfc119090137ae8c575dfdd2c346a732509b",
-      "subject": "Release 2026-10-27: Steam API reliability and credential redaction (#4)",
-      "previous_revision": "77acf6775011ba182ae028aff0d50c706fa5282c",
+      "revision": "5b75066d6366250ce0e6aab6d3f2152f1e24c5c4",
+      "artifact": "sha256:f7f330b5165a829369249dd71e75fc6d1c09e271195f58d604eb8337fc840260",
+      "subject": "Read the demo URL from roundstats_legacy and update node-cs2 to 2.6.0 (#6)",
+      "previous_revision": "dda676dd533d38d6291bba6b4ed3fd6abb2884df",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "dda676dd533d38d6291bba6b4ed3fd6abb2884df",
-          "subject": "Release 2026-10-27: Steam API reliability and credential redaction (#4)"
+          "revision": "5b75066d6366250ce0e6aab6d3f2152f1e24c5c4",
+          "subject": "Read the demo URL from roundstats_legacy and update node-cs2 to 2.6.0 (#6)"
         }
       ]
     },
