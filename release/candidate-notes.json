@@ -2,59 +2,55 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "e48d4a0ff11c9f9a15f7d74f609dd0f7566a89c6",
-      "artifact": "sha256:f1b37200ac0d9ee6bd103952d3af86c39086d58a366c0272b2118bbecca7385e",
-      "subject": "Merge pull request #55 from soloser/codex/mobile-overlays-fullscreen",
-      "previous_revision": "2cc1063464cf14b85545f0deda382252962160f2",
-      "total_commits": 12,
+      "revision": "0a5db51598ed315d651d8b33042d82b0aa8a8470",
+      "artifact": "sha256:35bbd007dbfe9af810589edd8488ba56af416ccacc3169b719b50830228c4fc7",
+      "subject": "Merge pull request #56 from soloser/replay-pitch-arrow",
+      "previous_revision": "e48d4a0ff11c9f9a15f7d74f609dd0f7566a89c6",
+      "total_commits": 11,
       "commits": [
         {
-          "revision": "e48d4a0ff11c9f9a15f7d74f609dd0f7566a89c6",
-          "subject": "Merge pull request #55 from soloser/codex/mobile-overlays-fullscreen"
+          "revision": "0a5db51598ed315d651d8b33042d82b0aa8a8470",
+          "subject": "Merge pull request #56 from soloser/replay-pitch-arrow"
         },
         {
-          "revision": "e354fb10059965ca984c114e5f04d6365c642463",
-          "subject": "feat: drop the match type label on phones when the rank already shows it"
+          "revision": "c15c3cbdd32e5f4dc071b275fdda38d66d064463",
+          "subject": "feat: narrow the coloured contour segment with the pitch arrow"
         },
         {
-          "revision": "f6cd3a15dfdd97517403ac330989a069a3368f98",
-          "subject": "fix: hide the small map icon in the phone match summary so the rank fits"
+          "revision": "0ca78e3d8e6809c3ed793fe9d53c8762e46255fb",
+          "subject": "feat: paint the contour segment under the gaze in the arrow's colour"
         },
         {
-          "revision": "fd39deffb006b590f3773d41c032892faa3e4fb4",
-          "subject": "feat: one compact match summary block on phones, drop the tap-a-highlight hint"
+          "revision": "35015c11fc60eea4ed3fae6ee4455db4feead1d4",
+          "subject": "feat: shade the contour segment under the gaze when looking up"
         },
         {
-          "revision": "c8c3a6c61bf6a72ed67011d9caeef4b37cf4acd8",
-          "subject": "feat: two-line match summary with icon actions on phones"
+          "revision": "475d4eceb345d00d403101bcb3c0ae0bec95a76d",
+          "subject": "feat: let the pitch arrow shape respond a bit more near level gaze"
         },
         {
-          "revision": "7ffa0a4fc399fd8fc2f8f0cf98438b844ebe1e10",
-          "subject": "revert: drop the web app manifest until home-screen login is checked (GR-569)"
+          "revision": "42e971c09c6c7ef0688f4098c5e4363079ec1971",
+          "subject": "feat: show small pitch tilts in the arrow colour"
         },
         {
-          "revision": "ae0bf918f5ed6b995948234774ef82b145568b02",
-          "subject": "feat: web app manifest and home screen icons"
+          "revision": "f24e30ef4467afa398f3c03d65fb7e49b9d9c00f",
+          "subject": "fix: keep the pitch arrow mounted when pitch crosses zero"
         },
         {
-          "revision": "399162160ac09cef2ff75e255eefa108269ee9a5",
-          "subject": "feat: run the smart fast-forward streaks under the phone player's controls"
+          "revision": "595fb390ee087e029c03ff53ae28d0b73365f87e",
+          "subject": "docs: describe the replay pitch arrow"
         },
         {
-          "revision": "d2b8c6d6872adfe7ffa0561cccab6a7e96087887",
-          "subject": "feat: compact overlay-style timeline in the phone full player"
+          "revision": "94762742d1cd073566033dfccf30987ecda9e312",
+          "subject": "feat: show the vertical view angle on the replay gaze arrow"
         },
         {
-          "revision": "71c3f0a230b4f56d42bb42d698fc41fbd81f35c3",
-          "subject": "fix: put the mobile match card action in the top right corner"
+          "revision": "73e5024f95d8689000c23a9a10c63dcb331fd517",
+          "subject": "feat: decode player pitch from replays, including replay3 adaptive pitch frames"
         },
         {
-          "revision": "2a92d314c779445705a3aaaa4e06f901d53aaef3",
-          "subject": "fix: keep phone overlays open and fullscreen through React's dev remount"
-        },
-        {
-          "revision": "a207deb538f5a52681cefe7b1886f934ab950ce8",
-          "subject": "feat: phone overlays for the overall heatmap, browser fullscreen for overlays, steady matches refresh"
+          "revision": "4f3c5a5f1d02a05c80d5296388bacb2a3ca07bdc",
+          "subject": "chore: regenerate the replay proto client with the pitch fields"
         }
       ]
     },
