@@ -11,8 +11,8 @@
       "artifact": "sha256:0f906c9c9cfa357c3686b52d6fcb83a63b5876cae2bb7aec07cf7fb362f4981e"
     },
     "node": {
-      "revision": "dda676dd533d38d6291bba6b4ed3fd6abb2884df",
-      "artifact": "sha256:8532915b91dec4493f7b25f442bdcfc119090137ae8c575dfdd2c346a732509b"
+      "revision": "5b75066d6366250ce0e6aab6d3f2152f1e24c5c4",
+      "artifact": "sha256:f7f330b5165a829369249dd71e75fc6d1c09e271195f58d604eb8337fc840260"
     },
     "go-match-updater": {
       "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
