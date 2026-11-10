@@ -2,19 +2,23 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "f0ea7f665771c3a22785efb0315931113519eed4",
-      "artifact": "sha256:e97b5522945621bbd4983cc59de71f65f47d35390179255fe5591a34ef6ab3eb",
-      "subject": "Merge pull request #57 from soloser/wheel-zoom",
-      "previous_revision": "0a5db51598ed315d651d8b33042d82b0aa8a8470",
-      "total_commits": 2,
+      "revision": "beeb8ff4734076a8df0b769fa036793ba8d227ea",
+      "artifact": "sha256:98c5d74fbd8ef3f520cccb4d444d103e2fb92438b1adcf16342321ac43d6c122",
+      "subject": "Merge pull request #58 from soloser/mobile-follow-button",
+      "previous_revision": "f0ea7f665771c3a22785efb0315931113519eed4",
+      "total_commits": 3,
       "commits": [
         {
-          "revision": "f0ea7f665771c3a22785efb0315931113519eed4",
-          "subject": "Merge pull request #57 from soloser/wheel-zoom"
+          "revision": "beeb8ff4734076a8df0b769fa036793ba8d227ea",
+          "subject": "Merge pull request #58 from soloser/mobile-follow-button"
         },
         {
-          "revision": "c5c3680138db9b66a740456c6a66c3d8e36d22e1",
-          "subject": "Зум карты в плеере колесом без зажатия кнопки"
+          "revision": "69fc09ad2cae4bb1f4531d9686b5acc45161a37b",
+          "subject": "Merge origin/main в mobile-follow-button"
+        },
+        {
+          "revision": "f185a684048bb414e785aa85e684310d33854660",
+          "subject": "Вынести follow selected player в отдельную кнопку мобильного плеера (GR-579)"
         }
       ]
     },
