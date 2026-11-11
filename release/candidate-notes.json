@@ -2,19 +2,27 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "4a7dbbb94e5a4881ba79a11bb78f260820652ed1",
-      "artifact": "sha256:c9f115c60f8452d242b7410ecf6133c6beaaec4ac1c6e63b5ee56186f4488ea9",
-      "subject": "Merge pull request #59 from soloser/gr-578-article-conversion",
-      "previous_revision": "beeb8ff4734076a8df0b769fa036793ba8d227ea",
-      "total_commits": 2,
+      "revision": "31d82b6cea373b5426333dee205da34ddfdec199",
+      "artifact": "sha256:544dbc175643116b71f8e362fa604873dbc91cf23888b52f476dc0d5ff79d93a",
+      "subject": "Merge pull request #61 from soloser/codex/gr-147-clutch-result",
+      "previous_revision": "4a7dbbb94e5a4881ba79a11bb78f260820652ed1",
+      "total_commits": 4,
       "commits": [
         {
-          "revision": "4a7dbbb94e5a4881ba79a11bb78f260820652ed1",
-          "subject": "Merge pull request #59 from soloser/gr-578-article-conversion"
+          "revision": "31d82b6cea373b5426333dee205da34ddfdec199",
+          "subject": "Merge pull request #61 from soloser/codex/gr-147-clutch-result"
         },
         {
-          "revision": "af1d56e9045c8558fe1acf2164b7c4963fa11c92",
-          "subject": "Explain FACEIT matches without a replay on /matches and the dashboard"
+          "revision": "036e612e633fb87c2c4086d9a0fcd394c210adf8",
+          "subject": "fix: count fatal environmental damage as clutch death (GR-147)"
+        },
+        {
+          "revision": "8dfafe0171d2695248f16488c5efe50e3747e691",
+          "subject": "Merge pull request #60 from soloser/codex/gr-584-nuke-heatmap"
+        },
+        {
+          "revision": "eb14f228d4de75361fba3b6dc9fcb36a3ec7262e",
+          "subject": "fix: show heatmap floors on the map and default to upper (GR-584)"
         }
       ]
     },
