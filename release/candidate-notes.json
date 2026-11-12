@@ -53,67 +53,67 @@
       ]
     },
     "go-match-updater": {
-      "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
-      "artifact": "sha256:cdd9fd67b023a0978bf741a3ac7fcbea5164a32d68574b959aa371d5f0359eb5",
-      "subject": "fix: skip refresh requests that a later run already covers (#33)",
-      "previous_revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
+      "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
+      "artifact": "sha256:683c2e15c5fc22fd5e80378004c3e81060173802bb3c2b189ded9000605ccd5c",
+      "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)",
+      "previous_revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
-          "subject": "fix: skip refresh requests that a later run already covers (#33)"
+          "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
+          "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)"
         }
       ]
     },
     "go-demo-uploader": {
-      "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
-      "artifact": "sha256:cdd9fd67b023a0978bf741a3ac7fcbea5164a32d68574b959aa371d5f0359eb5",
-      "subject": "fix: skip refresh requests that a later run already covers (#33)",
-      "previous_revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
+      "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
+      "artifact": "sha256:683c2e15c5fc22fd5e80378004c3e81060173802bb3c2b189ded9000605ccd5c",
+      "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)",
+      "previous_revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
-          "subject": "fix: skip refresh requests that a later run already covers (#33)"
+          "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
+          "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)"
         }
       ]
     },
     "go-highlight-extractor": {
-      "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
-      "artifact": "sha256:cdd9fd67b023a0978bf741a3ac7fcbea5164a32d68574b959aa371d5f0359eb5",
-      "subject": "fix: skip refresh requests that a later run already covers (#33)",
-      "previous_revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
+      "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
+      "artifact": "sha256:683c2e15c5fc22fd5e80378004c3e81060173802bb3c2b189ded9000605ccd5c",
+      "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)",
+      "previous_revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
-          "subject": "fix: skip refresh requests that a later run already covers (#33)"
+          "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
+          "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)"
         }
       ]
     },
     "go-replay-converter": {
-      "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
-      "artifact": "sha256:cdd9fd67b023a0978bf741a3ac7fcbea5164a32d68574b959aa371d5f0359eb5",
-      "subject": "fix: skip refresh requests that a later run already covers (#33)",
-      "previous_revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
+      "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
+      "artifact": "sha256:683c2e15c5fc22fd5e80378004c3e81060173802bb3c2b189ded9000605ccd5c",
+      "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)",
+      "previous_revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
-          "subject": "fix: skip refresh requests that a later run already covers (#33)"
+          "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
+          "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)"
         }
       ]
     },
     "go-stats-extractor": {
-      "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
-      "artifact": "sha256:cdd9fd67b023a0978bf741a3ac7fcbea5164a32d68574b959aa371d5f0359eb5",
-      "subject": "fix: skip refresh requests that a later run already covers (#33)",
-      "previous_revision": "bc6e3936c4dac0dd7df034b938eef7763a6f3222",
+      "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
+      "artifact": "sha256:683c2e15c5fc22fd5e80378004c3e81060173802bb3c2b189ded9000605ccd5c",
+      "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)",
+      "previous_revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
       "total_commits": 1,
       "commits": [
         {
-          "revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
-          "subject": "fix: skip refresh requests that a later run already covers (#33)"
+          "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
+          "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)"
         }
       ]
     }
