@@ -49,67 +49,107 @@
       ]
     },
     "go-match-updater": {
-      "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
-      "artifact": "sha256:683c2e15c5fc22fd5e80378004c3e81060173802bb3c2b189ded9000605ccd5c",
-      "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)",
-      "previous_revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
-      "total_commits": 1,
+      "revision": "6740ba3d0609472b4b3500312f4c8cde3285cb23",
+      "artifact": "sha256:b6edbb35f7b3fcca3f67a3f2e5c6ad54338af5e7f6431bdc08015b369e6510bb",
+      "subject": "Merge pull request #36 from soloser/GR-635-demoinfocs-v5.3.0",
+      "previous_revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
+      "total_commits": 3,
       "commits": [
         {
-          "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
-          "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)"
+          "revision": "6740ba3d0609472b4b3500312f4c8cde3285cb23",
+          "subject": "Merge pull request #36 from soloser/GR-635-demoinfocs-v5.3.0"
+        },
+        {
+          "revision": "46ff9e3a07dd4230a5ed1e9abb16e3ccd6eb57b4",
+          "subject": "docs(match-updater): name demoinfocs v5.3.0 instead of a revision"
+        },
+        {
+          "revision": "517231e4b0654e13a7781c0c98440c3aa0becde7",
+          "subject": "chore: pin demoinfocs-golang to release v5.3.0"
         }
       ]
     },
     "go-demo-uploader": {
-      "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
-      "artifact": "sha256:683c2e15c5fc22fd5e80378004c3e81060173802bb3c2b189ded9000605ccd5c",
-      "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)",
-      "previous_revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
-      "total_commits": 1,
+      "revision": "6740ba3d0609472b4b3500312f4c8cde3285cb23",
+      "artifact": "sha256:b6edbb35f7b3fcca3f67a3f2e5c6ad54338af5e7f6431bdc08015b369e6510bb",
+      "subject": "Merge pull request #36 from soloser/GR-635-demoinfocs-v5.3.0",
+      "previous_revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
+      "total_commits": 3,
       "commits": [
         {
-          "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
-          "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)"
+          "revision": "6740ba3d0609472b4b3500312f4c8cde3285cb23",
+          "subject": "Merge pull request #36 from soloser/GR-635-demoinfocs-v5.3.0"
+        },
+        {
+          "revision": "46ff9e3a07dd4230a5ed1e9abb16e3ccd6eb57b4",
+          "subject": "docs(match-updater): name demoinfocs v5.3.0 instead of a revision"
+        },
+        {
+          "revision": "517231e4b0654e13a7781c0c98440c3aa0becde7",
+          "subject": "chore: pin demoinfocs-golang to release v5.3.0"
         }
       ]
     },
     "go-highlight-extractor": {
-      "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
-      "artifact": "sha256:683c2e15c5fc22fd5e80378004c3e81060173802bb3c2b189ded9000605ccd5c",
-      "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)",
-      "previous_revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
-      "total_commits": 1,
+      "revision": "6740ba3d0609472b4b3500312f4c8cde3285cb23",
+      "artifact": "sha256:b6edbb35f7b3fcca3f67a3f2e5c6ad54338af5e7f6431bdc08015b369e6510bb",
+      "subject": "Merge pull request #36 from soloser/GR-635-demoinfocs-v5.3.0",
+      "previous_revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
+      "total_commits": 3,
       "commits": [
         {
-          "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
-          "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)"
+          "revision": "6740ba3d0609472b4b3500312f4c8cde3285cb23",
+          "subject": "Merge pull request #36 from soloser/GR-635-demoinfocs-v5.3.0"
+        },
+        {
+          "revision": "46ff9e3a07dd4230a5ed1e9abb16e3ccd6eb57b4",
+          "subject": "docs(match-updater): name demoinfocs v5.3.0 instead of a revision"
+        },
+        {
+          "revision": "517231e4b0654e13a7781c0c98440c3aa0becde7",
+          "subject": "chore: pin demoinfocs-golang to release v5.3.0"
         }
       ]
     },
     "go-replay-converter": {
-      "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
-      "artifact": "sha256:683c2e15c5fc22fd5e80378004c3e81060173802bb3c2b189ded9000605ccd5c",
-      "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)",
-      "previous_revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
-      "total_commits": 1,
+      "revision": "6740ba3d0609472b4b3500312f4c8cde3285cb23",
+      "artifact": "sha256:b6edbb35f7b3fcca3f67a3f2e5c6ad54338af5e7f6431bdc08015b369e6510bb",
+      "subject": "Merge pull request #36 from soloser/GR-635-demoinfocs-v5.3.0",
+      "previous_revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
+      "total_commits": 3,
       "commits": [
         {
-          "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
-          "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)"
+          "revision": "6740ba3d0609472b4b3500312f4c8cde3285cb23",
+          "subject": "Merge pull request #36 from soloser/GR-635-demoinfocs-v5.3.0"
+        },
+        {
+          "revision": "46ff9e3a07dd4230a5ed1e9abb16e3ccd6eb57b4",
+          "subject": "docs(match-updater): name demoinfocs v5.3.0 instead of a revision"
+        },
+        {
+          "revision": "517231e4b0654e13a7781c0c98440c3aa0becde7",
+          "subject": "chore: pin demoinfocs-golang to release v5.3.0"
         }
       ]
     },
     "go-stats-extractor": {
-      "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
-      "artifact": "sha256:683c2e15c5fc22fd5e80378004c3e81060173802bb3c2b189ded9000605ccd5c",
-      "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)",
-      "previous_revision": "0eed7d5f60fca223f5dc415fff6b30814a134678",
-      "total_commits": 1,
+      "revision": "6740ba3d0609472b4b3500312f4c8cde3285cb23",
+      "artifact": "sha256:b6edbb35f7b3fcca3f67a3f2e5c6ad54338af5e7f6431bdc08015b369e6510bb",
+      "subject": "Merge pull request #36 from soloser/GR-635-demoinfocs-v5.3.0",
+      "previous_revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
+      "total_commits": 3,
       "commits": [
         {
-          "revision": "6162b305f2d9e735d8d77492daa0a6ef1aa43c70",
-          "subject": "fix: update demoinfocs for fixed-width CS2 fields (#35)"
+          "revision": "6740ba3d0609472b4b3500312f4c8cde3285cb23",
+          "subject": "Merge pull request #36 from soloser/GR-635-demoinfocs-v5.3.0"
+        },
+        {
+          "revision": "46ff9e3a07dd4230a5ed1e9abb16e3ccd6eb57b4",
+          "subject": "docs(match-updater): name demoinfocs v5.3.0 instead of a revision"
+        },
+        {
+          "revision": "517231e4b0654e13a7781c0c98440c3aa0becde7",
+          "subject": "chore: pin demoinfocs-golang to release v5.3.0"
         }
       ]
     }
