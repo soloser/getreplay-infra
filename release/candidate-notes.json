@@ -2,27 +2,23 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "95013aab1c883d115631916f771737c06de597e6",
-      "artifact": "sha256:35c5f3a7d049b5a0b7d70db8efd5d08ccc6203029131a450c67c94bb5d45d243",
-      "subject": "Merge pull request #63 from soloser/GR-190-round-weapon-icon",
-      "previous_revision": "31d82b6cea373b5426333dee205da34ddfdec199",
-      "total_commits": 4,
+      "revision": "6c4c9e7a29c60631e9c8232aa0f3118bffb1bdd5",
+      "artifact": "sha256:97e9def8173f80741c87f84b7eded1bffc44165b75faffea605afacbd15baeb2",
+      "subject": "Merge pull request #64 from soloser/GR-634-zeus-round-weapon",
+      "previous_revision": "95013aab1c883d115631916f771737c06de597e6",
+      "total_commits": 3,
       "commits": [
         {
-          "revision": "95013aab1c883d115631916f771737c06de597e6",
-          "subject": "Merge pull request #63 from soloser/GR-190-round-weapon-icon"
+          "revision": "6c4c9e7a29c60631e9c8232aa0f3118bffb1bdd5",
+          "subject": "Merge pull request #64 from soloser/GR-634-zeus-round-weapon"
         },
         {
-          "revision": "da4a6423b2a36623f33db4c020f678258ee52d33",
-          "subject": "feat(replay): show the selected player's main weapon on round buttons (GR-190)"
+          "revision": "06bd5be10ae01def00c55ff07b6fcef13c1d343f",
+          "subject": "test(replay): cover the Zeus round in the existing round-main-weapon test, document it (GR-634)"
         },
         {
-          "revision": "b3df9f0b57bd96573e916f74952703d8c1c6feb4",
-          "subject": "Merge pull request #62 from soloser/gr-79-sync-result"
-        },
-        {
-          "revision": "283312060ba7e14a8076289a90532c687ebf27a8",
-          "subject": "feat: say there are no new matches when a sync adds nothing (GR-79)"
+          "revision": "10bee56f7fe245b47fbca58c2bfaa06cdc32d633",
+          "subject": "fix(replay): show the Zeus on a round button when the player held no gun (GR-634)"
         }
       ]
     },
