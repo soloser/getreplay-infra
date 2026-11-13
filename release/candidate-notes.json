@@ -2,23 +2,19 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "6c4c9e7a29c60631e9c8232aa0f3118bffb1bdd5",
-      "artifact": "sha256:97e9def8173f80741c87f84b7eded1bffc44165b75faffea605afacbd15baeb2",
-      "subject": "Merge pull request #64 from soloser/GR-634-zeus-round-weapon",
-      "previous_revision": "95013aab1c883d115631916f771737c06de597e6",
-      "total_commits": 3,
+      "revision": "aa745231394ab347adbf6f6ef860869caefe53fd",
+      "artifact": "sha256:9108129d78f9e7246ee805699fc339ba3379e0c7f3976ad7cc3f1aea5530df5c",
+      "subject": "Merge pull request #65 from soloser/GR-25-heatmap-time-filter",
+      "previous_revision": "6c4c9e7a29c60631e9c8232aa0f3118bffb1bdd5",
+      "total_commits": 2,
       "commits": [
         {
-          "revision": "6c4c9e7a29c60631e9c8232aa0f3118bffb1bdd5",
-          "subject": "Merge pull request #64 from soloser/GR-634-zeus-round-weapon"
+          "revision": "aa745231394ab347adbf6f6ef860869caefe53fd",
+          "subject": "Merge pull request #65 from soloser/GR-25-heatmap-time-filter"
         },
         {
-          "revision": "06bd5be10ae01def00c55ff07b6fcef13c1d343f",
-          "subject": "test(replay): cover the Zeus round in the existing round-main-weapon test, document it (GR-634)"
-        },
-        {
-          "revision": "10bee56f7fe245b47fbca58c2bfaa06cdc32d633",
-          "subject": "fix(replay): show the Zeus on a round button when the player held no gun (GR-634)"
+          "revision": "3237c2420d31ba0fb4dcd189a786bde48e7ea3c2",
+          "subject": "feat(heatmap): filter both heatmaps by time in the round (GR-25)"
         }
       ]
     },
