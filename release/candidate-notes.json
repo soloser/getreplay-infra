@@ -23,15 +23,19 @@
       ]
     },
     "php": {
-      "revision": "ad2d5899464cfc75c7689d685755aeb1097274f2",
-      "artifact": "sha256:0f906c9c9cfa357c3686b52d6fcb83a63b5876cae2bb7aec07cf7fb362f4981e",
-      "subject": "feat: serve several example matches with players and a featured viewer (#20)",
-      "previous_revision": "9086f9c0dd002d07e6ab49effb4740f1debb844f",
-      "total_commits": 1,
+      "revision": "843228c98675df22e41b3c44cad1d23c26ea4cb6",
+      "artifact": "sha256:d3a307afb818119d4020b6906f2701d932446e1dd989ba87202f3222d81fdaf1",
+      "subject": "Merge pull request #21 from soloser/GR-25-heatmap-round-time",
+      "previous_revision": "ad2d5899464cfc75c7689d685755aeb1097274f2",
+      "total_commits": 2,
       "commits": [
         {
-          "revision": "ad2d5899464cfc75c7689d685755aeb1097274f2",
-          "subject": "feat: serve several example matches with players and a featured viewer (#20)"
+          "revision": "843228c98675df22e41b3c44cad1d23c26ea4cb6",
+          "subject": "Merge pull request #21 from soloser/GR-25-heatmap-round-time"
+        },
+        {
+          "revision": "28a8ca8608474ecb36ca443115c5dc060c277e09",
+          "subject": "feat(heatmap): filter player heatmap points and events by round time (GR-25)"
         }
       ]
     },
