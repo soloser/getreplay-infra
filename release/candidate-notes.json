@@ -2,19 +2,19 @@
   "version": 1,
   "components": {
     "frontend": {
-      "revision": "aa745231394ab347adbf6f6ef860869caefe53fd",
-      "artifact": "sha256:9108129d78f9e7246ee805699fc339ba3379e0c7f3976ad7cc3f1aea5530df5c",
-      "subject": "Merge pull request #65 from soloser/GR-25-heatmap-time-filter",
-      "previous_revision": "6c4c9e7a29c60631e9c8232aa0f3118bffb1bdd5",
+      "revision": "1895086b5ebff94c41ac0e6521b9274198801807",
+      "artifact": "sha256:27acf67e3ab01c37ab605da1f7abc752248ab86c196f2435a170cbaf1a280d59",
+      "subject": "Merge pull request #66 from soloser/GR-636-sidebar-guides",
+      "previous_revision": "aa745231394ab347adbf6f6ef860869caefe53fd",
       "total_commits": 2,
       "commits": [
         {
-          "revision": "aa745231394ab347adbf6f6ef860869caefe53fd",
-          "subject": "Merge pull request #65 from soloser/GR-25-heatmap-time-filter"
+          "revision": "1895086b5ebff94c41ac0e6521b9274198801807",
+          "subject": "Merge pull request #66 from soloser/GR-636-sidebar-guides"
         },
         {
-          "revision": "3237c2420d31ba0fb4dcd189a786bde48e7ea3c2",
-          "subject": "feat(heatmap): filter both heatmaps by time in the round (GR-25)"
+          "revision": "14f1ae8e68563ae831014aef98047377b3dedd4e",
+          "subject": "GR-636: move the guides link from the signed-in footer to the sidebar"
         }
       ]
     },
